@@ -360,14 +360,47 @@
   transform: translateY(-1px);
 }
 
-/* Case Study Modal Styles */
-.case-study-modal {
-  max-width: 1800px !important;
-  width: 90vw !important;
+/* Case Study Modal Styles - Override Dialog constraints */
+.ui-modal.case-study-modal {
+  max-width: none !important;
+  width: 80vw !important;
   height: auto !important;
   min-height: auto !important;
   max-height: none !important;
   overflow: visible !important;
+}
+
+.ui-modal-overlay .ui-modal.case-study-modal {
+  max-width: none !important;
+  width: 80vw !important;
+  height: auto !important;
+  min-height: auto !important;
+  max-height: none !important;
+  overflow: visible !important;
+}
+
+.case-study-modal {
+  max-width: none !important;
+  width: 80vw !important;
+  height: auto !important;
+  min-height: auto !important;
+  max-height: none !important;
+  overflow: visible !important;
+}
+
+/* Override base ui.css modal constraints */
+.ui-modal.case-study-modal {
+  max-width: none !important;
+  width: 80vw !important;
+  height: auto !important;
+  min-height: auto !important;
+  max-height: none !important;
+  overflow: visible !important;
+}
+
+/* Force override of ui.css max-width constraint */
+.ui-modal.case-study-modal[style*="max-width"] {
+  max-width: none !important;
 }
 
 .case-study-title {
@@ -684,9 +717,11 @@
     font-size: 1.5rem;
   }
   
-  .case-study-modal {
-    max-width: 95vw !important;
-    width: 95vw !important;
+  .ui-modal-overlay .ui-modal.case-study-modal,
+  .case-study-modal,
+  .ui-modal.case-study-modal {
+    max-width: none !important;
+    width: 85vw !important;
     height: auto !important;
     max-height: none !important;
   }
@@ -772,9 +807,11 @@
     font-size: 1.2rem;
   }
   
-  .case-study-modal {
-    max-width: 95vw !important;
-    width: 95vw !important;
+  .ui-modal-overlay .ui-modal.case-study-modal,
+  .case-study-modal,
+  .ui-modal.case-study-modal {
+    max-width: none !important;
+    width: 85vw !important;
     height: auto !important;
     max-height: none !important;
   }

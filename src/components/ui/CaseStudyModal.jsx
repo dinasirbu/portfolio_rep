@@ -20,7 +20,7 @@ const CaseStudyModal = ({ work, onClose, onImageClick }) => {
   if (!work) return null;
 
   return (
-    <Dialog open={!!work} onOpenChange={(open) => !open && onClose()}>
+    <Dialog open={!!work} onOpenChange={(open) => !open && onClose()} className="case-study-modal">
       <DialogContent className="case-study-modal">
         <DialogHeader>
           <DialogTitle className="case-study-title">{work.title}</DialogTitle>

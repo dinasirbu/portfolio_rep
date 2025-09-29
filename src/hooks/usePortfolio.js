@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback } from 'react';
+import { useState, useMemo, useCallback, useEffect } from 'react';
 import { WORKS, CATEGORIES } from '../constants/portfolioData';
 
 export const usePortfolio = () => {
@@ -6,6 +6,88 @@ export const usePortfolio = () => {
   const [showCategoryCards, setShowCategoryCards] = useState(true);
   const [selectedWork, setSelectedWork] = useState(null);
   const [selectedImageIndex, setSelectedImageIndex] = useState(null);
+
+  // Handle browser back/forward navigation
+  useEffect(() => {
+    const handlePopState = (event) => {
+      const state = event.state;
+      if (state) {
+        if (state.showCategoryCards !== undefined) {
+          setShowCategoryCards(state.showCategoryCards);
+        }
+        if (state.activeCategory !== undefined) {
+          setActiveCategory(state.activeCategory);
+        }
+        if (state.selectedWork !== undefined) {
+          setSelectedWork(state.selectedWork);
+        }
+        if (state.selectedImageIndex !== undefined) {
+          setSelectedImageIndex(state.selectedImageIndex);
+        }
+      } else {
+        // Default state when no history state
+        setShowCategoryCards(true);
+        setActiveCategory("All");
+        setSelectedWork(null);
+        setSelectedImageIndex(null);
+      }
+    };
+
+    window.addEventListener('popstate', handlePopState);
+    
+    // Initialize with current URL state
+    const urlParams = new URLSearchParams(window.location.search);
+    const category = urlParams.get('category') || "All";
+    const workId = urlParams.get('work');
+    const imageIndex = urlParams.get('image');
+    
+    if (workId) {
+      const work = WORKS.find(w => w.id === workId);
+      if (work) {
+        setSelectedWork(work);
+        setShowCategoryCards(false);
+        setActiveCategory(work.category);
+        if (imageIndex !== null) {
+          setSelectedImageIndex(parseInt(imageIndex));
+        }
+      }
+    } else if (category !== "All") {
+      setActiveCategory(category);
+      setShowCategoryCards(false);
+    }
+
+    return () => {
+      window.removeEventListener('popstate', handlePopState);
+    };
+  }, []);
+
+  // Update URL and history when state changes
+  const updateHistory = useCallback((newState) => {
+    const currentState = {
+      showCategoryCards,
+      activeCategory,
+      selectedWork,
+      selectedImageIndex
+    };
+    
+    const updatedState = { ...currentState, ...newState };
+    
+    // Update URL
+    const url = new URL(window.location);
+    url.search = '';
+    
+    if (updatedState.selectedWork) {
+      url.searchParams.set('work', updatedState.selectedWork.id);
+      if (updatedState.selectedImageIndex !== null) {
+        url.searchParams.set('image', updatedState.selectedImageIndex.toString());
+      }
+    } else if (!updatedState.showCategoryCards && updatedState.activeCategory !== "All") {
+      url.searchParams.set('category', updatedState.activeCategory);
+    }
+    
+    // Update browser history
+    window.history.pushState(updatedState, '', url);
+  }, [showCategoryCards, activeCategory, selectedWork, selectedImageIndex]);
 
   // Calculate category counts
   const categoryCounts = useMemo(() => {
@@ -58,46 +140,53 @@ export const usePortfolio = () => {
   const handleCategoryChange = useCallback((category) => {
     setActiveCategory(category);
     setShowCategoryCards(false); // Always show projects when category is selected
-  }, []);
+    updateHistory({ activeCategory: category, showCategoryCards: false });
+  }, [updateHistory]);
 
   const handleBackToCategories = useCallback(() => {
     setShowCategoryCards(true);
     setActiveCategory("All");
-  }, []);
+    updateHistory({ showCategoryCards: true, activeCategory: "All", selectedWork: null, selectedImageIndex: null });
+  }, [updateHistory]);
 
   const handleWorkSelect = useCallback((work) => {
     setSelectedWork(work);
-  }, []);
+    updateHistory({ selectedWork: work, selectedImageIndex: null });
+  }, [updateHistory]);
 
   const handleWorkClose = useCallback(() => {
     setSelectedWork(null);
-  }, []);
+    setSelectedImageIndex(null);
+    updateHistory({ selectedWork: null, selectedImageIndex: null });
+  }, [updateHistory]);
 
   const handleImageClick = useCallback((index) => {
     setSelectedImageIndex(index);
-  }, []);
+    updateHistory({ selectedImageIndex: index });
+  }, [updateHistory]);
 
   const handleImageViewerClose = useCallback(() => {
     setSelectedImageIndex(null);
-  }, []);
+    updateHistory({ selectedImageIndex: null });
+  }, [updateHistory]);
 
   const handleNextImage = useCallback(() => {
     if (selectedWork?.caseStudy?.gallery) {
       const gallery = selectedWork.caseStudy.gallery;
-      setSelectedImageIndex(prev => 
-        prev < gallery.length - 1 ? prev + 1 : 0
-      );
+      const newIndex = selectedImageIndex < gallery.length - 1 ? selectedImageIndex + 1 : 0;
+      setSelectedImageIndex(newIndex);
+      updateHistory({ selectedImageIndex: newIndex });
     }
-  }, [selectedWork]);
+  }, [selectedWork, selectedImageIndex, updateHistory]);
 
   const handlePrevImage = useCallback(() => {
     if (selectedWork?.caseStudy?.gallery) {
       const gallery = selectedWork.caseStudy.gallery;
-      setSelectedImageIndex(prev => 
-        prev > 0 ? prev - 1 : gallery.length - 1
-      );
+      const newIndex = selectedImageIndex > 0 ? selectedImageIndex - 1 : gallery.length - 1;
+      setSelectedImageIndex(newIndex);
+      updateHistory({ selectedImageIndex: newIndex });
     }
-  }, [selectedWork]);
+  }, [selectedWork, selectedImageIndex, updateHistory]);
 
   return {
     // State

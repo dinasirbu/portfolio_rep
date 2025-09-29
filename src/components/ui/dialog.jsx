@@ -1,14 +1,14 @@
 import React from "react";
 import "./ui.css";
 
-export function Dialog({ open, onOpenChange = () => {}, children }) {
+export function Dialog({ open, onOpenChange = () => {}, children, className = "" }) {
   console.log('Dialog component - open:', open);
   if (!open) return null;
   const handleOverlay = () => onOpenChange(false);
   return (
       <div className="ui-modal-overlay" onClick={handleOverlay}>
         {/* Stop bubbling so clicks inside content don't close the modal */}
-        <div className="ui-modal" onClick={(e) => e.stopPropagation()}>
+        <div className={`ui-modal ${className}`} onClick={(e) => e.stopPropagation()}>
           {children}
         </div>
       </div>
