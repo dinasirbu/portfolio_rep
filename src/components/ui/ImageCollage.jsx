@@ -1,8 +1,7 @@
 import React, { useState, useCallback, memo } from 'react';
 import OptimizedImage from './OptimizedImage';
-import ProjectInfo from './ProjectInfo';
 
-const ImageCollage = ({ images, maxImages = 4, variant = 'default', work, showProjectInfo = false }) => {
+const ImageCollage = ({ images, maxImages = 4, variant = 'default' }) => {
   const [loadedImages, setLoadedImages] = useState(new Set());
   
   const handleImageLoad = useCallback((index) => {
@@ -10,106 +9,6 @@ const ImageCollage = ({ images, maxImages = 4, variant = 'default', work, showPr
   }, []);
 
   if (!images || images.length === 0) return null;
-  
-  // If showing project info, use it as the first element instead of the description image
-  if (showProjectInfo && work) {
-    const infoVariant = variant === 'masonry' ? 'compact' : 'card';
-    
-    if (variant === 'hero') {
-      return (
-        <div className="image-collage hero-layout-with-info">
-          <div className="hero-info-section">
-            <ProjectInfo work={work} variant={infoVariant} />
-          </div>
-          <div className="hero-images">
-            {images.slice(1, 3).map((img, index) => (
-              <OptimizedImage 
-                key={index}
-                src={img.src} 
-                alt={img.alt} 
-                className="collage-image hero-side-image"
-                loading="lazy"
-                onLoad={() => handleImageLoad(index + 1)}
-              />
-            ))}
-            {images.length > 3 && (
-              <div className="hero-overlay">
-                <OptimizedImage 
-                  src={images[3].src} 
-                  alt={images[3].alt} 
-                  className="collage-image hero-overlay-image"
-                  loading="lazy"
-                  onLoad={() => handleImageLoad(3)}
-                />
-                <div className="more-images-indicator">
-                  +{images.length - 4}
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
-      );
-    }
-
-    if (variant === 'masonry') {
-      return (
-        <div className="image-collage masonry-layout-with-info">
-          <div className="masonry-info-section">
-            <ProjectInfo work={work} variant={infoVariant} />
-          </div>
-          <div className="masonry-images">
-            {images.slice(1, 4).map((img, index) => (
-              <div 
-                key={index}
-                className={`masonry-item masonry-item-${index + 1}`}
-              >
-                <OptimizedImage 
-                  src={img.src} 
-                  alt={img.alt} 
-                  className="collage-image masonry-image"
-                  loading="lazy"
-                  onLoad={() => handleImageLoad(index + 1)}
-                />
-              </div>
-            ))}
-            {images.length > 4 && (
-              <div className="masonry-overlay">
-                <div className="more-images-indicator">
-                  +{images.length - 4}
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
-      );
-    }
-
-    // Default layout with project info
-    return (
-      <div className="image-collage default-layout-with-info">
-        <div className="info-section">
-          <ProjectInfo work={work} variant={infoVariant} />
-        </div>
-        <div className="images-section">
-          {images.slice(1, maxImages + 1).map((img, index) => (
-            <OptimizedImage 
-              key={index}
-              src={img.src} 
-              alt={img.alt} 
-              className="collage-image"
-              loading="lazy"
-              onLoad={() => handleImageLoad(index + 1)}
-            />
-          ))}
-          {images.length > maxImages + 1 && (
-            <div className="more-images-indicator">
-              +{images.length - maxImages - 1}
-            </div>
-          )}
-        </div>
-      </div>
-    );
-  }
   
   // Take the first few images, skipping the first one (description image)
   const collageImages = images.slice(1, maxImages + 1);
