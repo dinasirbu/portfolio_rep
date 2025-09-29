@@ -4,43 +4,79 @@ import { NAV_ITEMS } from '../../constants/navigation';
 import { useHeader } from '../../hooks/useHeader';
 import WigglyLine from '../shared/WigglyLine';
 
-const DesktopNav = ({ onItemClick }) => (
-  <nav className="nav desktop-nav">
-    {NAV_ITEMS.map(({ id, href, label }) => (
-      <a
-        key={id}
-        href={href}
-        className="nav-link"
-        onClick={onItemClick}
-      >
-        {label}
-      </a>
-    ))}
-  </nav>
-);
+const DesktopNav = ({ onItemClick }) => {
+  const handleNavClick = (e, href) => {
+    e.preventDefault();
+    const targetId = href.replace('#', '');
+    const targetElement = document.getElementById(targetId);
+    
+    if (targetElement) {
+      targetElement.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start',
+        inline: 'nearest'
+      });
+    }
+    
+    onItemClick();
+  };
 
-const MobileNav = ({ isOpen, onItemClick }) => (
-  <motion.nav
-    className={`mobile-nav ${isOpen ? 'open' : ''}`}
-    initial={{ opacity: 0, height: 0 }}
-    animate={{
-      opacity: isOpen ? 1 : 0,
-      height: isOpen ? 'auto' : 0
-    }}
-    transition={{ duration: 0.3 }}
-  >
-    {NAV_ITEMS.map(({ id, href, label }) => (
-      <a
-        key={id}
-        href={href}
-        className="mobile-nav-link"
-        onClick={onItemClick}
-      >
-        {label}
-      </a>
-    ))}
-  </motion.nav>
-);
+  return (
+    <nav className="nav desktop-nav">
+      {NAV_ITEMS.map(({ id, href, label }) => (
+        <a
+          key={id}
+          href={href}
+          className="nav-link"
+          onClick={(e) => handleNavClick(e, href)}
+        >
+          {label}
+        </a>
+      ))}
+    </nav>
+  );
+};
+
+const MobileNav = ({ isOpen, onItemClick }) => {
+  const handleNavClick = (e, href) => {
+    e.preventDefault();
+    const targetId = href.replace('#', '');
+    const targetElement = document.getElementById(targetId);
+    
+    if (targetElement) {
+      targetElement.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start',
+        inline: 'nearest'
+      });
+    }
+    
+    onItemClick();
+  };
+
+  return (
+    <motion.nav
+      className={`mobile-nav ${isOpen ? 'open' : ''}`}
+      initial={{ opacity: 0, height: 0 }}
+      animate={{
+        opacity: isOpen ? 1 : 0,
+        height: isOpen ? 'auto' : 0
+      }}
+      transition={{ duration: 0.3 }}
+    >
+      {NAV_ITEMS.map(({ id, href, label }) => (
+        <a
+          key={id}
+          href={href}
+          className="mobile-nav-link"
+          onClick={(e) => handleNavClick(e, href)}
+        >
+          {label}
+        </a>
+      ))}
+    </motion.nav>
+  );
+};
 
 const Header = () => {
   const { isScrolled, isMobileMenuOpen, toggleMobileMenu, closeMobileMenu } = useHeader();

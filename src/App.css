@@ -915,7 +915,13 @@
 
 /* Smooth scrolling for anchor links */
 html {
-  scroll-padding-top: 80px;
+  scroll-behavior: smooth;
+  scroll-padding-top: 100px;
+}
+
+/* Ensure smooth scrolling works on all browsers */
+* {
+  scroll-behavior: smooth;
 }
 
 /* Mobile Touch Optimizations */
