@@ -1,30 +1,37 @@
 import React from 'react';
-import OptimizedImage from './OptimizedImage';
+import { motion } from 'framer-motion';
+import ImageCollage from './ImageCollage';
 
 const CategoryCard = ({ category, count, isActive, onCategoryChange, previewImages }) => {
+  // Determine collage variant based on category for visual variety
+  const getCollageVariant = (category) => {
+    const variants = {
+      'All': 'masonry',
+      'Branding': 'hero',
+      'Logo': 'masonry', 
+      'Packaging': 'default',
+      'Social Media': 'hero'
+    };
+    return variants[category] || 'default';
+  };
+
+  const collageVariant = getCollageVariant(category);
+
   return (
-    <div 
+    <motion.div 
       className={`category-card ${isActive ? 'active' : ''}`}
       onClick={() => onCategoryChange(category)}
+      whileHover={{ y: -4 }}
+      whileTap={{ scale: 0.98 }}
+      transition={{ duration: 0.2 }}
     >
       <div className="category-preview">
         {previewImages && previewImages.length > 0 ? (
-          <div className="category-collage">
-            {previewImages.slice(0, 3).map((img, index) => (
-              <OptimizedImage 
-                key={index}
-                src={img.src} 
-                alt={img.alt}
-                className="preview-image"
-                loading="lazy"
-              />
-            ))}
-            {previewImages.length > 3 && (
-              <div className="more-preview">
-                +{previewImages.length - 3}
-              </div>
-            )}
-          </div>
+          <ImageCollage 
+            images={previewImages} 
+            variant={collageVariant}
+            maxImages={3}
+          />
         ) : (
           <div className="category-placeholder">
             <div className="placeholder-icon">🎨</div>
@@ -43,7 +50,7 @@ const CategoryCard = ({ category, count, isActive, onCategoryChange, previewImag
           <span className="arrow">→</span>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 };
 

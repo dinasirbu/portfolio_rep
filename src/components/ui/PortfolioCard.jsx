@@ -10,6 +10,19 @@ const PortfolioCard = ({ work, onOpen, index }) => {
     onOpen(work);
   };
 
+  // Determine collage variant based on work category for visual variety
+  const getCollageVariant = (category) => {
+    const variants = {
+      'Branding': 'hero',
+      'Logo': 'masonry', 
+      'Packaging': 'default',
+      'Social Media': 'hero'
+    };
+    return variants[category] || 'default';
+  };
+
+  const collageVariant = getCollageVariant(work.category);
+
   return (
     <motion.div
       variants={{
@@ -29,7 +42,10 @@ const PortfolioCard = ({ work, onOpen, index }) => {
         <div className="card-cover">
           <ImageCollage 
             images={work.caseStudy?.gallery || [work.cover]} 
-            maxImages={2}
+            variant={collageVariant}
+            maxImages={4}
+            work={work}
+            showProjectInfo={true}
           />
           <div className="cover-gradient" />
           <div className="category-badge">
