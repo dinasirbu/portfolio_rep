@@ -37,50 +37,39 @@ export const SERVICES = [
   }
 ];
 
-export const PORTFOLIO_PROJECTS = [
+export const PORTFOLIO_CATEGORIES = [
   {
-    id: 'tech-startup',
-    title: "Brand Identity - Tech Startup",
-    category: "Branding",
-    image: "project1",
-    description: "Complete brand identity for a modern tech startup"
+    id: 'branding',
+    title: "Branding",
+    description: "Complete brand identity systems including logos, color palettes, typography, and brand guidelines",
+    count: 2
   },
   {
-    id: 'ecommerce',
-    title: "E-commerce Website Design",
-    category: "Web Design",
-    image: "project2",
-    description: "Modern e-commerce platform with focus on user experience"
-  },
-  {
-    id: 'mobile-app',
-    title: "Mobile App UI/UX",
-    category: "UI/UX",
-    image: "project3",
-    description: "Intuitive mobile app interface design"
-  },
-  {
-    id: 'marketing',
-    title: "Marketing Campaign",
-    category: "Digital Design",
-    image: "project4",
-    description: "Comprehensive digital marketing campaign materials"
+    id: 'logo',
+    title: "Logo Design", 
+    description: "Memorable logo designs and brand marks for various industries and applications",
+    count: 1
   },
   {
     id: 'packaging',
-    title: "Product Packaging",
-    category: "Print Design",
-    image: "project5",
-    description: "Eye-catching product packaging design"
+    title: "Packaging Design",
+    description: "Innovative packaging solutions that combine functionality with compelling visual design",
+    count: 6
   },
   {
     id: 'social-media',
-    title: "Social Media Graphics",
-    category: "Digital Design",
-    image: "project6",
-    description: "Consistent social media branding and graphics"
+    title: "Social Media",
+    description: "Engaging social media content, templates, and campaign materials for digital marketing",
+    count: 3
   }
 ];
+
+export const PORTFOLIO_STATS = {
+  totalProjects: 12,
+  categories: 4,
+  clients: 10,
+  yearsExperience: "3+"
+};
 
 export const CONTACT_INFO = {
   email: "hello@creativedesigner.com",

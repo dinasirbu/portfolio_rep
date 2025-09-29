@@ -2,6 +2,7 @@ import React from "react";
 import "./ui.css";
 
 export function Dialog({ open, onOpenChange = () => {}, children }) {
+  console.log('Dialog component - open:', open);
   if (!open) return null;
   const handleOverlay = () => onOpenChange(false);
   return (
