@@ -1,4 +1,5 @@
 import React, { useState, useCallback, memo } from 'react';
+import OptimizedImage from './OptimizedImage';
 
 const ImageCollage = ({ images, maxImages = 4 }) => {
   const [loadedImages, setLoadedImages] = useState(new Set());
@@ -16,7 +17,7 @@ const ImageCollage = ({ images, maxImages = 4 }) => {
     // Fallback to first image if no other images
     return (
       <div className="image-collage single">
-        <img 
+        <OptimizedImage 
           src={images[0].src} 
           alt={images[0].alt} 
           className="collage-image"
@@ -30,7 +31,7 @@ const ImageCollage = ({ images, maxImages = 4 }) => {
   if (collageImages.length === 1) {
     return (
       <div className="image-collage single">
-        <img 
+        <OptimizedImage 
           src={collageImages[0].src} 
           alt={collageImages[0].alt} 
           className="collage-image"
@@ -44,14 +45,14 @@ const ImageCollage = ({ images, maxImages = 4 }) => {
   if (collageImages.length === 2) {
     return (
       <div className="image-collage two-images">
-        <img 
+        <OptimizedImage 
           src={collageImages[0].src} 
           alt={collageImages[0].alt} 
           className="collage-image"
           loading="lazy"
           onLoad={() => handleImageLoad(0)}
         />
-        <img 
+        <OptimizedImage 
           src={collageImages[1].src} 
           alt={collageImages[1].alt} 
           className="collage-image"
@@ -65,21 +66,21 @@ const ImageCollage = ({ images, maxImages = 4 }) => {
   if (collageImages.length === 3) {
     return (
       <div className="image-collage three-images">
-        <img 
+        <OptimizedImage 
           src={collageImages[0].src} 
           alt={collageImages[0].alt} 
           className="collage-image"
           loading="lazy"
           onLoad={() => handleImageLoad(0)}
         />
-        <img 
+        <OptimizedImage 
           src={collageImages[1].src} 
           alt={collageImages[1].alt} 
           className="collage-image"
           loading="lazy"
           onLoad={() => handleImageLoad(1)}
         />
-        <img 
+        <OptimizedImage 
           src={collageImages[2].src} 
           alt={collageImages[2].alt} 
           className="collage-image"
@@ -115,7 +116,7 @@ const ImageCollage = ({ images, maxImages = 4 }) => {
         onLoad={() => handleImageLoad(2)}
       />
       <div className="collage-overlay">
-        <img 
+        <OptimizedImage 
           src={collageImages[3].src} 
           alt={collageImages[3].alt} 
           className="collage-image"

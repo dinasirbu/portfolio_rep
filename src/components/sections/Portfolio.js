@@ -13,12 +13,15 @@ const Portfolio = () => {
   
   const {
     activeCategory,
+    showCategoryCards,
     selectedWork,
     selectedImageIndex,
     categoryCounts,
+    categoryPreviews,
     filteredWorks,
     categories,
     handleCategoryChange,
+    handleBackToCategories,
     handleWorkSelect,
     handleWorkClose,
     handleImageClick,
@@ -55,53 +58,77 @@ const Portfolio = () => {
           </p>
         </motion.div>
 
-        {/* Category Filter */}
-        <motion.div
-          variants={fadeInUp}
-          initial="initial"
-          animate={inView ? "animate" : "initial"}
-          transition={transition}
-        >
-          <CategoryFilter
-            categories={categories}
-            activeCategory={activeCategory}
-            onCategoryChange={handleCategoryChange}
-            categoryCounts={categoryCounts}
-          />
-        </motion.div>
-
-        {/* Portfolio Grid */}
-        <div className="portfolio-grid">
-          <AnimatePresence mode="wait">
-            {filteredWorks.map((work, i) => (
-              <motion.div
-                key={work.id}
-                variants={fadeInUp}
-                initial="initial"
-                animate="animate"
-                exit="initial"
-                transition={{ ...transition, delay: i * 0.05 }}
-              >
-                <PortfolioCard
-                  work={work}
-                  onOpen={handleWorkSelect}
-                  index={i}
-                />
-              </motion.div>
-            ))}
-          </AnimatePresence>
-        </div>
-
-        {/* Empty State */}
-        {filteredWorks.length === 0 && (
+        {/* Show Category Cards OR Portfolio Grid - Not Both */}
+        {showCategoryCards ? (
+          /* Category Filter - Show when in category selection mode */
+          <motion.div
+            variants={fadeInUp}
+            initial="initial"
+            animate={inView ? "animate" : "initial"}
+            transition={transition}
+          >
+            <CategoryFilter
+              categories={categories}
+              activeCategory={activeCategory}
+              onCategoryChange={handleCategoryChange}
+              categoryCounts={categoryCounts}
+              categoryPreviews={categoryPreviews}
+            />
+          </motion.div>
+        ) : (
+          /* Portfolio Grid - Show when viewing projects */
           <motion.div
             variants={fadeInUp}
             initial="initial"
             animate="animate"
             transition={transition}
-            style={{ textAlign: "center", padding: "40px 0", color: "#6b7280" }}
           >
-            <p>No projects found in this category.</p>
+            {/* Back to Categories Button */}
+            <div className="back-to-categories">
+              <button 
+                onClick={handleBackToCategories}
+                className="back-btn"
+              >
+                ← Back to Categories
+              </button>
+              <h3 className="category-header">
+                {activeCategory === "All" ? "All Projects" : `${activeCategory} Projects`}
+              </h3>
+            </div>
+            
+            <div className="portfolio-grid">
+              <AnimatePresence mode="wait">
+                {filteredWorks.map((work, i) => (
+                  <motion.div
+                    key={work.id}
+                    variants={fadeInUp}
+                    initial="initial"
+                    animate="animate"
+                    exit="initial"
+                    transition={{ ...transition, delay: i * 0.05 }}
+                  >
+                    <PortfolioCard
+                      work={work}
+                      onOpen={handleWorkSelect}
+                      index={i}
+                    />
+                  </motion.div>
+                ))}
+              </AnimatePresence>
+            </div>
+
+            {/* Empty State */}
+            {filteredWorks.length === 0 && (
+              <motion.div
+                variants={fadeInUp}
+                initial="initial"
+                animate="animate"
+                transition={transition}
+                style={{ textAlign: "center", padding: "40px 0", color: "#6b7280" }}
+              >
+                <p>No projects found in this category.</p>
+              </motion.div>
+            )}
           </motion.div>
         )}
 

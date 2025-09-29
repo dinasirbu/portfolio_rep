@@ -2,24 +2,19 @@ import React, { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from './dialog';
 import { Badge } from './badge';
 import { Button } from './button';
+import OptimizedImage from './OptimizedImage';
 
 const CaseStudyModal = ({ work, onClose, onImageClick }) => {
   const cs = work?.caseStudy;
   const [loadedImages, setLoadedImages] = useState(new Set());
-  const [visibleImages, setVisibleImages] = useState(6); // Show first 6 images initially
   
   useEffect(() => {
     // Reset loaded images when work changes
     setLoadedImages(new Set());
-    setVisibleImages(6);
   }, [work]);
 
   const handleImageLoad = (index) => {
     setLoadedImages(prev => new Set([...prev, index]));
-  };
-
-  const loadMoreImages = () => {
-    setVisibleImages(prev => Math.min(prev + 6, cs?.gallery?.length || 0));
   };
   
   if (!work) return null;
@@ -47,8 +42,8 @@ const CaseStudyModal = ({ work, onClose, onImageClick }) => {
           {/* Gallery */}
           {cs?.gallery && cs.gallery.length > 0 && (
             <div className="case-study-gallery">
-              {cs.gallery.slice(0, visibleImages).map((img, i) => (
-                <img 
+              {cs.gallery.map((img, i) => (
+                <OptimizedImage 
                   key={i} 
                   src={img.src} 
                   alt={img.alt || `${work.title} ${i + 1}`}
@@ -58,19 +53,6 @@ const CaseStudyModal = ({ work, onClose, onImageClick }) => {
                   onLoad={() => handleImageLoad(i)}
                 />
               ))}
-              
-              {/* Load More Button */}
-              {visibleImages < cs.gallery.length && (
-                <div className="load-more-container">
-                  <Button 
-                    onClick={loadMoreImages}
-                    variant="outline"
-                    className="load-more-btn"
-                  >
-                    Load More Images ({cs.gallery.length - visibleImages} remaining)
-                  </Button>
-                </div>
-              )}
             </div>
           )}
 
