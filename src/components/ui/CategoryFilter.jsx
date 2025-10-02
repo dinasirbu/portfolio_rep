@@ -1,53 +1,159 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import ImageCollage from './ImageCollage';
 
 const CategoryCard = ({ category, count, isActive, onCategoryChange, previewImages }) => {
-  // Determine collage variant based on category for visual variety
-  const getCollageVariant = (category) => {
-    const variants = {
-      'All': 'masonry',
-      'Branding': 'hero',
-      'Logo': 'masonry', 
-      'Packaging': 'default',
-      'Social Media': 'hero'
+  // Assign different layout styles to each category for variety
+  const getGridLayout = (categoryName, images) => {
+    if (!images || images.length === 0) return 'empty';
+    if (images.length === 1) return 'single';
+    if (images.length === 2) return 'dual';
+    
+    // Different layouts for different categories (3+ images)
+    const categoryLayouts = {
+      'All': 'masonry',        // Large left + 2 stacked right
+      'Branding': 'horizontal', // 3 horizontal strips
+      'Logo': 'grid',           // Even 3x grid
+      'Packaging': 'asymmetric', // Large top + 2 bottom
+      'Social Media': 'vertical' // Large right + 2 stacked left
     };
-    return variants[category] || 'default';
+    
+    return categoryLayouts[categoryName] || 'masonry';
   };
 
-  const collageVariant = getCollageVariant(category);
+  const gridLayout = getGridLayout(category, previewImages);
 
   return (
     <motion.div 
       className={`category-card ${isActive ? 'active' : ''}`}
       onClick={() => onCategoryChange(category)}
-      whileHover={{ y: -4 }}
+      whileHover={{ y: -6, scale: 1.02 }}
       whileTap={{ scale: 0.98 }}
-      transition={{ duration: 0.2 }}
+      transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
     >
+      {/* Image Preview Section */}
       <div className="category-preview">
         {previewImages && previewImages.length > 0 ? (
-          <ImageCollage 
-            images={previewImages} 
-            variant={collageVariant}
-            maxImages={3}
-          />
+          <div className={`category-image-grid layout-${gridLayout}`}>
+            {gridLayout === 'single' && (
+              <div className="category-grid-item single-item">
+                <img 
+                  src={previewImages[0].src} 
+                  alt={previewImages[0].alt || `${category}`}
+                  className="category-img"
+                />
+              </div>
+            )}
+            
+            {gridLayout === 'dual' && (
+              <>
+                <div className="category-grid-item dual-item-1">
+                  <img 
+                    src={previewImages[0].src} 
+                    alt={previewImages[0].alt || `${category} 1`}
+                    className="category-img"
+                  />
+                </div>
+                <div className="category-grid-item dual-item-2">
+                  <img 
+                    src={previewImages[1].src} 
+                    alt={previewImages[1].alt || `${category} 2`}
+                    className="category-img"
+                  />
+                </div>
+              </>
+            )}
+            
+            {/* Masonry Layout - Large left + 2 stacked right */}
+            {gridLayout === 'masonry' && (
+              <>
+                <div className="category-grid-item masonry-item-1">
+                  <img src={previewImages[0].src} alt={previewImages[0].alt || `${category} 1`} className="category-img" />
+                </div>
+                <div className="category-grid-item masonry-item-2">
+                  <img src={previewImages[1].src} alt={previewImages[1].alt || `${category} 2`} className="category-img" />
+                </div>
+                <div className="category-grid-item masonry-item-3">
+                  <img src={previewImages[2].src} alt={previewImages[2].alt || `${category} 3`} className="category-img" />
+                </div>
+              </>
+            )}
+            
+            {/* Horizontal Layout - 3 horizontal strips */}
+            {gridLayout === 'horizontal' && (
+              <>
+                <div className="category-grid-item horizontal-item-1">
+                  <img src={previewImages[0].src} alt={previewImages[0].alt || `${category} 1`} className="category-img" />
+                </div>
+                <div className="category-grid-item horizontal-item-2">
+                  <img src={previewImages[1].src} alt={previewImages[1].alt || `${category} 2`} className="category-img" />
+                </div>
+                <div className="category-grid-item horizontal-item-3">
+                  <img src={previewImages[2].src} alt={previewImages[2].alt || `${category} 3`} className="category-img" />
+                </div>
+              </>
+            )}
+            
+            {/* Grid Layout - Even 3-column grid */}
+            {gridLayout === 'grid' && (
+              <>
+                <div className="category-grid-item grid-item-1">
+                  <img src={previewImages[0].src} alt={previewImages[0].alt || `${category} 1`} className="category-img" />
+                </div>
+                <div className="category-grid-item grid-item-2">
+                  <img src={previewImages[1].src} alt={previewImages[1].alt || `${category} 2`} className="category-img" />
+                </div>
+                <div className="category-grid-item grid-item-3">
+                  <img src={previewImages[2].src} alt={previewImages[2].alt || `${category} 3`} className="category-img" />
+                </div>
+              </>
+            )}
+            
+            {/* Asymmetric Layout - Large top + 2 bottom */}
+            {gridLayout === 'asymmetric' && (
+              <>
+                <div className="category-grid-item asymmetric-item-1">
+                  <img src={previewImages[0].src} alt={previewImages[0].alt || `${category} 1`} className="category-img" />
+                </div>
+                <div className="category-grid-item asymmetric-item-2">
+                  <img src={previewImages[1].src} alt={previewImages[1].alt || `${category} 2`} className="category-img" />
+                </div>
+                <div className="category-grid-item asymmetric-item-3">
+                  <img src={previewImages[2].src} alt={previewImages[2].alt || `${category} 3`} className="category-img" />
+                </div>
+              </>
+            )}
+            
+            {/* Vertical Layout - Large right + 2 stacked left */}
+            {gridLayout === 'vertical' && (
+              <>
+                <div className="category-grid-item vertical-item-1">
+                  <img src={previewImages[0].src} alt={previewImages[0].alt || `${category} 1`} className="category-img" />
+                </div>
+                <div className="category-grid-item vertical-item-2">
+                  <img src={previewImages[1].src} alt={previewImages[1].alt || `${category} 2`} className="category-img" />
+                </div>
+                <div className="category-grid-item vertical-item-3">
+                  <img src={previewImages[2].src} alt={previewImages[2].alt || `${category} 3`} className="category-img" />
+                </div>
+              </>
+            )}
+          </div>
         ) : (
           <div className="category-placeholder">
             <div className="placeholder-icon">🎨</div>
           </div>
         )}
+        
+        {/* Subtle gradient overlay */}
+        <div className="category-preview-gradient" />
       </div>
       
+      {/* Info Section */}
       <div className="category-info">
         <h3 className="category-title">{category}</h3>
-        <span className="category-count">{count} projects</span>
-      </div>
-      
-      <div className="category-overlay">
-        <div className="overlay-content">
-          <span className="view-text">View All</span>
-          <span className="arrow">→</span>
+        <div className="category-meta">
+          <span className="category-count">{count} {count === 1 ? 'project' : 'projects'}</span>
+          <span className="category-arrow">→</span>
         </div>
       </div>
     </motion.div>

@@ -104,22 +104,56 @@ export const usePortfolio = () => {
     
     CATEGORIES.forEach(category => {
       if (category === "All") {
-        // For "All", show a mix from different categories
+        // For "All", show diverse images from different projects
         const allImages = [];
+        
+        // Manually curate diverse images from different projects
         WORKS.forEach(work => {
-          if (work.caseStudy?.gallery && work.caseStudy.gallery.length > 1) {
-            allImages.push(work.caseStudy.gallery[1]); // Skip first image (description)
+          if (work.caseStudy?.gallery) {
+            // Get diverse images based on project type
+            if (work.id === "branding-granier" && work.caseStudy.gallery.length > 6) {
+              allImages.push(work.caseStudy.gallery[6]); // 7th image - more visual
+            } else if (work.id === "branding-renee" && work.caseStudy.gallery.length > 1) {
+              allImages.push(work.caseStudy.gallery[1]);
+            } else if (work.category === "Packaging" && work.caseStudy.gallery.length > 1) {
+              allImages.push(work.caseStudy.gallery[1]);
+            } else if (work.category === "Social Media" && work.caseStudy.gallery.length > 0) {
+              allImages.push(work.caseStudy.gallery[0]);
+            }
           }
         });
+        
+        // Take diverse selection (mix of different categories)
         previews[category] = allImages.slice(0, 3);
+      } else if (category === "Branding") {
+        // For Branding, select more diverse, visual images (avoid text-heavy ones)
+        const categoryImages = [];
+        
+        WORKS.filter(work => work.category === "Branding").forEach(work => {
+          if (work.caseStudy?.gallery) {
+            if (work.id === "branding-granier" && work.caseStudy.gallery.length > 11) {
+              // Use more visually diverse images from Granier (mockups, applications)
+              categoryImages.push(work.caseStudy.gallery[11]); // 12th image
+              categoryImages.push(work.caseStudy.gallery[15]); // 16th image
+              categoryImages.push(work.caseStudy.gallery[18]); // 19th image
+            } else {
+              // For other branding projects, use 2nd image
+              if (work.caseStudy.gallery.length > 1) {
+                categoryImages.push(work.caseStudy.gallery[1]);
+              }
+            }
+          }
+        });
+        
+        previews[category] = categoryImages.slice(0, 3);
       } else {
-        // For specific categories, get images from works in that category
+        // For other specific categories, get images from works in that category
         const categoryWorks = WORKS.filter(work => work.category === category);
         const categoryImages = [];
         
         categoryWorks.forEach(work => {
           if (work.caseStudy?.gallery && work.caseStudy.gallery.length > 1) {
-            categoryImages.push(work.caseStudy.gallery[1]); // Skip first image (description)
+            categoryImages.push(work.caseStudy.gallery[1]); // Use 2nd image
           }
         });
         
