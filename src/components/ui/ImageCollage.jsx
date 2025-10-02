@@ -2,7 +2,7 @@ import React, { useState, useCallback, memo } from 'react';
 import OptimizedImage from './OptimizedImage';
 
 const ImageCollage = ({ images, maxImages = 4, variant = 'default' }) => {
-  const [loadedImages, setLoadedImages] = useState(new Set());
+  const [, setLoadedImages] = useState(new Set());
   
   const handleImageLoad = useCallback((index) => {
     setLoadedImages(prev => new Set([...prev, index]));

@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useInView } from "react-intersection-observer";
 import { usePortfolio } from "../../hooks/usePortfolio";
@@ -83,18 +83,31 @@ const Portfolio = () => {
             animate="animate"
             transition={transition}
           >
-            {/* Back to Categories Button */}
-            <div className="back-to-categories">
+            {/* Category Breadcrumb Navigation */}
+            <motion.div 
+              className="category-breadcrumb"
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4 }}
+            >
               <button 
                 onClick={handleBackToCategories}
-                className="back-btn"
+                className="breadcrumb-home"
+                aria-label="Back to all categories"
               >
-                ← Back to Categories
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M3 10L10 3L17 10M5 8V17H8V13H12V17H15V8" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+                <span>Categories</span>
               </button>
-              <h3 className="category-header">
-                {activeCategory === "All" ? "All Projects" : `${activeCategory} Projects`}
-              </h3>
-            </div>
+              <span className="breadcrumb-separator">/</span>
+              <span className="breadcrumb-current">
+                {activeCategory === "All" ? "All Projects" : activeCategory}
+              </span>
+              <span className="breadcrumb-count">
+                ({filteredWorks.length} {filteredWorks.length === 1 ? 'project' : 'projects'})
+              </span>
+            </motion.div>
             
             <div className="portfolio-grid">
               <AnimatePresence mode="wait">

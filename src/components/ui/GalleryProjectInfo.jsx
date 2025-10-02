@@ -1,5 +1,6 @@
 import React, { memo } from 'react';
 import { motion } from 'framer-motion';
+import { ChevronRight } from 'lucide-react';
 import { Badge } from './badge';
 import { Button } from './button';
 
@@ -11,43 +12,39 @@ const GalleryProjectInfo = ({ work, onClose, onToggleInfo, showInfoPanel }) => {
   return (
     <motion.div 
       className="gallery-project-info"
-      initial={{ opacity: 0, x: -20 }}
+      initial={{ opacity: 0, x: 20 }}
       animate={{ opacity: 1, x: 0 }}
       transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
     >
       {/* Header */}
       <div className="gallery-info-header">
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
-          <h1 className="project-title">{work.title}</h1>
-          <button
+        <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '12px', gap: '12px' }}>
+          <h1 className="project-title" style={{ flex: 1 }}>{work.title}</h1>
+          <motion.button
             onClick={onToggleInfo}
+            className="info-close-button"
+            whileHover={{ scale: 1.1, backgroundColor: '#f1f5f9' }}
+            whileTap={{ scale: 0.9 }}
             style={{
-              background: 'none',
+              background: 'transparent',
               border: 'none',
               cursor: 'pointer',
-              padding: '4px',
+              padding: '8px',
               borderRadius: '50%',
-              width: '32px',
-              height: '32px',
+              width: '36px',
+              height: '36px',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              transition: 'background-color 0.2s ease',
-              color: '#64748b'
+              transition: 'all 0.2s ease',
+              color: '#64748b',
+              flexShrink: 0
             }}
-            onMouseEnter={(e) => {
-              e.target.style.backgroundColor = '#f1f5f9';
-            }}
-            onMouseLeave={(e) => {
-              e.target.style.backgroundColor = 'transparent';
-            }}
-            title="Hide project information"
+            aria-label="Hide project information panel"
+            title="Hide info panel"
           >
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M18 6L6 18"/>
-              <path d="M6 6l12 12"/>
-            </svg>
-          </button>
+            <ChevronRight size={20} />
+          </motion.button>
         </div>
         <div className="project-meta">
           {client && <span className="client">{client}</span>}
