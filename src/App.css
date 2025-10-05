@@ -712,20 +712,22 @@
     grid-template-columns: 1fr;
     gap: 40px;
     padding: 0 16px;
+    align-items: start;
   }
   
   .hero-content {
-    text-align: center;
+    text-align: left;
     gap: 20px;
   }
   
   .hero-badge {
-    margin: 0 auto;
+    margin: 0;
+    align-self: flex-start;
   }
   
   .hero-title {
     font-size: 2.25rem;
-    line-height: 1.2;
+    line-height: 1.3;
   }
   
   .hero-description {
@@ -734,7 +736,7 @@
   }
   
   .hero-actions {
-    justify-content: center;
+    justify-content: flex-start;
   }
   
   .hero-btn {
@@ -743,7 +745,7 @@
   }
   
   .hero-stats {
-    justify-content: center;
+    justify-content: flex-start;
     flex-wrap: wrap;
     gap: 20px;
     padding-top: 24px;
@@ -871,22 +873,25 @@
   
   .contact-info-title {
     font-size: 1.5rem;
-    text-align: center;
+    text-align: left;
   }
   
   .contact-info-text {
     font-size: 0.95rem;
-    text-align: center;
+    text-align: left;
   }
   
   .contact-details {
-    gap: 20px;
+    gap: 8px;
+    padding: 0 8px;
   }
   
   .contact-item {
-    flex-direction: column;
-    text-align: center;
+    flex-direction: row;
+    text-align: left;
     gap: 12px;
+    align-items: flex-start;
+    padding: 4px 0;
   }
   
   .work-samples-grid {
@@ -1003,11 +1008,14 @@
   .hero-container {
     padding: 0 12px;
     gap: 32px;
+    align-items: start;
   }
   
   .hero-badge {
     font-size: 0.8rem;
     padding: 6px 12px;
+    align-self: flex-start;
+    margin: 0;
   }
   
   .badge-dot {
@@ -1017,7 +1025,7 @@
   
   .hero-title {
     font-size: 1.85rem;
-    line-height: 1.15;
+    line-height: 1.25;
   }
   
   .hero-description {
@@ -1028,6 +1036,7 @@
     flex-direction: column;
     width: 100%;
     gap: 12px;
+    align-items: flex-start;
   }
   
   .hero-btn {
@@ -1190,8 +1199,9 @@
   }
   
   .contact-icon-wrapper {
-    width: 40px;
-    height: 40px;
+    width: 36px;
+    height: 36px;
+    flex-shrink: 0;
   }
   
   .contact-item-title {
@@ -1199,6 +1209,10 @@
   }
   
   .contact-item-value {
+    font-size: 0.9rem;
+  }
+  
+  .contact-item-link {
     font-size: 0.9rem;
   }
   
@@ -1372,7 +1386,7 @@ html {
 .hero-section {
   min-height: 100vh;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   position: relative;
   overflow: hidden;
   padding: 120px 0 80px;
@@ -1386,7 +1400,7 @@ html {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 60px;
-  align-items: center;
+  align-items: start;
   position: relative;
   z-index: 2;
 }
@@ -1395,6 +1409,9 @@ html {
   display: flex;
   flex-direction: column;
   gap: 24px;
+  text-align: left;
+  align-items: flex-start;
+  justify-content: flex-start;
 }
 
 .hero-badge {
@@ -1409,6 +1426,8 @@ html {
   color: #667eea;
   font-weight: 600;
   width: fit-content;
+  align-self: flex-start;
+  margin-top: 16px;
 }
 
 .badge-dot {
@@ -1431,11 +1450,12 @@ html {
 }
 
 .hero-title {
-  font-size: 3.5rem;
+  font-size: 4.5rem;
   font-weight: 800;
-  line-height: 1.1;
+  line-height: 1.2;
   color: #1a202c;
   margin: 0;
+  text-align: left;
 }
 
 .hero-title-highlight {
@@ -1444,6 +1464,7 @@ html {
   -webkit-text-fill-color: transparent;
   background-clip: text;
   display: block;
+  line-height: 1.2;
 }
 
 .hero-description {
@@ -1452,12 +1473,14 @@ html {
   color: #4a5568;
   margin: 0;
   max-width: 540px;
+  text-align: left;
 }
 
 .hero-actions {
   display: flex;
   gap: 16px;
   flex-wrap: wrap;
+  justify-content: flex-start;
 }
 
 .hero-btn {
@@ -1503,6 +1526,7 @@ html {
   margin-top: 16px;
   padding-top: 32px;
   border-top: 1px solid #e2e8f0;
+  justify-content: flex-start;
 }
 
 .stat-item {
@@ -1567,6 +1591,7 @@ html {
   padding: 24px;
   background: linear-gradient(to top, rgba(0, 0, 0, 0.7) 0%, transparent 100%);
   z-index: 2;
+  text-align: right;
 }
 
 .showcase-label {
@@ -1967,6 +1992,19 @@ html {
   margin: 0;
 }
 
+.contact-item-link {
+  font-size: 1rem;
+  color: #667eea;
+  text-decoration: none;
+  margin: 0;
+  transition: color 0.3s ease;
+}
+
+.contact-item-link:hover {
+  color: #5a67d8;
+  text-decoration: underline;
+}
+
 .contact-work-samples {
   margin-top: 24px;
 }
@@ -2249,7 +2287,9 @@ html {
   }
   
   .hero-title {
-    font-size: 2.75rem;
+    font-size: 3rem;
+    text-align: left;
+    line-height: 1.2;
   }
   
   .hero-visual {
@@ -2288,7 +2328,9 @@ html {
   }
   
   .hero-title {
-    font-size: 2.25rem;
+    font-size: 2.5rem;
+    text-align: left;
+    line-height: 1.2;
   }
   
   .hero-description {
@@ -2344,12 +2386,15 @@ html {
 
 @media (max-width: 480px) {
   .hero-title {
-    font-size: 1.875rem;
+    font-size: 2rem;
+    text-align: left;
+    line-height: 1.2;
   }
   
   .hero-actions {
     flex-direction: column;
     width: 100%;
+    align-items: flex-start;
   }
   
   .hero-btn {

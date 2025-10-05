@@ -125,7 +125,7 @@ const Header = () => {
             whileTap={{ scale: 0.9 }}
             onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
           >
-            <span className="logo-text">{PERSONAL_INFO.name}</span>
+            <span className="logo-text">{PERSONAL_INFO.logo}</span>
             <WigglyLine className="logo-line" />
           </motion.div>
 

@@ -161,24 +161,58 @@ const Contact = () => {
                   <p className="contact-item-value">{CONTACT_INFO.location}</p>
                 </div>
               </div>
-            </div>
 
-            {/* Work Samples */}
-            <div className="contact-work-samples">
-              <h4 className="work-samples-title">
-                {CONTACT_CONTENT.info.recentWorkTitle}
-              </h4>
-              <div className="work-samples-grid">
-                {CONTACT_CONTENT.info.recentWorkImages.map((img, index) => (
-                  <img
-                    key={index}
-                    src={img}
-                    alt={`Work sample ${index + 1}`}
-                    className="work-sample"
-                  />
-                ))}
+              <div className="contact-item">
+                <div className="contact-icon-wrapper">
+                  <svg
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M16 8C18.2091 8 20 9.79086 20 12V21H16V12C16 11.4696 15.7893 10.9609 15.4142 10.5858C15.0391 10.2107 14.5304 10 14 10C13.4696 10 12.9609 10.2107 12.5858 10.5858C12.2107 10.9609 12 11.4696 12 12V21H8V12C8 9.79086 9.79086 8 12 8H16Z"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                    <rect
+                      x="2"
+                      y="9"
+                      width="4"
+                      height="12"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                    <circle
+                      cx="4"
+                      cy="4"
+                      r="2"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </div>
+                <div className="contact-item-content">
+                  <h4 className="contact-item-title">LinkedIn</h4>
+                  <a 
+                    href={CONTACT_INFO.socialLinks.linkedin} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="contact-item-link"
+                  >
+                    {CONTACT_INFO.socialLinks.linkedin}
+                  </a>
+                </div>
               </div>
             </div>
+
           </motion.div>
 
           {/* Contact Form */}

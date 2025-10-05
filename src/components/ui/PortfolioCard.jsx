@@ -18,7 +18,7 @@ const PortfolioCard = ({ work, onOpen, index }) => {
   const getCollageVariant = (category) => {
     const variants = {
       'Branding': 'hero',
-      'Logo': 'masonry', 
+      'Logo': 'default', 
       'Packaging': 'default',
       'Social Media': 'hero'
     };

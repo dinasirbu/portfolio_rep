@@ -102,31 +102,6 @@ const Footer = () => {
           viewport={{ once: true }}
           transition={{ duration: 0.6, delay: 0.4 }}
         >
-          <div className="footer-bottom-content">
-            <p className="footer-copyright">
-              {FOOTER_CONTENT.copyright.replace("2024", currentYear)}
-            </p>
-
-            <div className="footer-social">
-              {SOCIAL_LINKS.map(({ id, icon, ariaLabel }) => (
-                <motion.a
-                  key={id}
-                  href="#"
-                  className="footer-social-link"
-                  aria-label={ariaLabel}
-                  whileHover={{
-                    scale: 1.1,
-                    backgroundColor: "#667eea",
-                    color: "white",
-                  }}
-                  whileTap={{ scale: 0.9 }}
-                  transition={{ duration: 0.2 }}
-                >
-                  {icon}
-                </motion.a>
-              ))}
-            </div>
-          </div>
         </motion.div>
       </div>
     </footer>

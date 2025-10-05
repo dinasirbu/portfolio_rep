@@ -17,12 +17,13 @@
 // PERSONAL INFORMATION
 // ========================================
 export const PERSONAL_INFO = {
-  name: "Creative Designer",
+  name: "Dina Sîrbu",
   title: "Graphic Designer",
   tagline: "Specializing in Branding",
   description: "Creating compelling visual identities and packaging designs that tell your brand's story and connect with your audience.",
   availability: "Available for freelance work",
   image: "/img/me.jpg",
+  logo: "My Portfolio",
   imageAlt: "Creative Designer",
 };
 
@@ -30,16 +31,16 @@ export const PERSONAL_INFO = {
 // CONTACT INFORMATION
 // ========================================
 export const CONTACT_INFO = {
-  email: "hello@creativedesigner.com",
-  phone: "+1 (555) 123-4567",
-  location: "New York, NY",
+  email: "dinasirbu17@gmail.com",
+  phone: "+373 62 030 888",
+  location: "Chisinau, Moldova",
   
   // Social Media Links (leave blank to hide)
   socialLinks: {
     behance: "",
     dribbble: "",
     instagram: "",
-    linkedin: "",
+    linkedin: "https://www.linkedin.com/in/dinasirbu/",
     twitter: "",
   }
 };
@@ -49,24 +50,24 @@ export const CONTACT_INFO = {
 // ========================================
 export const HERO_CONTENT = {
   badge: "Available for freelance work",
-  title: "Graphic Designer",
-  titleHighlight: " Specializing in Branding",
+  title: "Graphic",
+  titleHighlight: "Designer",
   description: "Creating compelling visual identities and packaging designs that tell your brand's story and connect with your audience.",
   
   buttons: {
     primary: {
-      text: "View Portfolio",
-      link: "#portfolio"
-    },
-    secondary: {
       text: "Get in Touch",
       link: "#contact"
+    },
+    secondary: {
+      text: "View Portfolio",
+      link: "#portfolio"
     }
   },
   
   stats: [
-    { number: "12+", label: "Projects Completed" },
-    { number: "10+", label: "Happy Clients" },
+    { number: "30+", label: "Projects Completed" },
+    { number: "20+", label: "Happy Clients" },
     { number: "3+", label: "Years Experience" }
   ]
 };
@@ -92,7 +93,6 @@ export const ABOUT_CONTENT = {
       'Adobe Illustrator',
       'Adobe Photoshop',
       'Adobe InDesign',
-      'Figma',
       'Brand Strategy',
       'Typography',
       'Color Theory',
@@ -219,7 +219,6 @@ export const FOOTER_CONTENT = {
     "Social Media"
   ],
   
-  copyright: "© 2024 Creative Designer. All rights reserved."
 };
 
 // ========================================

@@ -303,9 +303,17 @@
 /* Portfolio Grid */
 .portfolio-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(350px, 500px));
   gap: 32px;
   margin-bottom: 40px;
+  justify-content: center;
+}
+
+/* For single cards, ensure they don't get too wide */
+.portfolio-grid.single-card {
+  grid-template-columns: minmax(350px, 500px);
+  max-width: 500px;
+  margin: 0 auto 40px;
 }
 
 /* Portfolio Card Styles */

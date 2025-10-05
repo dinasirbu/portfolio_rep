@@ -135,7 +135,7 @@ const Portfolio = () => {
               </span>
             </motion.div>
 
-            <div className="portfolio-grid">
+            <div className={`portfolio-grid ${filteredWorks.length === 1 ? 'single-card' : ''}`}>
               <AnimatePresence mode="wait">
                 {filteredWorks.map((work, i) => (
                   <motion.div

@@ -27,16 +27,6 @@ const Hero = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
         >
-          <motion.div
-            className="hero-badge"
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-          >
-            <span className="badge-dot"></span>
-            <span>{badge}</span>
-          </motion.div>
-
           <h1 className="hero-title">
             {title}
             <span className="hero-title-highlight">{titleHighlight}</span>
@@ -51,10 +41,10 @@ const Hero = () => {
             transition={{ duration: 0.6, delay: 0.4 }}
           >
             <a
-              href={buttons.primary.link}
+              href={buttons.secondary.link}
               className="hero-btn hero-btn-primary"
             >
-              <span>{buttons.primary.text}</span>
+              <span>{buttons.secondary.text}</span>
               <svg
                 width="20"
                 height="20"
@@ -72,10 +62,10 @@ const Hero = () => {
               </svg>
             </a>
             <a
-              href={buttons.secondary.link}
+              href={buttons.primary.link}
               className="hero-btn hero-btn-secondary"
             >
-              <span>{buttons.secondary.text}</span>
+              <span>{buttons.primary.text}</span>
             </a>
           </motion.div>
 
@@ -95,6 +85,16 @@ const Hero = () => {
                 </div>
               </React.Fragment>
             ))}
+          </motion.div>
+
+          <motion.div
+            className="hero-badge"
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.6, delay: 0.8 }}
+          >
+            <span className="badge-dot"></span>
+            <span>{badge}</span>
           </motion.div>
         </motion.div>
 
@@ -118,7 +118,7 @@ const Hero = () => {
                 className="showcase-image"
               />
               <div className="showcase-overlay">
-                <span className="showcase-label">{PERSONAL_INFO.title}</span>
+                <span className="showcase-label">{PERSONAL_INFO.name}</span>
               </div>
             </motion.div>
           </div>
