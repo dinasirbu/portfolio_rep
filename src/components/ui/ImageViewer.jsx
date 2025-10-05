@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import OptimizedImage from './OptimizedImage';
 
 const ImageViewer = ({ images, currentIndex, onClose, onNext, onPrev }) => {
-  const [imageDimensions, setImageDimensions] = useState({ width: 0, height: 0 });
+  const [, setImageDimensions] = useState({ width: 0, height: 0 });
   const [containerStyle, setContainerStyle] = useState({});
 
   const handleKeyDown = useCallback((e) => {

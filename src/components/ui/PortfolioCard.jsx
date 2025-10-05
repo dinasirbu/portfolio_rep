@@ -6,7 +6,11 @@ import { Button } from './button';
 import ImageCollage from './ImageCollage';
 
 const PortfolioCard = ({ work, onOpen, index }) => {
-  const handleViewGallery = () => {
+  const handleViewGallery = (e) => {
+    // Prevent opening if clicking on a button or interactive element
+    if (e && e.target.tagName === 'BUTTON') {
+      e.stopPropagation();
+    }
     onOpen(work);
   };
 
@@ -37,6 +41,8 @@ const PortfolioCard = ({ work, onOpen, index }) => {
         delay: index * 0.04 
       }}
       whileHover={{ y: -4 }}
+      onClick={handleViewGallery}
+      style={{ cursor: 'pointer' }}
     >
       <Card className="portfolio-card">
         <div className="card-cover">
