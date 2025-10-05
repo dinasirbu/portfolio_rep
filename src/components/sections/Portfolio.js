@@ -2,12 +2,26 @@ import React from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useInView } from "react-intersection-observer";
 import { usePortfolio } from "../../hooks/usePortfolio";
+import { PORTFOLIO_CONTENT } from "../../config/siteConfig";
 import PortfolioCard from "../ui/PortfolioCard";
 import CategoryFilter from "../ui/CategoryFilter";
 import CaseStudyModal from "../ui/CaseStudyModal";
 import ImageViewer from "../ui/ImageViewer";
 import "./Portfolio.css";
 
+/**
+ * Portfolio Section Component
+ * 
+ * TO EDIT CONTENT: Go to src/config/siteConfig.js and edit PORTFOLIO_CONTENT
+ * TO ADD PROJECTS: Go to src/constants/portfolioData.js
+ * 
+ * Features:
+ * - Category filtering
+ * - Project galleries
+ * - Case study modals
+ * - Image viewer with zoom
+ * - Mobile-optimized with list/grid views
+ */
 const Portfolio = () => {
   const [ref, inView] = useInView({ threshold: 0.2, triggerOnce: true });
   
@@ -51,10 +65,9 @@ const Portfolio = () => {
           animate={inView ? "animate" : "initial"}
           transition={transition}
         >
-          <h2 className="portfolio-title">Portfolio</h2>
+          <h2 className="portfolio-title">{PORTFOLIO_CONTENT.sectionTitle}</h2>
           <p className="portfolio-subtitle">
-            Explore my creative work across branding, packaging, and digital design. 
-            Each project represents a unique challenge and creative solution.
+            {PORTFOLIO_CONTENT.sectionSubtitle}
           </p>
         </motion.div>
 
@@ -84,19 +97,31 @@ const Portfolio = () => {
             transition={transition}
           >
             {/* Category Breadcrumb Navigation */}
-            <motion.div 
+            <motion.div
               className="category-breadcrumb"
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.4 }}
             >
-              <button 
+              <button
                 onClick={handleBackToCategories}
                 className="breadcrumb-home"
                 aria-label="Back to all categories"
               >
-                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M3 10L10 3L17 10M5 8V17H8V13H12V17H15V8" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 20 20"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M3 10L10 3L17 10M5 8V17H8V13H12V17H15V8"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
                 </svg>
                 <span>Categories</span>
               </button>
@@ -105,10 +130,11 @@ const Portfolio = () => {
                 {activeCategory === "All" ? "All Projects" : activeCategory}
               </span>
               <span className="breadcrumb-count">
-                ({filteredWorks.length} {filteredWorks.length === 1 ? 'project' : 'projects'})
+                ({filteredWorks.length}{" "}
+                {filteredWorks.length === 1 ? "project" : "projects"})
               </span>
             </motion.div>
-            
+
             <div className="portfolio-grid">
               <AnimatePresence mode="wait">
                 {filteredWorks.map((work, i) => (
@@ -137,7 +163,11 @@ const Portfolio = () => {
                 initial="initial"
                 animate="animate"
                 transition={transition}
-                style={{ textAlign: "center", padding: "40px 0", color: "#6b7280" }}
+                style={{
+                  textAlign: "center",
+                  padding: "40px 0",
+                  color: "#6b7280",
+                }}
               >
                 <p>No projects found in this category.</p>
               </motion.div>

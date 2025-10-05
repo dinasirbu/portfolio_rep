@@ -1,7 +1,20 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import { FOOTER_CONTENT } from "../../config/siteConfig";
 import { SOCIAL_LINKS } from '../../constants/navigation';
 
+/**
+ * Footer Component
+ * 
+ * TO EDIT CONTENT: Go to src/config/siteConfig.js and edit FOOTER_CONTENT
+ * 
+ * Features:
+ * - Brand information
+ * - Quick links navigation
+ * - Services list
+ * - Social media links
+ * - Copyright notice
+ */
 const Footer = () => {
   const currentYear = new Date().getFullYear();
 
@@ -18,9 +31,9 @@ const Footer = () => {
             viewport={{ once: true }}
             transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
           >
-            <h3 className="footer-brand-title">Creative Designer</h3>
+            <h3 className="footer-brand-title">{FOOTER_CONTENT.brandTitle}</h3>
             <p className="footer-brand-text">
-              Crafting compelling visual identities and packaging designs that tell your brand's story.
+              {FOOTER_CONTENT.brandDescription}
             </p>
           </motion.div>
 
@@ -34,10 +47,13 @@ const Footer = () => {
           >
             <h4 className="footer-links-title">Quick Links</h4>
             <ul className="footer-links-list">
-              <li><a href="#home" className="footer-link">Home</a></li>
-              <li><a href="#about" className="footer-link">About</a></li>
-              <li><a href="#portfolio" className="footer-link">Portfolio</a></li>
-              <li><a href="#contact" className="footer-link">Contact</a></li>
+              {FOOTER_CONTENT.quickLinks.map(({ label, href }) => (
+                <li key={href}>
+                  <a href={href} className="footer-link">
+                    {label}
+                  </a>
+                </li>
+              ))}
             </ul>
           </motion.div>
 
@@ -51,10 +67,11 @@ const Footer = () => {
           >
             <h4 className="footer-services-title">Services</h4>
             <ul className="footer-services-list">
-              <li><span className="footer-service">Brand Identity</span></li>
-              <li><span className="footer-service">Packaging Design</span></li>
-              <li><span className="footer-service">Logo Design</span></li>
-              <li><span className="footer-service">Social Media</span></li>
+              {FOOTER_CONTENT.services.map((service, index) => (
+                <li key={index}>
+                  <span className="footer-service">{service}</span>
+                </li>
+              ))}
             </ul>
           </motion.div>
 
@@ -68,7 +85,9 @@ const Footer = () => {
           >
             <h4 className="footer-contact-title">Get In Touch</h4>
             <div className="footer-contact-info">
-              <p className="footer-contact-item">Available for freelance work</p>
+              <p className="footer-contact-item">
+                Available for freelance work
+              </p>
               <p className="footer-contact-item">Quick response guaranteed</p>
               <p className="footer-contact-item">Professional collaboration</p>
             </div>
@@ -85,9 +104,9 @@ const Footer = () => {
         >
           <div className="footer-bottom-content">
             <p className="footer-copyright">
-              © {currentYear} Creative Designer. All rights reserved.
+              {FOOTER_CONTENT.copyright.replace("2024", currentYear)}
             </p>
-            
+
             <div className="footer-social">
               {SOCIAL_LINKS.map(({ id, icon, ariaLabel }) => (
                 <motion.a
@@ -95,10 +114,10 @@ const Footer = () => {
                   href="#"
                   className="footer-social-link"
                   aria-label={ariaLabel}
-                  whileHover={{ 
+                  whileHover={{
                     scale: 1.1,
-                    backgroundColor: '#667eea',
-                    color: 'white'
+                    backgroundColor: "#667eea",
+                    color: "white",
                   }}
                   whileTap={{ scale: 0.9 }}
                   transition={{ duration: 0.2 }}

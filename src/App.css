@@ -110,16 +110,12 @@
 
 /* Mobile Navigation */
 .mobile-nav {
-  display: none;
+  display: flex;
   flex-direction: column;
   background: rgba(255, 255, 255, 0.98);
   backdrop-filter: blur(10px);
   border-top: 1px solid rgba(49, 130, 206, 0.1);
   overflow: hidden;
-}
-
-.mobile-nav.open {
-  display: flex;
 }
 
 .mobile-nav-link {
@@ -692,79 +688,276 @@
     justify-content: space-between;
   }
   
-  /* Hero Mobile */
-  .hero-content {
-    grid-template-columns: 1fr;
-    text-align: center;
-    gap: 2rem;
-    padding: 0 1rem;
+  .header {
+    padding: 0.75rem 0;
   }
   
-  .hero-title {
-    font-size: 2.5rem;
-    line-height: 1.2;
+  .logo-text {
+    font-size: 1.3rem;
   }
   
-  .hero-subtitle {
-    font-size: 1.1rem;
-  }
-  
-  .hero-buttons {
-    justify-content: center;
-    gap: 1rem;
-  }
-  
-  .btn {
-    padding: 12px 20px;
-    font-size: 14px;
-  }
-  
-  /* About Mobile */
-  .about-content {
-    grid-template-columns: 1fr;
-    gap: 2rem;
-    text-align: center;
-  }
-  
-  .about-text h3 {
-    font-size: 1.5rem;
-  }
-  
-  .about-text p {
+  /* Mobile Nav */
+  .mobile-nav-link {
+    padding: 0.85rem 0;
     font-size: 1rem;
   }
   
-  .skill-tags {
+  /* Hero Mobile */
+  .hero-section {
+    padding: 100px 0 60px;
+    min-height: auto;
+  }
+  
+  .hero-container {
+    grid-template-columns: 1fr;
+    gap: 40px;
+    padding: 0 16px;
+  }
+  
+  .hero-content {
+    text-align: center;
+    gap: 20px;
+  }
+  
+  .hero-badge {
+    margin: 0 auto;
+  }
+  
+  .hero-title {
+    font-size: 2.25rem;
+    line-height: 1.2;
+  }
+  
+  .hero-description {
+    font-size: 1rem;
+    max-width: 100%;
+  }
+  
+  .hero-actions {
     justify-content: center;
   }
   
-  /* Services Mobile */
-  .services-grid {
-    grid-template-columns: 1fr;
-    gap: 1.5rem;
-    padding: 0 1rem;
+  .hero-btn {
+    padding: 12px 24px;
+    font-size: 0.95rem;
   }
   
-  .service-card {
-    padding: 1.5rem;
+  .hero-stats {
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 20px;
+    padding-top: 24px;
+    margin-top: 12px;
   }
   
-  /* Portfolio Mobile */
-  .portfolio-grid {
+  .stat-number {
+    font-size: 1.75rem;
+  }
+  
+  .stat-label {
+    font-size: 0.8rem;
+  }
+  
+  .hero-visual {
+    height: 350px;
+  }
+  
+  /* About Mobile */
+  .about-section {
+    padding: 60px 0;
+  }
+  
+  .about-container {
+    padding: 0 16px;
+  }
+  
+  .about-header {
+    margin-bottom: 50px;
+  }
+  
+  .about-section-title {
+    font-size: 2.25rem;
+  }
+  
+  .about-section-subtitle {
+    font-size: 1rem;
+  }
+  
+  .about-grid {
     grid-template-columns: 1fr;
-    gap: 1.5rem;
-    padding: 0 1rem;
+    gap: 40px;
+    margin-bottom: 50px;
+  }
+  
+  .about-story-title,
+  .about-services-title {
+    font-size: 1.5rem;
+    text-align: center;
+  }
+  
+  .about-story-text {
+    font-size: 0.95rem;
+  }
+  
+  .about-skills {
+    padding: 24px;
+  }
+  
+  .skills-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+  
+  .skill-badge {
+    font-size: 0.8rem;
+    padding: 8px 12px;
+  }
+  
+  .service-item {
+    flex-direction: column;
+    text-align: center;
+    padding: 16px;
+  }
+  
+  .service-image-wrapper {
+    width: 100%;
+    height: 120px;
+    margin-bottom: 12px;
+  }
+  
+  .cta-content {
+    padding: 40px 20px;
+    min-height: 250px;
+  }
+  
+  .cta-title {
+    font-size: 1.75rem;
+  }
+  
+  .cta-description {
+    font-size: 1rem;
+  }
+  
+  .cta-button {
+    padding: 14px 28px;
+    font-size: 1rem;
   }
   
   /* Contact Mobile */
-  .contact-content {
+  .contact-section {
+    padding: 60px 0;
+  }
+  
+  .contact-container {
+    padding: 0 16px;
+  }
+  
+  .contact-header {
+    margin-bottom: 50px;
+  }
+  
+  .contact-section-title {
+    font-size: 2.25rem;
+  }
+  
+  .contact-section-subtitle {
+    font-size: 1rem;
+  }
+  
+  .contact-grid {
     grid-template-columns: 1fr;
-    gap: 2rem;
-    padding: 0 1rem;
+    gap: 40px;
+  }
+  
+  .contact-info-title {
+    font-size: 1.5rem;
+    text-align: center;
+  }
+  
+  .contact-info-text {
+    font-size: 0.95rem;
+    text-align: center;
+  }
+  
+  .contact-details {
+    gap: 20px;
+  }
+  
+  .contact-item {
+    flex-direction: column;
+    text-align: center;
+    gap: 12px;
+  }
+  
+  .work-samples-grid {
+    grid-template-columns: repeat(3, 1fr);
   }
   
   .contact-form {
-    padding: 1.5rem;
+    padding: 28px 20px;
+  }
+  
+  .form-title {
+    font-size: 1.5rem;
+    text-align: center;
+  }
+  
+  .form-input,
+  .form-textarea {
+    padding: 14px 16px;
+    font-size: 0.95rem;
+  }
+  
+  .form-submit-btn {
+    width: 100%;
+    justify-content: center;
+    padding: 14px 28px;
+    font-size: 1rem;
+  }
+  
+  /* Footer Mobile */
+  .footer-section {
+    padding: 60px 0 30px;
+  }
+  
+  .footer-container {
+    padding: 0 16px;
+  }
+  
+  .footer-content {
+    grid-template-columns: 1fr;
+    gap: 32px;
+    margin-bottom: 40px;
+  }
+  
+  .footer-brand-title,
+  .footer-links-title,
+  .footer-services-title,
+  .footer-contact-title {
+    text-align: center;
+    font-size: 1.1rem;
+  }
+  
+  .footer-brand-text {
+    text-align: center;
+  }
+  
+  .footer-links-list,
+  .footer-services-list {
+    align-items: center;
+  }
+  
+  .footer-contact-info {
+    align-items: center;
+  }
+  
+  .footer-bottom-content {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .footer-social {
+    justify-content: center;
   }
   
   /* Section Mobile */
@@ -777,112 +970,305 @@
   }
   
   .container {
-    padding: 0 1rem;
-  }
-  
-  /* Footer Mobile */
-  .footer-content {
-    flex-direction: column;
-    text-align: center;
-    gap: 1.5rem;
+    padding: 0 16px;
   }
 }
 
 @media (max-width: 480px) {
   /* Header Small Mobile */
   .logo-text {
-    font-size: 1.2rem;
+    font-size: 1.15rem;
   }
   
   .logo-line {
-    width: 40px;
+    width: 35px;
     height: 8px;
   }
   
-  /* Hero Small Mobile */
-  .hero-title {
-    font-size: 2rem;
-    line-height: 1.1;
+  .mobile-menu-btn {
+    width: 28px;
+    height: 28px;
   }
   
-  .hero-subtitle {
-    font-size: 1rem;
-  }
-  
-  .hero-buttons {
-    flex-direction: column;
-    align-items: center;
-    gap: 0.75rem;
-  }
-  
-  .btn {
-    width: 100%;
-    max-width: 250px;
-    padding: 10px 16px;
-    font-size: 13px;
-  }
-  
-  .hero-image-container {
-    width: 280px;
-    height: 280px;
-  }
-  
-  .floating-elements {
-    width: 280px;
-    height: 280px;
-  }
-  
-  .floating-circle {
-    width: 140px;
-    height: 140px;
-  }
-  
-  .floating-square {
-    width: 90px;
-    height: 90px;
-  }
-  
-  /* About Small Mobile */
-  .about-text h3 {
-    font-size: 1.3rem;
-  }
-  
-  .about-text p {
+  .mobile-nav-link {
+    padding: 0.75rem 0;
     font-size: 0.95rem;
   }
   
-  .skill-tag {
+  /* Hero Small Mobile */
+  .hero-section {
+    padding: 90px 0 50px;
+  }
+  
+  .hero-container {
+    padding: 0 12px;
+    gap: 32px;
+  }
+  
+  .hero-badge {
     font-size: 0.8rem;
-    padding: 0.4rem 0.8rem;
+    padding: 6px 12px;
   }
   
-  /* Services Small Mobile */
-  .service-card {
-    padding: 1.25rem;
+  .badge-dot {
+    width: 6px;
+    height: 6px;
   }
   
-  .service-icon {
-    font-size: 2.5rem;
+  .hero-title {
+    font-size: 1.85rem;
+    line-height: 1.15;
+  }
+  
+  .hero-description {
+    font-size: 0.9rem;
+  }
+  
+  .hero-actions {
+    flex-direction: column;
+    width: 100%;
+    gap: 12px;
+  }
+  
+  .hero-btn {
+    width: 100%;
+    max-width: 100%;
+    padding: 12px 20px;
+    font-size: 0.9rem;
+  }
+  
+  .hero-stats {
+    gap: 16px;
+    padding-top: 20px;
+  }
+  
+  .stat-number {
+    font-size: 1.5rem;
+  }
+  
+  .stat-label {
+    font-size: 0.75rem;
+  }
+  
+  .stat-divider {
+    display: none;
+  }
+  
+  .hero-visual {
+    height: 300px;
+  }
+  
+  /* About Small Mobile */
+  .about-section {
+    padding: 50px 0;
+  }
+  
+  .about-container {
+    padding: 0 12px;
+  }
+  
+  .about-header {
+    margin-bottom: 40px;
+  }
+  
+  .about-section-title {
+    font-size: 1.85rem;
+  }
+  
+  .about-section-subtitle {
+    font-size: 0.9rem;
+  }
+  
+  .about-grid {
+    gap: 32px;
+    margin-bottom: 40px;
+  }
+  
+  .about-story {
+    gap: 20px;
+  }
+  
+  .about-story-title,
+  .about-services-title {
+    font-size: 1.3rem;
+  }
+  
+  .about-story-text {
+    font-size: 0.9rem;
+    line-height: 1.7;
+  }
+  
+  .about-skills {
+    padding: 20px;
+  }
+  
+  .about-skills-title {
+    font-size: 1rem;
+  }
+  
+  .skills-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
+  
+  .skill-badge {
+    font-size: 0.75rem;
+    padding: 7px 10px;
+  }
+  
+  .service-item {
+    padding: 14px;
+    gap: 12px;
+  }
+  
+  .service-image-wrapper {
+    width: 100%;
+    height: 100px;
   }
   
   .service-title {
-    font-size: 1.1rem;
+    font-size: 1rem;
   }
   
-  /* Portfolio Small Mobile */
-  .portfolio-item {
-    border-radius: 15px;
+  .service-description {
+    font-size: 0.85rem;
+  }
+  
+  .cta-content {
+    padding: 32px 16px;
+    min-height: 220px;
+  }
+  
+  .cta-title {
+    font-size: 1.5rem;
+  }
+  
+  .cta-description {
+    font-size: 0.9rem;
+  }
+  
+  .cta-button {
+    padding: 12px 24px;
+    font-size: 0.95rem;
+  }
+  
+  .cta-background-images {
+    grid-template-columns: 1fr 1fr;
   }
   
   /* Contact Small Mobile */
-  .contact-form {
-    padding: 1.25rem;
+  .contact-section {
+    padding: 50px 0;
   }
   
-  .form-group input,
-  .form-group textarea {
-    padding: 0.8rem;
+  .contact-container {
+    padding: 0 12px;
+  }
+  
+  .contact-header {
+    margin-bottom: 40px;
+  }
+  
+  .contact-section-title {
+    font-size: 1.85rem;
+  }
+  
+  .contact-section-subtitle {
     font-size: 0.9rem;
+  }
+  
+  .contact-grid {
+    gap: 32px;
+  }
+  
+  .contact-info-title {
+    font-size: 1.3rem;
+  }
+  
+  .contact-info-text {
+    font-size: 0.9rem;
+  }
+  
+  .contact-icon-wrapper {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .contact-item-title {
+    font-size: 1rem;
+  }
+  
+  .contact-item-value {
+    font-size: 0.9rem;
+  }
+  
+  .work-samples-title {
+    font-size: 1rem;
+  }
+  
+  .work-sample {
+    height: 70px;
+  }
+  
+  .contact-form {
+    padding: 24px 16px;
+  }
+  
+  .form-title {
+    font-size: 1.3rem;
+  }
+  
+  .form-input,
+  .form-textarea {
+    padding: 12px 14px;
+    font-size: 0.9rem;
+  }
+  
+  .form-submit-btn {
+    padding: 12px 24px;
+    font-size: 0.95rem;
+  }
+  
+  /* Footer Small Mobile */
+  .footer-section {
+    padding: 50px 0 25px;
+  }
+  
+  .footer-container {
+    padding: 0 12px;
+  }
+  
+  .footer-content {
+    gap: 28px;
+    margin-bottom: 35px;
+  }
+  
+  .footer-brand-title {
+    font-size: 1.3rem;
+  }
+  
+  .footer-brand-text,
+  .footer-link,
+  .footer-service,
+  .footer-contact-item {
+    font-size: 0.85rem;
+  }
+  
+  .footer-links-title,
+  .footer-services-title,
+  .footer-contact-title {
+    font-size: 1rem;
+    margin-bottom: 16px;
+  }
+  
+  .footer-social-link {
+    width: 40px;
+    height: 40px;
+    font-size: 1.1rem;
+  }
+  
+  .footer-copyright {
+    font-size: 0.8rem;
   }
   
   /* Section Small Mobile */
@@ -895,7 +1281,7 @@
   }
   
   .container {
-    padding: 0 0.75rem;
+    padding: 0 12px;
   }
 }
 
