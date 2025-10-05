@@ -112,34 +112,21 @@ const GalleryProjectInfo = ({
         </div>
       )}
 
-      {/* Close Button - Sticky on mobile, different behavior */}
-      <div
-        className="gallery-info-actions"
-        style={
-          isMobile
-            ? {
-                position: "sticky",
-                bottom: 0,
-                left: 0,
-                right: 0,
-                padding: "12px 0",
-                marginTop: "20px",
-                background: "white",
-                backdropFilter: "blur(10px)",
-                borderTop: "1px solid #e2e8f0",
-                zIndex: 10,
-              }
-            : undefined
-        }
-      >
-        <Button
-          onClick={isMobile ? onToggleInfo : onClose}
-          variant="outline"
-          className="close-btn"
+      {/* Close Button - Only on desktop */}
+      {!isMobile && (
+        <div
+          className="gallery-info-actions"
+          style={undefined}
         >
-          {isMobile ? "Close Info" : "Close Gallery"}
-        </Button>
-      </div>
+          <Button
+            onClick={onClose}
+            variant="outline"
+            className="close-btn"
+          >
+            Close Gallery
+          </Button>
+        </div>
+      )}
     </motion.div>
   );
 };

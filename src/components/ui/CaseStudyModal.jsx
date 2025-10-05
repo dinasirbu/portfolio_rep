@@ -202,7 +202,8 @@ const CaseStudyModal = ({ work, onClose, onImageClick }) => {
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  gap: "12px",
+                  gap: "8px",
+                  margin: "-50px 0",
                 }}
               >
                 <span style={{ fontSize: "0.85rem", color: "#718096" }}>
