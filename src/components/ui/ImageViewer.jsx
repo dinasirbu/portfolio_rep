@@ -1,46 +1,104 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import OptimizedImage from './OptimizedImage';
+import { lockScroll, unlockScroll } from "../../utils/scrollLock";
 
 const ImageViewer = ({ images, currentIndex, onClose, onNext, onPrev }) => {
   const [, setImageDimensions] = useState({ width: 0, height: 0 });
   const [containerStyle, setContainerStyle] = useState({});
+  const [isMobile, setIsMobile] = useState(false);
+  const [touchStart, setTouchStart] = useState(null);
+  const [touchEnd, setTouchEnd] = useState(null);
 
-  const handleKeyDown = useCallback((e) => {
-    if (e.key === 'Escape') {
-      onClose();
-    } else if (e.key === 'ArrowLeft') {
-      onPrev();
-    } else if (e.key === 'ArrowRight') {
-      onNext();
-    }
-  }, [onClose, onPrev, onNext]);
+  // Minimum swipe distance (in px)
+  const minSwipeDistance = 50;
+
+  const isOpen = currentIndex !== null && images && images.length > 0;
 
   useEffect(() => {
-    document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
+    // Only run effects if viewer should be open
+    if (!isOpen) return;
+
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+
+    // Lock body scroll when viewer is open
+    lockScroll();
+
+    return () => {
+      window.removeEventListener("resize", checkMobile);
+      // Unlock scroll when viewer closes
+      unlockScroll();
+    };
+  }, [isOpen]);
+
+  const handleKeyDown = useCallback(
+    (e) => {
+      if (e.key === "Escape") {
+        onClose();
+      } else if (e.key === "ArrowLeft") {
+        onPrev();
+      } else if (e.key === "ArrowRight") {
+        onNext();
+      }
+    },
+    [onClose, onPrev, onNext]
+  );
+
+  useEffect(() => {
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
   }, [handleKeyDown]);
+
+  const onTouchStart = (e) => {
+    setTouchEnd(null);
+    setTouchStart(e.targetTouches[0].clientX);
+  };
+
+  const onTouchMove = (e) => {
+    setTouchEnd(e.targetTouches[0].clientX);
+  };
+
+  const onTouchEnd = () => {
+    if (!touchStart || !touchEnd) return;
+
+    const distance = touchStart - touchEnd;
+    const isLeftSwipe = distance > minSwipeDistance;
+    const isRightSwipe = distance < -minSwipeDistance;
+
+    if (isLeftSwipe) {
+      onNext();
+    } else if (isRightSwipe) {
+      onPrev();
+    }
+  };
 
   // Calculate container size based on image dimensions
   useEffect(() => {
     if (currentIndex !== null && images && images.length > 0) {
       const currentImage = images[currentIndex];
       const img = new Image();
-      
+
       img.onload = () => {
         const { naturalWidth, naturalHeight } = img;
         const aspectRatio = naturalWidth / naturalHeight;
-        
+
         // Calculate maximum dimensions that fit within viewport
-        const maxWidth = window.innerWidth * 0.8; // 80% of viewport width
-        const maxHeight = window.innerHeight * 0.8; // 80% of viewport height
-        
+        const maxWidthPercent = isMobile ? 0.95 : 0.8;
+        const maxHeightPercent = isMobile ? 0.85 : 0.8;
+        const maxWidth = window.innerWidth * maxWidthPercent;
+        const maxHeight = window.innerHeight * maxHeightPercent;
+
         let containerWidth, containerHeight;
-        
+
         if (aspectRatio > 1) {
           // Landscape image
           containerWidth = Math.min(maxWidth, naturalWidth);
           containerHeight = containerWidth / aspectRatio;
-          
+
           if (containerHeight > maxHeight) {
             containerHeight = maxHeight;
             containerWidth = containerHeight * aspectRatio;
@@ -49,39 +107,46 @@ const ImageViewer = ({ images, currentIndex, onClose, onNext, onPrev }) => {
           // Portrait or square image
           containerHeight = Math.min(maxHeight, naturalHeight);
           containerWidth = containerHeight * aspectRatio;
-          
+
           if (containerWidth > maxWidth) {
             containerWidth = maxWidth;
             containerHeight = containerWidth / aspectRatio;
           }
         }
-        
+
         setImageDimensions({ width: containerWidth, height: containerHeight });
         setContainerStyle({
           width: `${containerWidth}px`,
           height: `${containerHeight}px`,
-          maxWidth: '80vw',
-          maxHeight: '80vh'
+          maxWidth: isMobile ? "95vw" : "80vw",
+          maxHeight: isMobile ? "85vh" : "80vh",
         });
       };
-      
+
       img.src = currentImage.src;
     }
-  }, [currentIndex, images]);
+  }, [currentIndex, images, isMobile]);
 
-  if (currentIndex === null || !images || images.length === 0) return null;
-  
+  // Early return AFTER all hooks (React rules)
+  if (!isOpen) return null;
+
   const currentImage = images[currentIndex];
-  
+
   return (
-    <div 
+    <div
       className="image-viewer-overlay"
       onClick={onClose}
+      style={{
+        WebkitTapHighlightColor: "transparent",
+      }}
     >
-      <div 
+      <div
         className="image-viewer-container"
         style={containerStyle}
         onClick={(e) => e.stopPropagation()}
+        onTouchStart={onTouchStart}
+        onTouchMove={onTouchMove}
+        onTouchEnd={onTouchEnd}
       >
         {/* Close button */}
         <button
@@ -91,7 +156,7 @@ const ImageViewer = ({ images, currentIndex, onClose, onNext, onPrev }) => {
         >
           ×
         </button>
-        
+
         {/* Previous button */}
         {images.length > 1 && (
           <button
@@ -102,7 +167,7 @@ const ImageViewer = ({ images, currentIndex, onClose, onNext, onPrev }) => {
             ‹
           </button>
         )}
-        
+
         {/* Next button */}
         {images.length > 1 && (
           <button
@@ -113,7 +178,7 @@ const ImageViewer = ({ images, currentIndex, onClose, onNext, onPrev }) => {
             ›
           </button>
         )}
-        
+
         {/* Main image */}
         <OptimizedImage
           src={currentImage.src}
@@ -122,7 +187,7 @@ const ImageViewer = ({ images, currentIndex, onClose, onNext, onPrev }) => {
           loading="eager"
           placeholder={false}
         />
-        
+
         {/* Image counter */}
         <div className="image-viewer-counter">
           {currentIndex + 1} / {images.length}

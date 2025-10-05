@@ -1146,173 +1146,7 @@
   transform: translateX(4px);
 }
 
-/* Case Study Modal Styles - Side-by-side layout */
-.ui-modal.case-study-modal {
-  max-width: none !important;
-  width: 95vw !important;
-  height: 90vh !important;
-  min-height: 90vh !important;
-  max-height: 90vh !important;
-  overflow: hidden !important;
-}
-
-.ui-modal-overlay .ui-modal.case-study-modal {
-  max-width: none !important;
-  width: 95vw !important;
-  height: 90vh !important;
-  min-height: 90vh !important;
-  max-height: 90vh !important;
-  overflow: hidden !important;
-}
-
-.case-study-modal {
-  max-width: none !important;
-  width: 95vw !important;
-  height: 90vh !important;
-  min-height: 90vh !important;
-  max-height: 90vh !important;
-  overflow: hidden !important;
-}
-
-/* Override base ui.css modal constraints */
-.ui-modal.case-study-modal {
-  max-width: none !important;
-  width: 95vw !important;
-  height: 90vh !important;
-  min-height: 90vh !important;
-  max-height: 90vh !important;
-  overflow: hidden !important;
-}
-
-/* Force override of ui.css max-width constraint */
-.ui-modal.case-study-modal[style*="max-width"] {
-  max-width: none !important;
-}
-
-/* Modal content - side-by-side layout */
-.case-study-modal .ui-modal-content {
-  height: 100% !important;
-  overflow: hidden !important;
-  padding: 0 !important;
-  display: flex !important;
-  flex-direction: row !important;
-  width: 100% !important;
-  border: 3px solid #0000ff;
-}
-
-/* Override ui.css modal body styles */
-.case-study-modal .ui-modal-body {
-  display: flex !important;
-  grid-template-columns: none !important;
-  gap: 0 !important;
-  flex-direction: row !important;
-}
-
-/* Left side - Project info */
-.case-study-info-panel {
-  width: 40%;
-  background: linear-gradient(135deg, #f8fafc 0%, #ffffff 100%);
-  padding: 32px;
-  overflow-y: auto;
-  border-right: 1px solid #e2e8f0;
-  display: flex;
-  flex-direction: column;
-  flex-shrink: 0;
-}
-
-/* Right side - Gallery */
-.case-study-gallery-panel {
-  width: 60%;
-  padding: 32px;
-  overflow-y: auto;
-  display: flex;
-  flex-direction: column;
-  background: #ffffff;
-  border-left: 1px solid #e2e8f0;
-  flex-shrink: 0;
-  /* Debug styles */
-  border: 3px solid #00ff00 !important;
-  background: #ff00ff !important;
-}
-
-/* Gallery container - full height */
-.case-study-gallery {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 20px;
-  padding: 24px;
-  background: #fafbfc;
-  border-radius: 12px;
-  border: 1px solid #e2e8f0;
-  flex: 1;
-  overflow-y: auto;
-  margin: 0;
-  min-height: 400px;
-  /* Debug styles */
-  border: 3px solid #ff0000 !important;
-  background: #ffff00 !important;
-}
-
-/* Gallery header */
-.gallery-header {
-  margin-bottom: 24px;
-  text-align: center;
-}
-
-.gallery-title {
-  font-size: 1.8rem;
-  font-weight: 700;
-  color: #1a202c;
-  margin-bottom: 8px;
-}
-
-.gallery-subtitle {
-  font-size: 1rem;
-  color: #718096;
-  margin: 0;
-}
-
-/* Empty gallery state */
-.gallery-empty {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #fafbfc;
-  border-radius: 12px;
-  border: 1px solid #e2e8f0;
-  min-height: 400px;
-}
-
-.gallery-empty p {
-  color: #718096;
-  font-size: 1.1rem;
-  margin: 0;
-}
-
-/* Responsive styles for side-by-side layout */
-@media (max-width: 1024px) {
-  .case-study-modal .ui-modal-content {
-    flex-direction: column;
-  }
-  
-  .case-study-info-panel {
-    width: 100%;
-    height: 40%;
-    border-right: none;
-    border-bottom: 1px solid #e2e8f0;
-  }
-  
-  .case-study-gallery-panel {
-    width: 100%;
-    height: 60%;
-  }
-  
-  .case-study-gallery {
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 16px;
-  }
-}
+/* Legacy modal styles - kept for reference but not used by current custom modal implementation */
 
 .case-study-title {
   font-size: 2rem;
@@ -1597,6 +1431,19 @@
   outline-offset: 2px;
 }
 
+/* Mobile Touch Optimizations */
+* {
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+}
+
+/* Smooth scrolling for mobile */
+.gallery-section,
+.image-viewer-container {
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+}
+
 /* Responsive Design */
 @media (max-width: 1200px) {
   /* Adjust modal layout for tablets */
@@ -1634,18 +1481,241 @@
 }
 
 @media (max-width: 768px) {
+  .portfolio-section {
+    padding: 60px 0;
+  }
+  
   .portfolio-title {
-    font-size: 2.5rem;
+    font-size: 2.25rem;
+  }
+  
+  .portfolio-subtitle {
+    font-size: 1rem;
+    padding: 0 10px;
   }
   
   .portfolio-grid {
     grid-template-columns: 1fr;
-    gap: 24px;
+    gap: 20px;
   }
   
+  .portfolio-card {
+    border-radius: 16px;
+  }
+  
+  .card-cover {
+    height: 220px;
+  }
+  
+  /* Category Cards Mobile */
   .category-cards {
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 20px;
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  
+  .category-card {
+    height: 260px;
+  }
+  
+  .category-preview {
+    height: 160px;
+  }
+  
+  .category-info {
+    padding: 16px 20px;
+  }
+  
+  .category-title {
+    font-size: 1.15rem;
+  }
+  
+  .category-count {
+    font-size: 0.9rem;
+  }
+  
+  /* Category Navigation Mobile */
+  .category-breadcrumb {
+    padding: 14px 16px;
+    gap: 10px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+  }
+  
+  .breadcrumb-home {
+    font-size: 0.9rem;
+    padding: 8px 12px;
+  }
+  
+  .breadcrumb-home svg {
+    width: 18px;
+    height: 18px;
+  }
+  
+  .breadcrumb-current {
+    font-size: 1.05rem;
+  }
+  
+  .breadcrumb-count {
+    font-size: 0.85rem;
+  }
+  
+  /* Modal Mobile Styles */
+  .custom-modal-overlay {
+    padding: 0 !important;
+    align-items: flex-start !important;
+  }
+  
+  .custom-modal {
+    width: 100vw !important;
+    height: 100vh !important;
+    max-height: 100vh !important;
+    border-radius: 0 !important;
+  }
+  
+  .gallery-section {
+    padding: 16px !important;
+    padding-top: 60px !important;
+  }
+  
+  .gallery-section > div:first-of-type {
+    margin-bottom: 16px !important;
+  }
+  
+  .gallery-section h2 {
+    font-size: 1.5rem !important;
+  }
+  
+  .gallery-section > div > div {
+    padding: 16px !important;
+    gap: 12px !important;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)) !important;
+  }
+  
+  /* Gallery Project Info Mobile */
+  .gallery-project-info {
+    padding-bottom: 60px;
+  }
+  
+  .gallery-project-info .project-title {
+    font-size: 1.5rem;
+    margin-bottom: 12px;
+  }
+  
+  .gallery-project-info .section-title {
+    font-size: 0.95rem;
+  }
+  
+  .gallery-project-info .summary,
+  .gallery-project-info .role-text {
+    font-size: 0.9rem;
+  }
+  
+  .gallery-project-info .objectives-list li {
+    font-size: 0.85rem;
+  }
+  
+  .gallery-project-info .skill-tag {
+    font-size: 0.75rem;
+    padding: 4px 10px;
+  }
+  
+  .gallery-project-info .close-btn {
+    position: sticky;
+    bottom: 0;
+    margin-top: 20px;
+    background: white;
+    box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Image Viewer Mobile */
+  .image-viewer-overlay {
+    padding: 10px !important;
+  }
+  
+  .image-viewer-container {
+    border-radius: 12px;
+  }
+  
+  .image-viewer-nav {
+    width: 44px;
+    height: 44px;
+    font-size: 24px;
+  }
+  
+  .image-viewer-prev {
+    left: 8px;
+  }
+  
+  .image-viewer-next {
+    right: 8px;
+  }
+  
+  .image-viewer-close {
+    top: 10px;
+    right: 10px;
+    width: 40px;
+    height: 40px;
+  }
+  
+  .image-viewer-counter {
+    bottom: 12px;
+    font-size: 13px;
+    padding: 6px 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .portfolio-section {
+    padding: 50px 0;
+  }
+  
+  .portfolio-container {
+    padding: 0 12px;
+  }
+  
+  .portfolio-header {
+    margin-bottom: 40px;
+  }
+  
+  .portfolio-title {
+    font-size: 1.85rem;
+  }
+  
+  .portfolio-subtitle {
+    font-size: 0.95rem;
+    padding: 0 5px;
+  }
+  
+  /* Portfolio Cards Small Mobile */
+  .portfolio-grid {
+    gap: 16px;
+  }
+  
+  .portfolio-card {
+    border-radius: 14px;
+  }
+  
+  .card-cover {
+    height: 200px;
+  }
+  
+  .card-content {
+    padding: 16px;
+  }
+  
+  .image-collage {
+    gap: 2px;
+  }
+  
+  .more-images-indicator {
+    font-size: 0.85rem;
+    padding: 6px 10px;
+  }
+  
+  /* Category Cards Small Mobile */
+  .category-cards {
+    grid-template-columns: 1fr;
+    gap: 14px;
   }
   
   .category-card {
@@ -1656,172 +1726,28 @@
     height: 140px;
   }
   
+  .category-info {
+    padding: 14px 16px;
+  }
+  
   .category-title {
-    font-size: 1.1rem;
+    font-size: 1.05rem;
   }
   
   .category-count {
-    font-size: 0.9rem;
+    font-size: 0.85rem;
   }
   
+  /* Category Navigation Small Mobile */
   .category-breadcrumb {
-    padding: 12px 16px;
+    padding: 12px;
     gap: 8px;
+    margin-bottom: 20px;
   }
   
   .breadcrumb-home {
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     padding: 6px 10px;
-  }
-  
-  .breadcrumb-current {
-    font-size: 1.1rem;
-  }
-  
-  .breadcrumb-count {
-    font-size: 0.85rem;
-  }
-  
-  .back-to-categories {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 16px;
-    padding: 16px;
-  }
-  
-  .back-btn {
-    padding: 12px 20px;
-    font-size: 0.9rem;
-  }
-  
-  .category-header {
-    font-size: 1.5rem;
-  }
-  
-  .ui-modal-overlay .ui-modal.case-study-modal,
-  .case-study-modal,
-  .ui-modal.case-study-modal {
-    max-width: none !important;
-    width: 100vw !important;
-    height: 100vh !important;
-    max-height: 100vh !important;
-  }
-  
-  .custom-modal {
-    width: 100vw !important;
-    height: 100vh !important;
-    border-radius: 0 !important;
-  }
-  
-  .custom-modal > div {
-    padding: 20px !important;
-  }
-  
-  .case-study-info-panel {
-    height: 50%;
-    padding: 20px;
-  }
-  
-  .case-study-gallery-panel {
-    height: 50%;
-    padding: 20px;
-  }
-  
-  .case-study-gallery {
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-    gap: 12px;
-    padding: 16px;
-  }
-  
-  .gallery-project-info .project-title {
-    font-size: 1.8rem;
-  }
-  
-  .gallery-title {
-    font-size: 1.4rem;
-  }
-  
-  .gallery-image {
-    height: 200px;
-  }
-  
-  .image-viewer-nav {
-    width: 40px;
-    height: 40px;
-    font-size: 20px;
-  }
-  
-  .image-viewer-prev {
-    left: -50px;
-  }
-  
-  .image-viewer-next {
-    right: -50px;
-  }
-  
-  .floating-info-badge {
-    bottom: 16px !important;
-    left: 16px !important;
-    padding: 10px 14px !important;
-    font-size: 0.85rem !important;
-  }
-  
-  .floating-info-badge svg {
-    width: 16px !important;
-    height: 16px !important;
-  }
-}
-
-@media (max-width: 480px) {
-  .portfolio-section {
-    padding: 60px 0;
-  }
-  
-  .portfolio-container {
-    padding: 0 16px;
-  }
-  
-  .portfolio-title {
-    font-size: 2rem;
-  }
-  
-  .portfolio-subtitle {
-    font-size: 1rem;
-  }
-  
-  .card-cover {
-    height: 200px;
-  }
-  
-  .image-collage {
-    gap: 1px;
-  }
-  
-  .more-images-indicator {
-    font-size: 1rem;
-  }
-  
-  .category-cards {
-    grid-template-columns: 1fr;
-    gap: 16px;
-  }
-  
-  .category-card {
-    height: 200px;
-  }
-  
-  .category-preview {
-    height: 100px;
-  }
-  
-  .category-breadcrumb {
-    padding: 10px 12px;
-    gap: 6px;
-  }
-  
-  .breadcrumb-home {
-    font-size: 0.85rem;
-    padding: 4px 8px;
   }
   
   .breadcrumb-home svg {
@@ -1830,7 +1756,7 @@
   }
   
   .breadcrumb-current {
-    font-size: 1rem;
+    font-size: 0.95rem;
   }
   
   .breadcrumb-count {
@@ -1838,69 +1764,118 @@
     margin-left: 2px;
   }
   
-  .back-to-categories {
-    padding: 12px;
-    gap: 12px;
+  /* Modal Small Mobile */
+  .gallery-section {
+    padding: 12px !important;
+    padding-top: 55px !important;
   }
   
-  .back-btn {
-    padding: 10px 16px;
-    font-size: 0.85rem;
+  .gallery-section h2 {
+    font-size: 1.3rem !important;
+    margin-bottom: 6px !important;
   }
   
-  .category-header {
-    font-size: 1.2rem;
+  .gallery-section p {
+    font-size: 0.9rem !important;
   }
   
-  .ui-modal-overlay .ui-modal.case-study-modal,
-  .case-study-modal,
-  .ui-modal.case-study-modal {
-    max-width: none !important;
-    width: 100vw !important;
-    height: 100vh !important;
-    max-height: 100vh !important;
+  .gallery-section > div > div {
+    padding: 12px !important;
+    gap: 10px !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    min-height: 150px !important;
   }
   
-  .case-study-info-panel {
-    height: 50%;
-    padding: 16px;
+  .gallery-section > div > div img {
+    height: 120px !important;
   }
   
-  .case-study-gallery-panel {
-    height: 50%;
-    padding: 16px;
-  }
-  
-  .case-study-gallery {
-    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-    gap: 10px;
-    padding: 12px;
+  /* Gallery Info Small Mobile */
+  .gallery-project-info {
+    padding-bottom: 50px;
   }
   
   .gallery-project-info .project-title {
-    font-size: 1.6rem;
+    font-size: 1.35rem;
+    line-height: 1.3;
   }
   
-  .gallery-title {
-    font-size: 1.2rem;
+  .gallery-project-info .project-meta {
+    font-size: 0.85rem;
+    gap: 10px;
   }
   
-  .gallery-image {
-    height: 180px;
+  .gallery-project-info .section-title {
+    font-size: 0.9rem;
+    padding-bottom: 6px;
+    margin-bottom: 10px;
+  }
+  
+  .gallery-project-info .summary,
+  .gallery-project-info .role-text {
+    font-size: 0.85rem;
+    line-height: 1.6;
+  }
+  
+  .gallery-project-info .objectives-list {
+    margin-top: -4px;
+  }
+  
+  .gallery-project-info .objectives-list li {
+    font-size: 0.8rem;
+    margin-bottom: 6px;
+    padding-left: 16px;
+  }
+  
+  .gallery-project-info .skill-tag {
+    font-size: 0.7rem;
+    padding: 4px 8px;
+  }
+  
+  .gallery-project-info .gallery-info-section {
+    margin-bottom: 24px;
+  }
+  
+  .gallery-project-info .close-btn {
+    font-size: 0.9rem;
+    padding: 10px 20px;
+  }
+  
+  /* Image Viewer Small Mobile */
+  .image-viewer-overlay {
+    padding: 5px !important;
+  }
+  
+  .image-viewer-container {
+    border-radius: 10px;
   }
   
   .image-viewer-nav {
-    width: 35px;
-    height: 35px;
-    font-size: 18px;
+    width: 40px;
+    height: 40px;
+    font-size: 22px;
   }
   
   .image-viewer-prev {
-    left: -40px;
+    left: 6px;
   }
   
   .image-viewer-next {
-    right: -40px;
+    right: 6px;
+  }
+  
+  .image-viewer-close {
+    top: 8px;
+    right: 8px;
+    width: 36px;
+    height: 36px;
+    font-size: 18px;
+  }
+  
+  .image-viewer-counter {
+    bottom: 10px;
+    font-size: 12px;
+    padding: 5px 12px;
   }
 }
 
