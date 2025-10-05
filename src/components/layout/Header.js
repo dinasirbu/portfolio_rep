@@ -11,10 +11,14 @@ const DesktopNav = ({ onItemClick }) => {
     const targetElement = document.getElementById(targetId);
     
     if (targetElement) {
-      targetElement.scrollIntoView({
-        behavior: 'smooth',
-        block: 'start',
-        inline: 'nearest'
+      const headerHeight = 80; // Approximate header height
+      const elementPosition = targetElement.getBoundingClientRect().top;
+      const offsetPosition =
+        elementPosition + window.pageYOffset - headerHeight;
+
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: "smooth",
       });
     }
     
@@ -44,11 +48,23 @@ const MobileNav = ({ isOpen, onItemClick }) => {
     const targetElement = document.getElementById(targetId);
     
     if (targetElement) {
-      targetElement.scrollIntoView({
-        behavior: 'smooth',
-        block: 'start',
-        inline: 'nearest'
-      });
+      // Close menu first
+      onItemClick();
+
+      // Small delay to let menu close, then scroll
+      setTimeout(() => {
+        const headerHeight = 70; // Mobile header height
+        const elementPosition = targetElement.getBoundingClientRect().top;
+        const offsetPosition =
+          elementPosition + window.pageYOffset - headerHeight;
+
+        window.scrollTo({
+          top: offsetPosition,
+          behavior: "smooth",
+        });
+      }, 100);
+
+      return;
     }
     
     onItemClick();

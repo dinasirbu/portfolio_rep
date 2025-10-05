@@ -110,16 +110,12 @@
 
 /* Mobile Navigation */
 .mobile-nav {
-  display: none;
+  display: flex;
   flex-direction: column;
   background: rgba(255, 255, 255, 0.98);
   backdrop-filter: blur(10px);
   border-top: 1px solid rgba(49, 130, 206, 0.1);
   overflow: hidden;
-}
-
-.mobile-nav.open {
-  display: flex;
 }
 
 .mobile-nav-link {

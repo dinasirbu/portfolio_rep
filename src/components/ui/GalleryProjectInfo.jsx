@@ -4,13 +4,20 @@ import { ChevronRight } from 'lucide-react';
 import { Badge } from './badge';
 import { Button } from './button';
 
-const GalleryProjectInfo = ({ work, onClose, onToggleInfo, showInfoPanel }) => {
+const GalleryProjectInfo = ({
+  work,
+  onClose,
+  onToggleInfo,
+  showInfoPanel,
+  isMobile,
+}) => {
   if (!work?.caseStudy) return null;
 
-  const { summary, client, project, year, role, objectives, tags } = work.caseStudy;
+  const { summary, client, project, year, role, objectives, tags } =
+    work.caseStudy;
 
   return (
-    <motion.div 
+    <motion.div
       className="gallery-project-info"
       initial={{ opacity: 0, x: 20 }}
       animate={{ opacity: 1, x: 0 }}
@@ -18,27 +25,37 @@ const GalleryProjectInfo = ({ work, onClose, onToggleInfo, showInfoPanel }) => {
     >
       {/* Header */}
       <div className="gallery-info-header">
-        <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '12px', gap: '12px' }}>
-          <h1 className="project-title" style={{ flex: 1 }}>{work.title}</h1>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "flex-start",
+            justifyContent: "space-between",
+            marginBottom: "12px",
+            gap: "12px",
+          }}
+        >
+          <h1 className="project-title" style={{ flex: 1 }}>
+            {work.title}
+          </h1>
           <motion.button
             onClick={onToggleInfo}
             className="info-close-button"
-            whileHover={{ scale: 1.1, backgroundColor: '#f1f5f9' }}
+            whileHover={{ scale: 1.1, backgroundColor: "#f1f5f9" }}
             whileTap={{ scale: 0.9 }}
             style={{
-              background: 'transparent',
-              border: 'none',
-              cursor: 'pointer',
-              padding: '8px',
-              borderRadius: '50%',
-              width: '36px',
-              height: '36px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              transition: 'all 0.2s ease',
-              color: '#64748b',
-              flexShrink: 0
+              background: "transparent",
+              border: "none",
+              cursor: "pointer",
+              padding: "8px",
+              borderRadius: "50%",
+              width: "36px",
+              height: "36px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              transition: "all 0.2s ease",
+              color: "#64748b",
+              flexShrink: 0,
             }}
             aria-label="Hide project information panel"
             title="Hide info panel"
@@ -52,7 +69,7 @@ const GalleryProjectInfo = ({ work, onClose, onToggleInfo, showInfoPanel }) => {
           {year && <span className="year">{year}</span>}
         </div>
       </div>
-      
+
       {/* Summary */}
       {summary && (
         <div className="gallery-info-section">
@@ -60,7 +77,7 @@ const GalleryProjectInfo = ({ work, onClose, onToggleInfo, showInfoPanel }) => {
           <p className="summary">{summary}</p>
         </div>
       )}
-      
+
       {/* Role */}
       {role && (
         <div className="gallery-info-section">
@@ -68,7 +85,7 @@ const GalleryProjectInfo = ({ work, onClose, onToggleInfo, showInfoPanel }) => {
           <p className="role-text">{role}</p>
         </div>
       )}
-      
+
       {/* Objectives */}
       {objectives && objectives.length > 0 && (
         <div className="gallery-info-section">
@@ -87,16 +104,40 @@ const GalleryProjectInfo = ({ work, onClose, onToggleInfo, showInfoPanel }) => {
           <h3 className="section-title">Skills & Tools</h3>
           <div className="tags-container">
             {tags.map((tag) => (
-              <Badge key={tag} variant="outline" className="skill-tag">{tag}</Badge>
+              <Badge key={tag} variant="outline" className="skill-tag">
+                {tag}
+              </Badge>
             ))}
           </div>
         </div>
       )}
 
-      {/* Close Button */}
-      <div className="gallery-info-actions">
-        <Button onClick={onClose} variant="outline" className="close-btn">
-          Close Gallery
+      {/* Close Button - Sticky on mobile, different behavior */}
+      <div
+        className="gallery-info-actions"
+        style={
+          isMobile
+            ? {
+                position: "sticky",
+                bottom: 0,
+                left: 0,
+                right: 0,
+                padding: "12px 0",
+                marginTop: "20px",
+                background: "white",
+                backdropFilter: "blur(10px)",
+                borderTop: "1px solid #e2e8f0",
+                zIndex: 10,
+              }
+            : undefined
+        }
+      >
+        <Button
+          onClick={isMobile ? onToggleInfo : onClose}
+          variant="outline"
+          className="close-btn"
+        >
+          {isMobile ? "Close Info" : "Close Gallery"}
         </Button>
       </div>
     </motion.div>
