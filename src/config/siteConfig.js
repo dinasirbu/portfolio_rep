@@ -105,25 +105,25 @@ export const ABOUT_CONTENT = {
     items: [
       {
         id: 'branding',
-        image: '/branding/renee-presentation/renee-05.jpg',
+        image: '/portfolio_rep/branding/renee-presentation/renee-05.jpg',
         title: 'Brand Identity',
         description: 'Creating cohesive visual identities that embody brand values and resonate with target audiences'
       },
       {
         id: 'packaging',
-        image: '/packaging/selik-presentation/selik-02.jpg',
+        image: '/portfolio_rep/packaging/selik-presentation/selik-02.jpg',
         title: 'Packaging Design',
         description: 'Designing innovative packaging solutions that stand out on shelves and tell compelling brand stories'
       },
       {
         id: 'logo',
-        image: '/logo/concept-store-presentation/concept-store-05.jpg',
+        image: '/portfolio_rep/logo/concept-store-presentation/concept-store-05.jpg',
         title: 'Logo Design',
         description: 'Crafting memorable logos that capture brand essence and work across all applications'
       },
       {
         id: 'social',
-        image: '/social-media/swiss-village-presentation/swiss-village-02.jpg',
+        image: '/portfolio_rep/social-media/swiss-village-presentation/swiss-village-02.jpg',
         title: 'Social Media',
         description: 'Developing engaging visual content for social platforms that drives brand engagement'
       }
@@ -136,9 +136,9 @@ export const ABOUT_CONTENT = {
     buttonText: "Start a Project",
     buttonLink: "#contact",
     backgroundImages: [
-      '/packaging/apifera-hexagon-presentation/apifera-hexagon-03.jpg',
-      '/branding/granier-presentation/granier-12.jpg',
-      '/packaging/tirol-presentation/TIROL-03.jpg'
+      '/portfolio_rep/packaging/apifera-hexagon-presentation/apifera-hexagon-03.jpg',
+      '/portfolio_rep/branding/granier-presentation/granier-12.jpg',
+      '/portfolio_rep/packaging/tirol-presentation/TIROL-03.jpg'
     ]
   }
 };
@@ -174,9 +174,9 @@ export const CONTACT_CONTENT = {
     
     recentWorkTitle: "Recent Work",
     recentWorkImages: [
-      '/packaging/apifera-3-jars-presentation/apifera-3-jars-03.jpg',
-      '/branding/granier-presentation/granier-14.jpg',
-      '/logo/concept-store-presentation/concept-store-12.jpg'
+      '/portfolio_rep/packaging/apifera-3-jars-presentation/apifera-3-jars-03.jpg',
+      '/portfolio_rep/branding/granier-presentation/granier-14.jpg',
+      '/portfolio_rep/logo/concept-store-presentation/concept-store-12.jpg'
     ]
   },
   
