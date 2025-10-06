@@ -1,5 +1,6 @@
 import React, { useState, useCallback, memo } from 'react';
 import OptimizedImage from './OptimizedImage';
+import { getCustomCollageImages } from '../../config/collageConfig';
 
 const ImageCollage = ({ images, maxImages = 4, variant = 'default', work }) => {
   const [, setLoadedImages] = useState(new Set());
@@ -10,59 +11,8 @@ const ImageCollage = ({ images, maxImages = 4, variant = 'default', work }) => {
 
   if (!images || images.length === 0) return null;
   
-  // Custom collage images for specific projects
-  const getCustomCollageImages = (workId) => {
-    switch (workId) {
-      case 'branding-granier':
-        return [
-          { src: '/branding/granier-presentation/granier-16.jpg', alt: 'Granier brand identity 16' },
-          { src: '/branding/granier-presentation/granier-17.jpg', alt: 'Granier brand identity 17' },
-          { src: '/branding/granier-presentation/granier-06.jpg', alt: 'Granier brand identity 6' }
-        ];
-      case 'packaging-apifera-3jars':
-        return [
-          { src: '/packaging/apifera-3-jars-presentation/apifera-3-jars-04.jpg', alt: 'Apifera 3 jars packaging 4' },
-          { src: '/packaging/apifera-3-jars-presentation/apifera-3-jars-05.jpg', alt: 'Apifera 3 jars packaging 5' },
-          { src: '/packaging/apifera-3-jars-presentation/apifera-3-jars-06.jpg', alt: 'Apifera 3 jars packaging 6' },
-          { src: '/packaging/apifera-3-jars-presentation/apifera-3-jars-07.jpg', alt: 'Apifera 3 jars packaging 7' }
-        ];
-      case 'packaging-apifera-hexagon':
-        return [
-          { src: '/packaging/apifera-hexagon-presentation/apifera-hexagon-04.jpg', alt: 'Apifera hexagon packaging 4' },
-          { src: '/packaging/apifera-hexagon-presentation/apifera-hexagon-05.jpg', alt: 'Apifera hexagon packaging 5' },
-          { src: '/packaging/apifera-hexagon-presentation/apifera-hexagon-06.jpg', alt: 'Apifera hexagon packaging 6' },
-          { src: '/packaging/apifera-hexagon-presentation/apifera-hexagon-07.jpg', alt: 'Apifera hexagon packaging 7' }
-        ];
-      case 'packaging-selik':
-        return [
-          { src: '/packaging/selik-presentation/Selik-16.jpg', alt: 'Selik packaging 16' },
-          { src: '/packaging/selik-presentation/Selik-04.jpg', alt: 'Selik packaging 4' },
-          { src: '/packaging/selik-presentation/Selik-05.jpg', alt: 'Selik packaging 5' },
-          { src: '/packaging/selik-presentation/Selik-06.jpg', alt: 'Selik packaging 6' }
-        ];
-      case 'packaging-lunchemeat':
-        // Try different combination: 02, 05, 08, 10 for better visual variety
-        return [
-          { src: '/packaging/lunchemeat-presentation/Lunchemeat-02.jpg', alt: 'Lunchemeat packaging 2' },
-          { src: '/packaging/lunchemeat-presentation/Lunchemeat-05.jpg', alt: 'Lunchemeat packaging 5' },
-          { src: '/packaging/lunchemeat-presentation/Lunchemeat-08.jpg', alt: 'Lunchemeat packaging 8' },
-          { src: '/packaging/lunchemeat-presentation/Lunchemeat-10.jpg', alt: 'Lunchemeat packaging 10' }
-        ];
-      case 'packaging-sousages':
-        // Set crenvurști-04 as main image: 04, 05, 07, 11
-        return [
-          { src: '/packaging/sousages-presentation/crenvurști-04.jpg', alt: 'Sousages packaging 4' },
-          { src: '/packaging/sousages-presentation/crenvurști-05.jpg', alt: 'Sousages packaging 5' },
-          { src: '/packaging/sousages-presentation/crenvurști-07.jpg', alt: 'Sousages packaging 7' },
-          { src: '/packaging/sousages-presentation/crenvurști-11.jpg', alt: 'Sousages packaging 11' }
-        ];
-      default:
-        return null;
-    }
-  };
-
-  // Use custom collage images if available, otherwise use default logic
-  const customImages = work ? getCustomCollageImages(work.id) : null;
+  // Get custom collage images if configured for this work, otherwise use default logic
+  const customImages = work?.id ? getCustomCollageImages(work.id) : null;
   const collageImages = customImages || images.slice(1, maxImages + 1);
   
   if (collageImages.length === 0) {
