@@ -4,7 +4,7 @@ export const WORKS = [
     id: "branding-granier",
     title: "Granier Brand Identity",
     category: "Branding",
-    cover: { src: "/branding/granier-presentation/granier-03.jpg", alt: "Granier brand identity" },
+    cover: { src: "/portfolio_rep/branding/granier-presentation/granier-03.jpg", alt: "Granier brand identity" },
     caseStudy: {
       client: "Granier",
       project: "Complete brand identity design",
@@ -18,7 +18,7 @@ export const WORKS = [
       ],
       role: "Lead brand designer responsible for concept development, visual identity creation, and brand guideline documentation.",
       gallery: Array.from({length: 23}, (_, i) => ({
-        src: `/branding/granier-presentation/granier-${String(i + 1).padStart(2, '0')}.jpg`,
+        src: `/portfolio_rep/branding/granier-presentation/granier-${String(i + 1).padStart(2, '0')}.jpg`,
         alt: `Granier brand presentation ${i + 1}`
       })),
       tags: ["Brand Identity", "Logo Design", "Brand Guidelines", "Visual System"]
@@ -28,7 +28,7 @@ export const WORKS = [
     id: "branding-renee",
     title: "Renee Brand Identity",
     category: "Branding", 
-    cover: { src: "/branding/renee-presentation/renee-03.jpg", alt: "Renee brand identity" },
+    cover: { src: "/portfolio_rep/branding/renee-presentation/renee-03.jpg", alt: "Renee brand identity" },
     caseStudy: {
       client: "Renee",
       project: "Brand identity and visual system",
@@ -42,7 +42,7 @@ export const WORKS = [
       ],
       role: "Brand designer creating complete visual identity system from concept to implementation guidelines.",
       gallery: Array.from({length: 20}, (_, i) => ({
-        src: `/branding/renee-presentation/renee-${String(i + 1).padStart(2, '0')}.jpg`,
+        src: `/portfolio_rep/branding/renee-presentation/renee-${String(i + 1).padStart(2, '0')}.jpg`,
         alt: `Renee brand presentation ${i + 1}`
       })),
       tags: ["Brand Identity", "Logo Design", "Typography", "Brand Guidelines"]
@@ -54,7 +54,7 @@ export const WORKS = [
     id: "logo-concept-store",
     title: "Concept Store Logo Design",
     category: "Logo",
-    cover: { src: "/logo/concept-store-presentation/concept-store-03.jpg", alt: "Concept Store logo" },
+    cover: { src: "/portfolio_rep/logo/concept-store-presentation/concept-store-03.jpg", alt: "Concept Store logo" },
     caseStudy: {
       client: "Concept Store",
       project: "Logo design and brand mark",
@@ -68,7 +68,7 @@ export const WORKS = [
       ],
       role: "Logo designer responsible for concept development, mark creation, and application guidelines.",
       gallery: Array.from({length: 16}, (_, i) => ({
-        src: `/logo/concept-store-presentation/concept-store-${String(i + 1).padStart(2, '0')}.jpg`,
+        src: `/portfolio_rep/logo/concept-store-presentation/concept-store-${String(i + 1).padStart(2, '0')}.jpg`,
         alt: `Concept Store logo presentation ${i + 1}`
       })),
       tags: ["Logo Design", "Brand Mark", "Typography", "Visual Identity"]
@@ -80,7 +80,7 @@ export const WORKS = [
     id: "packaging-apifera-3jars",
     title: "Apifera 3 Jars Packaging",
     category: "Packaging",
-    cover: { src: "/packaging/apifera-3-jars-presentation/apifera-3-jars-03.jpg", alt: "Apifera 3 jars packaging" },
+    cover: { src: "/portfolio_rep/packaging/apifera-3-jars-presentation/apifera-3-jars-03.jpg", alt: "Apifera 3 jars packaging" },
     caseStudy: {
       client: "Apifera",
       project: "Product packaging design - 3 jar set",
@@ -94,7 +94,7 @@ export const WORKS = [
       ],
       role: "Packaging designer responsible for structural design, graphics, and material selection.",
       gallery: Array.from({length: 19}, (_, i) => ({
-        src: `/packaging/apifera-3-jars-presentation/apifera-3-jars-${String(i + 1).padStart(2, '0')}.jpg`,
+        src: `/portfolio_rep/packaging/apifera-3-jars-presentation/apifera-3-jars-${String(i + 1).padStart(2, '0')}.jpg`,
         alt: `Apifera 3 jars packaging ${i + 1}`
       })),
       tags: ["Packaging Design", "Product Design", "Sustainable Design", "Brand Application"]
@@ -104,7 +104,7 @@ export const WORKS = [
     id: "packaging-apifera-hexagon",
     title: "Apifera Hexagon Packaging",
     category: "Packaging",
-    cover: { src: "/packaging/apifera-hexagon-presentation/apifera-hexagon-01.jpg", alt: "Apifera hexagon packaging" },
+    cover: { src: "/portfolio_rep/packaging/apifera-hexagon-presentation/apifera-hexagon-01.jpg", alt: "Apifera hexagon packaging" },
     caseStudy: {
       client: "Apifera",
       project: "Hexagon packaging design",
@@ -118,7 +118,7 @@ export const WORKS = [
       ],
       role: "Packaging designer creating unique structural design and accompanying graphics.",
       gallery: Array.from({length: 14}, (_, i) => ({
-        src: `/packaging/apifera-hexagon-presentation/apifera-hexagon-${String(i + 1).padStart(2, '0')}.jpg`,
+        src: `/portfolio_rep/packaging/apifera-hexagon-presentation/apifera-hexagon-${String(i + 1).padStart(2, '0')}.jpg`,
         alt: `Apifera hexagon packaging ${i + 1}`
       })),
       tags: ["Packaging Design", "Structural Design", "Innovation", "Brand Consistency"]
@@ -128,7 +128,7 @@ export const WORKS = [
     id: "packaging-lunchemeat",
     title: "Lunchemeat Packaging",
     category: "Packaging",
-    cover: { src: "/packaging/lunchemeat-presentation/Lunchemeat-01.jpg", alt: "Lunchemeat packaging" },
+    cover: { src: "/portfolio_rep/packaging/lunchemeat-presentation/Lunchemeat-01.jpg", alt: "Lunchemeat packaging" },
     caseStudy: {
       client: "Lunchemeat",
       project: "Food packaging design",
@@ -142,7 +142,7 @@ export const WORKS = [
       ],
       role: "Packaging designer creating food-focused packaging with emphasis on appetite appeal and functionality.",
       gallery: Array.from({length: 12}, (_, i) => ({
-        src: `/packaging/lunchemeat-presentation/Lunchemeat-${String(i + 1).padStart(2, '0')}.jpg`,
+        src: `/portfolio_rep/packaging/lunchemeat-presentation/Lunchemeat-${String(i + 1).padStart(2, '0')}.jpg`,
         alt: `Lunchemeat packaging ${i + 1}`
       })),
       tags: ["Food Packaging", "Brand Design", "Product Information", "Appetite Appeal"]
@@ -152,7 +152,7 @@ export const WORKS = [
     id: "packaging-selik",
     title: "Selik Packaging",
     category: "Packaging",
-    cover: { src: "/packaging/selik-presentation/Selik-01.jpg", alt: "Selik packaging" },
+    cover: { src: "/portfolio_rep/packaging/selik-presentation/Selik-01.jpg", alt: "Selik packaging" },
     caseStudy: {
       client: "Selik",
       project: "Product packaging design",
@@ -166,7 +166,7 @@ export const WORKS = [
       ],
       role: "Packaging designer developing comprehensive packaging system with focus on brand trust and product quality.",
       gallery: Array.from({length: 17}, (_, i) => ({
-        src: `/packaging/selik-presentation/Selik-${String(i + 1).padStart(2, '0')}.jpg`,
+        src: `/portfolio_rep/packaging/selik-presentation/Selik-${String(i + 1).padStart(2, '0')}.jpg`,
         alt: `Selik packaging ${i + 1}`
       })),
       tags: ["Packaging Design", "Brand Trust", "Product Quality", "Shelf Appeal"]
@@ -176,7 +176,7 @@ export const WORKS = [
     id: "packaging-sousages",
     title: "Sousages Packaging",
     category: "Packaging",
-    cover: { src: "/packaging/sousages-presentation/crenvurști-01.jpg", alt: "Sousages packaging" },
+    cover: { src: "/portfolio_rep/packaging/sousages-presentation/crenvurști-01.jpg", alt: "Sousages packaging" },
     caseStudy: {
       client: "Sousages",
       project: "Sausage packaging design",
@@ -190,7 +190,7 @@ export const WORKS = [
       ],
       role: "Packaging designer creating heritage-inspired design with modern functionality.",
       gallery: Array.from({length: 13}, (_, i) => ({
-        src: `/packaging/sousages-presentation/crenvurști-${String(i + 1).padStart(2, '0')}.jpg`,
+        src: `/portfolio_rep/packaging/sousages-presentation/crenvurști-${String(i + 1).padStart(2, '0')}.jpg`,
         alt: `Sousages packaging ${i + 1}`
       })),
       tags: ["Food Packaging", "Heritage Design", "Artisanal", "Brand Positioning"]
@@ -200,7 +200,7 @@ export const WORKS = [
     id: "packaging-tirol",
     title: "Tirol Packaging",
     category: "Packaging",
-    cover: { src: "/packaging/tirol-presentation/TIROL-01.jpg", alt: "Tirol packaging" },
+    cover: { src: "/portfolio_rep/packaging/tirol-presentation/TIROL-01.jpg", alt: "Tirol packaging" },
     caseStudy: {
       client: "Tirol",
       project: "Regional product packaging",
@@ -214,7 +214,7 @@ export const WORKS = [
       ],
       role: "Packaging designer developing regional identity-focused packaging with broad market appeal.",
       gallery: Array.from({length: 7}, (_, i) => ({
-        src: `/packaging/tirol-presentation/TIROL-${String(i + 1).padStart(2, '0')}.jpg`,
+        src: `/portfolio_rep/packaging/tirol-presentation/TIROL-${String(i + 1).padStart(2, '0')}.jpg`,
         alt: `Tirol packaging ${i + 1}`
       })),
       tags: ["Regional Identity", "Heritage Design", "Local Branding", "Market Appeal"]
@@ -226,7 +226,7 @@ export const WORKS = [
     id: "social-esterra-park",
     title: "Esterra Park Social Media",
     category: "Social Media",
-    cover: { src: "/social-media/esterra-park-presentation/esterra-park--01.jpg", alt: "Esterra Park social media" },
+    cover: { src: "/portfolio_rep/social-media/esterra-park-presentation/esterra-park--01.jpg", alt: "Esterra Park social media" },
     caseStudy: {
       client: "Esterra Park",
       project: "Social media content design",
@@ -240,7 +240,7 @@ export const WORKS = [
       ],
       role: "Social media designer creating content strategy and visual templates for community marketing.",
       gallery: Array.from({length: 4}, (_, i) => ({
-        src: `/social-media/esterra-park-presentation/esterra-park--${String(i + 1).padStart(2, '0')}.jpg`,
+        src: `/portfolio_rep/social-media/esterra-park-presentation/esterra-park--${String(i + 1).padStart(2, '0')}.jpg`,
         alt: `Esterra Park social media ${i + 1}`
       })),
       tags: ["Social Media", "Community Marketing", "Lifestyle Content", "Brand Awareness"]
@@ -250,7 +250,7 @@ export const WORKS = [
     id: "social-laur-gifts",
     title: "Laur Gifts Social Media",
     category: "Social Media",
-    cover: { src: "/social-media/laur-gifts-presentation/laurgifts-01.jpg", alt: "Laur Gifts social media" },
+    cover: { src: "/portfolio_rep/social-media/laur-gifts-presentation/laurgifts-01.jpg", alt: "Laur Gifts social media" },
     caseStudy: {
       client: "Laur Gifts",
       project: "Social media content and campaigns",
@@ -264,7 +264,7 @@ export const WORKS = [
       ],
       role: "Social media designer creating content strategy, templates, and campaign materials.",
       gallery: Array.from({length: 6}, (_, i) => ({
-        src: `/social-media/laur-gifts-presentation/laurgifts-${String(i + 1).padStart(2, '0')}.jpg`,
+        src: `/portfolio_rep/social-media/laur-gifts-presentation/laurgifts-${String(i + 1).padStart(2, '0')}.jpg`,
         alt: `Laur Gifts social media ${i + 1}`
       })),
       tags: ["Social Media", "Lifestyle Branding", "Seasonal Campaigns", "Content Strategy"]
@@ -274,7 +274,7 @@ export const WORKS = [
     id: "social-swiss-village",
     title: "Swiss Village Social Media",
     category: "Social Media",
-    cover: { src: "/social-media/swiss-village-presentation/swiss-village-01.jpg", alt: "Swiss Village social media" },
+    cover: { src: "/portfolio_rep/social-media/swiss-village-presentation/swiss-village-01.jpg", alt: "Swiss Village social media" },
     caseStudy: {
       client: "Swiss Village",
       project: "Real estate social media content",
@@ -288,7 +288,7 @@ export const WORKS = [
       ],
       role: "Social media designer creating professional real estate content with focus on sustainability messaging.",
       gallery: Array.from({length: 5}, (_, i) => ({
-        src: `/social-media/swiss-village-presentation/swiss-village-${String(i + 1).padStart(2, '0')}.jpg`,
+        src: `/portfolio_rep/social-media/swiss-village-presentation/swiss-village-${String(i + 1).padStart(2, '0')}.jpg`,
         alt: `Swiss Village social media ${i + 1}`
       })),
       tags: ["Real Estate", "Sustainability", "Professional Content", "Brand Credibility"]

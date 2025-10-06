@@ -22,7 +22,7 @@ export const PERSONAL_INFO = {
   tagline: "Specializing in Branding",
   description: "Creating compelling visual identities and packaging designs that tell your brand's story and connect with your audience.",
   availability: "Available for freelance work",
-  image: "/img/me.jpg",
+  image: "/portfolio_rep/img/me.jpg",
   logo: "My Portfolio",
   imageAlt: "Creative Designer",
 };
