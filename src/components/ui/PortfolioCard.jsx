@@ -17,7 +17,7 @@ const PortfolioCard = ({ work, onOpen, index }) => {
   // Determine collage variant based on work category for visual variety
   const getCollageVariant = (category) => {
     const variants = {
-      'Branding': 'hero',
+      'Branding': 'default', // Changed from 'hero' to 'default' for better collage
       'Logo': 'default', 
       'Packaging': 'default',
       'Social Media': 'hero'

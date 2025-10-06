@@ -219,32 +219,3 @@ export const NAV_ITEMS = [
 ];
 ```
 
-### Change Hero Title
-```javascript
-// src/config/siteConfig.js
-export const HERO_CONTENT = {
-  title: "Your New Title",  // ← Edit this
-};
-```
-
-### Update Email
-```javascript
-// src/config/siteConfig.js
-export const CONTACT_INFO = {
-  email: "your-email@example.com",  // ← Edit this
-};
-```
-
----
-
-## 📄 License
-
-MIT License - Feel free to use for your portfolio
-
----
-
-## 🙏 Support
-
-For questions or issues, check the documentation or create an issue.
-
-**Happy designing!** 🎨✨

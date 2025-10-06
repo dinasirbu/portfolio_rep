@@ -1,7 +1,8 @@
 import React, { useState, useCallback, memo } from 'react';
 import OptimizedImage from './OptimizedImage';
+import { getCustomCollageImages } from '../../config/collageConfig';
 
-const ImageCollage = ({ images, maxImages = 4, variant = 'default' }) => {
+const ImageCollage = ({ images, maxImages = 4, variant = 'default', work }) => {
   const [, setLoadedImages] = useState(new Set());
   
   const handleImageLoad = useCallback((index) => {
@@ -10,8 +11,9 @@ const ImageCollage = ({ images, maxImages = 4, variant = 'default' }) => {
 
   if (!images || images.length === 0) return null;
   
-  // Take the first few images, skipping the first one (description image)
-  const collageImages = images.slice(1, maxImages + 1);
+  // Get custom collage images if configured for this work, otherwise use default logic
+  const customImages = work?.id ? getCustomCollageImages(work.id) : null;
+  const collageImages = customImages || images.slice(1, maxImages + 1);
   
   if (collageImages.length === 0) {
     // Fallback to first image if no other images

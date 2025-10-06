@@ -126,7 +126,7 @@ export const usePortfolio = () => {
         // Take diverse selection (mix of different categories)
         previews[category] = allImages.slice(0, 3);
       } else if (category === "Branding") {
-        // For Branding, select more diverse, visual images (avoid text-heavy ones)
+        // For Branding, use collage layout instead of horizontal
         const categoryImages = [];
         
         WORKS.filter(work => work.category === "Branding").forEach(work => {
@@ -146,6 +146,13 @@ export const usePortfolio = () => {
         });
         
         previews[category] = categoryImages.slice(0, 3);
+      } else if (category === "Packaging") {
+        // For Packaging, use specific collage: selik-16, apifera-hexagon-04, apifera-3-jars-04
+        previews[category] = [
+          { src: '/packaging/selik-presentation/Selik-16.jpg', alt: 'Selik packaging 16' },
+          { src: '/packaging/apifera-hexagon-presentation/apifera-hexagon-04.jpg', alt: 'Apifera hexagon packaging 4' },
+          { src: '/packaging/apifera-3-jars-presentation/apifera-3-jars-04.jpg', alt: 'Apifera 3 jars packaging 4' }
+        ];
       } else {
         // For other specific categories, get images from works in that category
         const categoryWorks = WORKS.filter(work => work.category === category);

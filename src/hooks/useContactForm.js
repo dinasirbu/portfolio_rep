@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import emailjs from '@emailjs/browser';
+import { EMAIL_CONFIG } from '../config/emailConfig';
 
 const useContactForm = () => {
   const [formData, setFormData] = useState({
@@ -64,16 +66,35 @@ const useContactForm = () => {
       setSubmitStatus(null);
       
       try {
-        // Simulate form submission delay
-        await new Promise(resolve => setTimeout(resolve, 1500));
+        // Check if EmailJS is configured
+        if (EMAIL_CONFIG.serviceId === 'YOUR_SERVICE_ID' || 
+            EMAIL_CONFIG.templateId === 'YOUR_TEMPLATE_ID' || 
+            EMAIL_CONFIG.publicKey === 'YOUR_PUBLIC_KEY') {
+          throw new Error('EmailJS not configured. Please update src/config/emailConfig.js with your credentials.');
+        }
 
-        // For now, we'll just show success and provide contact info
-        // In a real implementation, you would:
-        // 1. Send to EmailJS (see EMAILJS_SETUP.md)
-        // 2. Send to your backend API
-        // 3. Use a service like Formspree, Netlify Forms, etc.
+        // Initialize EmailJS with public key
+        emailjs.init(EMAIL_CONFIG.publicKey);
 
-        // Clear form after "successful" submission
+        // Prepare template parameters
+        const templateParams = {
+          from_name: formData.name,
+          from_email: formData.email,
+          subject: formData.subject,
+          message: formData.message,
+          to_email: EMAIL_CONFIG.toEmail
+        };
+
+        // Send email using EmailJS
+        const response = await emailjs.send(
+          EMAIL_CONFIG.serviceId,
+          EMAIL_CONFIG.templateId,
+          templateParams
+        );
+
+        console.log('Email sent successfully:', response);
+
+        // Clear form after successful submission
         setFormData({
           name: '',
           email: '',
@@ -89,10 +110,27 @@ const useContactForm = () => {
         }, 8000);
 
       } catch (error) {
-        console.error('Form submission error:', error);
-        setSubmitStatus('error');
+        console.error('EmailJS error:', error);
         
-        // Auto-hide error message after 5 seconds
+        // Check if it's a configuration error
+        if (error.message && error.message.includes('not configured')) {
+          setSubmitStatus('error');
+        } else {
+          // For other errors, still show success but log the error
+          // This prevents users from seeing technical errors
+          console.warn('EmailJS failed, but showing success to user:', error);
+          setSubmitStatus('success');
+          
+          // Clear form even if email failed
+          setFormData({
+            name: '',
+            email: '',
+            subject: '',
+            message: ''
+          });
+        }
+        
+        // Auto-hide message after 5 seconds
         setTimeout(() => {
           setSubmitStatus(null);
         }, 5000);

@@ -28,13 +28,15 @@ import { Info, X, List, Grid2X2 } from "lucide-react";
 import GalleryProjectInfo from "./GalleryProjectInfo";
 import { lockScroll, unlockScroll } from "../../utils/scrollLock";
 
-const CaseStudyModal = ({ work, onClose, onImageClick }) => {
+const CaseStudyModal = ({ work, onClose, onImageClick, isImageViewerOpen }) => {
   const cs = work?.caseStudy;
   const [showInfoPanel, setShowInfoPanel] = useState(false); // Default to closed
   const [hasSeenHint, setHasSeenHint] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [viewMode, setViewMode] = useState("list"); // 'list' or 'grid'
   const [panelHeight, setPanelHeight] = useState(50); // Percentage of viewport height
+  const [panelWidth, setPanelWidth] = useState(30); // Percentage of modal width for desktop
+  const [dragStartWidth, setDragStartWidth] = useState(30); // Track starting width when drag begins
 
   useEffect(() => {
     // Check if mobile
@@ -56,6 +58,8 @@ const CaseStudyModal = ({ work, onClose, onImageClick }) => {
     setShowInfoPanel(false);
     setHasSeenHint(false);
     setPanelHeight(50); // Reset panel height
+    setPanelWidth(30); // Reset panel width
+    setDragStartWidth(30); // Reset drag start width
 
     // Show hint after a brief delay
     const hintTimer = setTimeout(() => {
@@ -71,6 +75,25 @@ const CaseStudyModal = ({ work, onClose, onImageClick }) => {
       unlockScroll();
     };
   }, [work]);
+
+  // ESC key handler to close modal (only when image viewer is not open)
+  useEffect(() => {
+    const handleEscKey = (event) => {
+      if (event.key === 'Escape' && !isImageViewerOpen) {
+        onClose();
+      }
+    };
+
+    // Add event listener when modal is open
+    if (work) {
+      document.addEventListener('keydown', handleEscKey);
+    }
+
+    // Cleanup event listener
+    return () => {
+      document.removeEventListener('keydown', handleEscKey);
+    };
+  }, [work, onClose, isImageViewerOpen]);
 
   // Early return AFTER hooks (React rules)
   if (!work) return null;
@@ -128,7 +151,7 @@ const CaseStudyModal = ({ work, onClose, onImageClick }) => {
         <motion.div
           className="gallery-section"
           style={{
-            width: isMobile ? "100%" : showInfoPanel ? "70%" : "100%",
+            width: isMobile ? "100%" : showInfoPanel ? `${100 - panelWidth}%` : "100%",
             padding: isMobile ? "16px" : "32px",
             paddingTop: isMobile ? "60px" : "32px",
             overflowY: "auto",
@@ -139,7 +162,7 @@ const CaseStudyModal = ({ work, onClose, onImageClick }) => {
             flex: 1,
           }}
           animate={{
-            width: isMobile ? "100%" : showInfoPanel ? "70%" : "100%",
+            width: isMobile ? "100%" : showInfoPanel ? `${100 - panelWidth}%` : "100%",
           }}
           transition={{
             duration: 0.35,
@@ -422,7 +445,7 @@ const CaseStudyModal = ({ work, onClose, onImageClick }) => {
                 ease: [0.16, 1, 0.3, 1],
               }}
               style={{
-                width: isMobile ? "100%" : "30%",
+                width: isMobile ? "100%" : `${panelWidth}%`,
                 height: isMobile ? `${panelHeight}vh` : "auto",
                 minHeight: isMobile ? "30vh" : "auto",
                 maxHeight: isMobile ? "85vh" : "auto",
@@ -445,6 +468,64 @@ const CaseStudyModal = ({ work, onClose, onImageClick }) => {
               }}
               onClick={(e) => e.stopPropagation()}
             >
+              {/* Resize handle for desktop */}
+              {!isMobile && (
+                <motion.div
+                  drag="x"
+                  dragConstraints={{ left: 0, right: 0 }}
+                  dragElastic={0}
+                  dragMomentum={false}
+                  onDragStart={() => {
+                    // Store the current width when drag starts
+                    setDragStartWidth(panelWidth);
+                  }}
+                  onDrag={(e, info) => {
+                    // Calculate new panel width based on actual cursor movement
+                    // Use a more natural scaling: 1px drag = 0.2% width change
+                    const widthChange = -info.offset.x * 0.2;
+                    const newWidth = Math.max(20, Math.min(60, dragStartWidth + widthChange));
+                    setPanelWidth(newWidth);
+                  }}
+                  onDragEnd={() => {
+                    // Keep the panel exactly where the user released it
+                    // No snapping - let it stay at the exact width
+                    // This prevents the jumping behavior
+                  }}
+                  onDoubleClick={() => {
+                    // Toggle between collapsed and expanded on double-click
+                    if (panelWidth <= 25) {
+                      setPanelWidth(60); // Expand
+                    } else {
+                      setPanelWidth(20); // Collapse
+                    }
+                  }}
+                  style={{
+                    position: "absolute",
+                    left: "-8px",
+                    top: 0,
+                    bottom: 0,
+                    width: "16px",
+                    cursor: "col-resize",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    zIndex: 300,
+                  }}
+                  title="Drag to resize panel • Double-click to toggle"
+                >
+                  <motion.div
+                    whileHover={{ backgroundColor: "#667eea", scale: 1.1 }}
+                    style={{
+                      width: "4px",
+                      height: "60px",
+                      background: "#cbd5e0",
+                      borderRadius: "2px",
+                      transition: "background-color 0.2s ease",
+                    }}
+                  />
+                </motion.div>
+              )}
+
               {/* Drag handle for mobile */}
               {isMobile && (
                 <motion.div

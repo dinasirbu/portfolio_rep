@@ -338,10 +338,7 @@
   opacity: 0.8;
 }
 
-.portfolio-card:hover .work-title-overlay {
-  transform: translateY(0);
-  opacity: 1;
-}
+/* Title is now always visible, no hover effect needed */
 
 .portfolio-card:hover .category-badge {
   transform: translateY(0);
@@ -387,8 +384,8 @@
   color: white;
   font-size: 1.1rem;
   font-weight: 600;
-  transform: translateY(10px);
-  opacity: 0;
+  transform: translateY(0);
+  opacity: 1;
   transition: all 0.3s ease;
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
 }
