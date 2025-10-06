@@ -148,17 +148,60 @@ const ImageViewer = ({ images, currentIndex, onClose, onNext, onPrev }) => {
         onTouchMove={onTouchMove}
         onTouchEnd={onTouchEnd}
       >
-        {/* Close button */}
-        <button
-          className="image-viewer-close"
-          onClick={onClose}
-          aria-label="Close image viewer"
-        >
-          ×
-        </button>
+        {/* Mobile tap navigation areas */}
+        {isMobile && images.length > 1 && (
+          <>
+            {/* Left side - Previous image */}
+            <div
+              className="mobile-nav-area mobile-nav-left"
+              onClick={(e) => {
+                e.stopPropagation();
+                onPrev();
+              }}
+              style={{
+                position: "absolute",
+                left: 0,
+                top: 0,
+                bottom: 0,
+                width: "30%",
+                zIndex: 10,
+                cursor: "pointer",
+              }}
+              aria-label="Previous image"
+            />
+            {/* Right side - Next image */}
+            <div
+              className="mobile-nav-area mobile-nav-right"
+              onClick={(e) => {
+                e.stopPropagation();
+                onNext();
+              }}
+              style={{
+                position: "absolute",
+                right: 0,
+                top: 0,
+                bottom: 0,
+                width: "30%",
+                zIndex: 10,
+                cursor: "pointer",
+              }}
+              aria-label="Next image"
+            />
+          </>
+        )}
+        {/* Close button - hidden on mobile */}
+        {!isMobile && (
+          <button
+            className="image-viewer-close"
+            onClick={onClose}
+            aria-label="Close image viewer"
+          >
+            ×
+          </button>
+        )}
 
-        {/* Previous button */}
-        {images.length > 1 && (
+        {/* Previous button - hidden on mobile */}
+        {images.length > 1 && !isMobile && (
           <button
             className="image-viewer-nav image-viewer-prev"
             onClick={onPrev}
@@ -168,8 +211,8 @@ const ImageViewer = ({ images, currentIndex, onClose, onNext, onPrev }) => {
           </button>
         )}
 
-        {/* Next button */}
-        {images.length > 1 && (
+        {/* Next button - hidden on mobile */}
+        {images.length > 1 && !isMobile && (
           <button
             className="image-viewer-nav image-viewer-next"
             onClick={onNext}

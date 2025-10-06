@@ -177,9 +177,11 @@ const Portfolio = () => {
 
         {/* Modals */}
         <CaseStudyModal
+          key={selectedWork?.id || 'no-work'}
           work={selectedWork}
           onClose={handleWorkClose}
           onImageClick={handleImageClick}
+          isImageViewerOpen={selectedImageIndex !== null}
         />
 
         <ImageViewer
