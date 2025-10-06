@@ -11,7 +11,7 @@ const CategoryCard = ({ category, count, isActive, onCategoryChange, previewImag
     // Different layouts for different categories (3+ images)
     const categoryLayouts = {
       'All': 'masonry',        // Large left + 2 stacked right
-      'Branding': 'horizontal', // 3 horizontal strips
+      'Branding': 'masonry',   // Changed from horizontal to masonry collage
       'Logo': 'grid',           // Even 3x grid
       'Packaging': 'asymmetric', // Large top + 2 bottom
       'Social Media': 'vertical' // Large right + 2 stacked left
