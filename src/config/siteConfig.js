@@ -111,7 +111,7 @@ export const ABOUT_CONTENT = {
       },
       {
         id: 'packaging',
-        image: '/portfolio_rep/packaging/selik-presentation/selik-02.jpg',
+        image: '/portfolio_rep/packaging/selik-presentation/Selik-02.jpg',
         title: 'Packaging Design',
         description: 'Designing innovative packaging solutions that stand out on shelves and tell compelling brand stories'
       },
