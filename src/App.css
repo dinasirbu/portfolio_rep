@@ -638,17 +638,18 @@
   color: white;
 }
 
-.footer-line {
-  width: 60px;
-  height: 12px;
-}
-
+.footer-brand-title,
 .footer-line path {
   stroke: white;
 }
 
 .footer-text {
   color: #a0aec0;
+}
+
+.footer-line {
+  width: 60px;
+  height: 12px;
 }
 
 .social-links {
@@ -815,16 +816,26 @@
     padding: 8px 12px;
   }
   
-  .service-item {
-    flex-direction: column;
-    text-align: center;
-    padding: 16px;
+  .services-list {
+    grid-template-columns: 1fr;
+    gap: 26px;
   }
   
-  .service-image-wrapper {
-    width: 100%;
-    height: 120px;
-    margin-bottom: 12px;
+  .service-item {
+    min-height: clamp(230px, 60vw, 300px);
+    border-radius: 22px;
+  }
+  
+  .service-overlay {
+    padding: clamp(22px, 7vw, 34px);
+  }
+  
+  .service-title {
+    font-size: 1.35rem;
+  }
+  
+  .service-description {
+    font-size: 0.95rem;
   }
   
   .cta-content {
@@ -935,8 +946,15 @@
     margin-bottom: 40px;
   }
   
-  .footer-brand-title,
-  .footer-links-title,
+  .services-list {
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+  }
+  
+  .services-list .service-item:nth-of-type(1),
+  .services-list .service-item:nth-of-type(2),
+  .services-list .service-item:nth-of-type(3),
   .footer-services-title,
   .footer-contact-title {
     text-align: center;
@@ -1125,22 +1143,26 @@
     padding: 7px 10px;
   }
   
-  .service-item {
-    padding: 14px;
-    gap: 12px;
+  .services-list {
+    grid-template-columns: 1fr;
+    gap: 22px;
   }
   
-  .service-image-wrapper {
-    width: 100%;
-    height: 100px;
+  .service-item {
+    min-height: clamp(230px, 76vw, 310px);
+    border-radius: 20px;
+  }
+  
+  .service-overlay {
+    padding: clamp(20px, 9vw, 30px);
   }
   
   .service-title {
-    font-size: 1rem;
+    font-size: 1.25rem;
   }
   
   .service-description {
-    font-size: 0.85rem;
+    font-size: 0.9rem;
   }
   
   .cta-content {
@@ -1726,75 +1748,71 @@ html {
   margin: 0 0 32px 0;
 }
 
+
 .services-list {
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 28px;
 }
 
 .service-item {
+  position: relative;
   display: flex;
-  gap: 20px;
-  padding: 20px;
-  background: white;
-  border-radius: 16px;
-  border: 1px solid #e2e8f0;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  align-items: flex-end;
+  min-height: clamp(220px, 28vw, 280px);
+  border-radius: 18px;
   overflow: hidden;
+  background-color: #111827;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  box-shadow: 0 18px 32px rgba(15, 23, 42, 0.14);
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.service-item::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(15, 23, 42, 0.05) 0%, rgba(15, 23, 42, 0.6) 65%, rgba(15, 23, 42, 0.9) 100%);
+  transition: opacity 0.3s ease;
+  opacity: 1;
 }
 
 .service-item:hover {
-  border-color: #667eea;
-  box-shadow: 0 8px 20px rgba(102, 126, 234, 0.12);
+  transform: translateY(-6px);
+  box-shadow: 0 24px 45px rgba(15, 23, 42, 0.25);
 }
 
-.service-item:hover .service-image {
-  transform: scale(1.1);
+.service-item:hover::after {
+  opacity: 0.85;
 }
 
-.service-image-wrapper {
-  flex-shrink: 0;
-  width: 80px;
-  height: 80px;
-  border-radius: 12px;
-  overflow: hidden;
+.service-overlay {
   position: relative;
-  background: #f0f0f0;
-}
-
-.service-image {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.service-image-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(135deg, rgba(102, 126, 234, 0.15) 0%, rgba(118, 75, 162, 0.15) 100%);
   z-index: 1;
+  width: 100%;
+  padding: 26px 28px;
 }
 
-.service-content {
-  flex: 1;
+.service-overlay-content {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-width: 70ch;
 }
 
 .service-title {
-  font-size: 1.125rem;
+  font-size: 1.5rem;
   font-weight: 700;
-  color: #1a202c;
-  margin: 0 0 8px 0;
+  color: #f8fafc;
+  margin: 0;
 }
 
 .service-description {
-  font-size: 0.9375rem;
-  line-height: 1.6;
-  color: #6b7280;
+  font-size: 1rem;
+  line-height: 1.65;
+  color: rgba(248, 250, 252, 0.85);
   margin: 0;
 }
 
@@ -1977,6 +1995,7 @@ html {
 
 .contact-item-content {
   flex: 1;
+  min-width: 0;
 }
 
 .contact-item-title {
@@ -1990,6 +2009,8 @@ html {
   font-size: 1rem;
   color: #6b7280;
   margin: 0;
+  word-break: break-word;
+  overflow-wrap: anywhere;
 }
 
 .contact-item-link {
@@ -1998,6 +2019,10 @@ html {
   text-decoration: none;
   margin: 0;
   transition: color 0.3s ease;
+  display: inline-block;
+  max-width: 100%;
+  word-break: break-word;
+  overflow-wrap: anywhere;
 }
 
 .contact-item-link:hover {
@@ -2311,6 +2336,11 @@ html {
     gap: 40px;
   }
   
+  .services-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 24px;
+  }
+  
   .contact-grid {
     grid-template-columns: 1fr;
     gap: 40px;
@@ -2415,14 +2445,26 @@ html {
     grid-template-columns: 1fr 1fr;
   }
   
-  .service-item {
-    flex-direction: column;
-    text-align: center;
-    align-items: center;
+  .services-list {
+    grid-template-columns: 1fr;
+    gap: 24px;
   }
   
-  .service-image-wrapper {
-    margin: 0 auto;
+  .service-item {
+    min-height: clamp(240px, 78vw, 320px);
+    border-radius: 20px;
+  }
+  
+  .service-overlay {
+    padding: clamp(20px, 8vw, 32px);
+  }
+  
+  .service-title {
+    font-size: 1.3rem;
+  }
+  
+  .service-description {
+    font-size: 0.92rem;
   }
   
   .cta-content {

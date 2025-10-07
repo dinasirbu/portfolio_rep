@@ -1,13 +1,12 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { FOOTER_CONTENT } from "../../config/siteConfig";
-import { SOCIAL_LINKS } from '../../constants/navigation';
+import { FOOTER_CONTENT } from '../../config/siteConfig';
 
 /**
  * Footer Component
- * 
+ *
  * TO EDIT CONTENT: Go to src/config/siteConfig.js and edit FOOTER_CONTENT
- * 
+ *
  * Features:
  * - Brand information
  * - Quick links navigation
@@ -16,8 +15,6 @@ import { SOCIAL_LINKS } from '../../constants/navigation';
  * - Copyright notice
  */
 const Footer = () => {
-  const currentYear = new Date().getFullYear();
-
   return (
     <footer className="footer-section">
       <div className="footer-container">
@@ -101,8 +98,7 @@ const Footer = () => {
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6, delay: 0.4 }}
-        >
-        </motion.div>
+        ></motion.div>
       </div>
     </footer>
   );

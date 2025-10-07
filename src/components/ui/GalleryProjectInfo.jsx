@@ -1,6 +1,6 @@
 import React, { memo } from 'react';
 import { motion } from 'framer-motion';
-import { ChevronRight } from 'lucide-react';
+import { ChevronRight, ChevronDown } from 'lucide-react';
 import { Badge } from './badge';
 import { Button } from './button';
 
@@ -56,11 +56,12 @@ const GalleryProjectInfo = ({
               transition: "all 0.2s ease",
               color: "#64748b",
               flexShrink: 0,
+              transform: isMobile ? 'rotate(0deg)' : 'none'
             }}
             aria-label="Hide project information panel"
             title="Hide info panel"
           >
-            <ChevronRight size={20} />
+            {isMobile ? <ChevronDown size={20} /> : <ChevronRight size={20} />}
           </motion.button>
         </div>
         <div className="project-meta">

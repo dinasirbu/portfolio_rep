@@ -34,9 +34,9 @@ const CaseStudyModal = ({ work, onClose, onImageClick, isImageViewerOpen }) => {
   const [hasSeenHint, setHasSeenHint] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [viewMode, setViewMode] = useState("list"); // 'list' or 'grid'
+  const [panelHeight, setPanelHeight] = useState(50); // Percentage of viewport height
   const [panelWidth, setPanelWidth] = useState(30); // Percentage of modal width for desktop
   const [dragStartWidth, setDragStartWidth] = useState(30); // Track starting width when drag begins
-  const mobilePanelHeight = "calc(100vh - 80px)"; // Full-height bottom sheet allowance
 
   useEffect(() => {
     // Check if mobile
@@ -57,6 +57,7 @@ const CaseStudyModal = ({ work, onClose, onImageClick, isImageViewerOpen }) => {
     // Reset info panel visibility when work changes
     setShowInfoPanel(false);
     setHasSeenHint(false);
+    setPanelHeight(50); // Reset panel height
     setPanelWidth(30); // Reset panel width
     setDragStartWidth(30); // Reset drag start width
 
@@ -295,15 +296,9 @@ const CaseStudyModal = ({ work, onClose, onImageClick, isImageViewerOpen }) => {
 
           {/* Floating Info Badge - Only shown when panel is closed */}
           <AnimatePresence>
-            {(!showInfoPanel || isMobile) && (
+            {!showInfoPanel && (
               <motion.button
-                onClick={() => {
-                  if (showInfoPanel && isMobile) {
-                    setShowInfoPanel(false);
-                    return;
-                  }
-                  setShowInfoPanel(true);
-                }}
+                onClick={() => setShowInfoPanel(true)}
                 className="floating-info-badge"
                 initial={{ opacity: 0, scale: 0.8, y: 20 }}
                 animate={{
@@ -320,11 +315,7 @@ const CaseStudyModal = ({ work, onClose, onImageClick, isImageViewerOpen }) => {
                 }}
                 style={{
                   position: "fixed",
-                  bottom: isMobile
-                    ? showInfoPanel
-                      ? "80px"
-                      : "20px"
-                    : "32px",
+                  bottom: isMobile ? "20px" : "32px",
                   right: isMobile ? "20px" : "32px",
                   left: isMobile ? "20px" : "auto",
                   display: "flex",
@@ -343,29 +334,17 @@ const CaseStudyModal = ({ work, onClose, onImageClick, isImageViewerOpen }) => {
                   boxShadow: hasSeenHint
                     ? "0 4px 20px rgba(102, 126, 234, 0.4)"
                     : "0 4px 20px rgba(102, 126, 234, 0.6), 0 0 0 0 rgba(102, 126, 234, 0.7)",
-                  zIndex: showInfoPanel && isMobile ? 350 : 100,
+                  zIndex: 100,
                   animation: hasSeenHint
                     ? "none"
                     : "pulse-glow 2s ease-in-out 3",
                   backdropFilter: "blur(10px)",
                 }}
-                aria-label={
-                  showInfoPanel && isMobile
-                    ? "Hide project information"
-                    : "Show project information"
-                }
-                title={
-                  showInfoPanel && isMobile
-                    ? "Hide project information"
-                    : "View project details and information"
-                }
+                aria-label="Show project information"
+                title="View project details and information"
               >
-                {showInfoPanel && isMobile ? (
-                  <X size={isMobile ? 16 : 18} />
-                ) : (
-                  <Info size={isMobile ? 16 : 18} />
-                )}
-                <span>{showInfoPanel && isMobile ? "Hide Info" : "Project Info"}</span>
+                <Info size={isMobile ? 16 : 18} />
+                <span>Project Info</span>
               </motion.button>
             )}
           </AnimatePresence>
@@ -467,9 +446,9 @@ const CaseStudyModal = ({ work, onClose, onImageClick, isImageViewerOpen }) => {
               }}
               style={{
                 width: isMobile ? "100%" : `${panelWidth}%`,
-                height: isMobile ? mobilePanelHeight : "auto",
-                minHeight: isMobile ? "60vh" : "auto",
-                maxHeight: isMobile ? "100vh" : "auto",
+                height: isMobile ? `${panelHeight}vh` : "auto",
+                minHeight: isMobile ? "30vh" : "auto",
+                maxHeight: isMobile ? "85vh" : "auto",
                 background: "white",
                 borderLeft: isMobile ? "none" : "1px solid #e2e8f0",
                 borderTop: isMobile ? "1px solid #e2e8f0" : "none",
@@ -547,10 +526,64 @@ const CaseStudyModal = ({ work, onClose, onImageClick, isImageViewerOpen }) => {
                 </motion.div>
               )}
 
+              {/* Drag handle for mobile */}
+              {isMobile && (
+                <motion.div
+                  drag="y"
+                  dragConstraints={{ top: 0, bottom: 0 }}
+                  dragElastic={0}
+                  dragMomentum={false}
+                  _dragX={0}
+                  onDragStart={() => {
+                    // Store initial height to prevent jump
+                    setPanelHeight(panelHeight);
+                  }}
+                  onDrag={(e, info) => {
+                    // Smoothly change panel height based on drag
+                    // Only update if there's meaningful movement (prevents initial jump)
+                    if (Math.abs(info.offset.y) < 5) return;
+
+                    const viewportHeight = window.innerHeight;
+                    const dragPixels = -info.offset.y; // Negative because up is negative
+                    // More responsive: 100px drag = 15vh change
+                    const vhChange = (dragPixels / viewportHeight) * 120;
+                    const newHeight = Math.max(30, Math.min(85, 50 + vhChange));
+                    setPanelHeight(newHeight);
+                  }}
+                  onDragEnd={(e, info) => {
+                    // Close if panel is very small (dragged down a lot)
+                    if (panelHeight < 40) {
+                      setShowInfoPanel(false);
+                      setPanelHeight(50); // Reset for next time
+                    }
+                  }}
+                  style={{
+                    width: "100%",
+                    padding: "12px 0",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    cursor: "grab",
+                    flexShrink: 0,
+                    touchAction: "none",
+                    position: "relative",
+                  }}
+                >
+                  <div
+                    style={{
+                      width: "40px",
+                      height: "4px",
+                      background: "#cbd5e0",
+                      borderRadius: "2px",
+                    }}
+                  />
+                </motion.div>
+              )}
+
               {/* Scrollable container for info - NOT draggable */}
               <div
                 style={{
-                  padding: isMobile ? "20px 20px 20px" : "32px",
+                  padding: isMobile ? "0 20px 20px" : "32px",
                   overflowY: "auto",
                   flex: 1,
                   position: "relative",

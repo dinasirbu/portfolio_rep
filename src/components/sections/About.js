@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
-import { ABOUT_CONTENT } from "../../config/siteConfig";
+import { ABOUT_CONTENT } from '../../config/siteConfig';
 
 /**
  * About Section Component
@@ -33,7 +33,7 @@ const About = () => {
           className="about-header"
           variants={fadeInUp}
           initial="initial"
-          animate={inView ? "animate" : "initial"}
+          animate={inView ? 'animate' : 'initial'}
           transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
         >
           <h2 className="about-section-title">{sectionTitle}</h2>
@@ -47,7 +47,7 @@ const About = () => {
             className="about-story"
             variants={fadeInUp}
             initial="initial"
-            animate={inView ? "animate" : "initial"}
+            animate={inView ? 'animate' : 'initial'}
             transition={{ duration: 0.6, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
           >
             <h3 className="about-story-title">{story.title}</h3>
@@ -81,7 +81,7 @@ const About = () => {
             className="about-services"
             variants={fadeInUp}
             initial="initial"
-            animate={inView ? "animate" : "initial"}
+            animate={inView ? 'animate' : 'initial'}
             transition={{ duration: 0.6, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
           >
             <h3 className="about-services-title">{services.title}</h3>
@@ -90,25 +90,22 @@ const About = () => {
                 <motion.div
                   key={service.id}
                   className="service-item"
+                  style={{ backgroundImage: `url(${service.image})` }}
                   initial={{ opacity: 0, x: 20 }}
                   animate={inView ? { opacity: 1, x: 0 } : {}}
                   transition={{ duration: 0.4, delay: 0.5 + index * 0.1 }}
                   whileHover={{
-                    x: 4,
-                    transition: { duration: 0.2 },
+                    y: -4,
+                    transition: { duration: 0.25 },
                   }}
                 >
-                  <div className="service-image-wrapper">
-                    <img
-                      src={service.image}
-                      alt={service.title}
-                      className="service-image"
-                    />
-                    <div className="service-image-overlay"></div>
-                  </div>
-                  <div className="service-content">
-                    <h4 className="service-title">{service.title}</h4>
-                    <p className="service-description">{service.description}</p>
+                  <div className="service-overlay">
+                    <div className="service-overlay-content">
+                      <h4 className="service-title">{service.title}</h4>
+                      <p className="service-description">
+                        {service.description}
+                      </p>
+                    </div>
                   </div>
                 </motion.div>
               ))}
@@ -121,7 +118,7 @@ const About = () => {
           className="about-cta"
           variants={fadeInUp}
           initial="initial"
-          animate={inView ? "animate" : "initial"}
+          animate={inView ? 'animate' : 'initial'}
           transition={{ duration: 0.6, delay: 0.6, ease: [0.16, 1, 0.3, 1] }}
         >
           <div className="cta-content">

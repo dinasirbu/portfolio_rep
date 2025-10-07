@@ -1292,6 +1292,10 @@
   padding: 40px;
 }
 
+.image-viewer-overlay.mobile-zoomed {
+  padding: 0;
+}
+
 .image-viewer-container {
   position: relative;
   background: white;
@@ -1303,6 +1307,15 @@
   align-items: center;
   justify-content: center;
   /* Dynamic sizing will be applied via inline styles */
+  touch-action: none;
+  user-select: none;
+}
+
+.image-viewer-container.mobile-zoomed {
+  background: transparent;
+  border-radius: 0;
+  box-shadow: none;
+  overflow: visible;
 }
 
 .image-viewer-close {
@@ -1364,9 +1377,26 @@
 .image-viewer-main {
   width: 100%;
   height: 100%;
-  object-fit: contain;
-  image-rendering: -webkit-optimize-contrast;
-  image-rendering: crisp-edges;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  will-change: transform;
+  overflow: hidden;
+}
+
+.image-viewer-main .optimized-image {
+  width: 100%;
+  height: 100%;
+  user-select: none;
+  -webkit-user-drag: none;
+  pointer-events: none;
+  image-rendering: auto;
+  max-width: 100%;
+  max-height: 100%;
+}
+.image-viewer-container.mobile-zoomed .image-viewer-main {
+  overflow: visible;
 }
 
 .image-viewer-counter {
@@ -1386,10 +1416,6 @@
 @media (max-width: 768px) {
   .image-viewer-overlay {
     padding: 20px;
-  }
-  
-  .image-viewer-container {
-    /* Dynamic sizing will be applied via inline styles */
   }
   
   .image-viewer-nav {

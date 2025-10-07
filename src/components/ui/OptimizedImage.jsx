@@ -8,6 +8,10 @@ const OptimizedImage = ({
   onLoad,
   onError,
   placeholder = true,
+  fit = "cover",
+  backgroundColor = "#f8f9fa",
+  imgProps = {},
+  style,
   ...props 
 }) => {
   const [isLoaded, setIsLoaded] = useState(false);
@@ -52,8 +56,15 @@ const OptimizedImage = ({
     onError?.();
   };
 
+  const { style: imgStyle, ...restImgProps } = imgProps;
+
   return (
-    <div ref={imgRef} className={`optimized-image-container ${className}`} {...props}>
+    <div
+      ref={imgRef}
+      className={`optimized-image-container ${className}`}
+      style={{ background: backgroundColor, ...(style || {}) }}
+      {...props}
+    >
       {/* Placeholder/Loading State */}
       {placeholder && !isLoaded && !hasError && (
         <div className="image-placeholder">
@@ -75,10 +86,12 @@ const OptimizedImage = ({
           src={src}
           alt={alt}
           className={`optimized-image ${isLoaded ? 'loaded' : 'loading'}`}
+          style={{ objectFit: fit, ...(imgStyle || {}) }}
           onLoad={handleLoad}
           onError={handleError}
           loading={loading}
           decoding="async"
+          {...restImgProps}
         />
       )}
     </div>
