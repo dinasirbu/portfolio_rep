@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 
-const CategoryCard = ({ category, count, isActive, onCategoryChange, previewImages }) => {
+const CategoryCard = React.forwardRef(
+  ({ category, count, isActive, isHighlighted, onCategoryChange, previewImages }, ref) => {
   // Assign different layout styles to each category for variety
   const getGridLayout = (categoryName, images) => {
     if (!images || images.length === 0) return 'empty';
@@ -22,10 +23,28 @@ const CategoryCard = ({ category, count, isActive, onCategoryChange, previewImag
 
   const gridLayout = getGridLayout(category, previewImages);
 
+  const cardClasses = [
+    'category-card',
+    isActive ? 'active' : '',
+    isHighlighted ? 'highlighted' : ''
+  ]
+    .filter(Boolean)
+    .join(' ');
+
   return (
-    <motion.div 
-      className={`category-card ${isActive ? 'active' : ''}`}
+    <motion.div
+      ref={ref}
+      className={cardClasses}
+      data-category={category}
       onClick={() => onCategoryChange(category)}
+      tabIndex={0}
+      role="button"
+      onKeyDown={(event) => {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault();
+          onCategoryChange(category);
+        }
+      }}
       whileHover={{ y: -6, scale: 1.02 }}
       whileTap={{ scale: 0.98 }}
       transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
@@ -158,9 +177,40 @@ const CategoryCard = ({ category, count, isActive, onCategoryChange, previewImag
       </div>
     </motion.div>
   );
-};
+  }
+);
 
-const CategoryFilter = ({ categories, activeCategory, onCategoryChange, categoryCounts, categoryPreviews }) => {
+CategoryCard.displayName = 'CategoryCard';
+
+const CategoryFilter = ({ categories, activeCategory, highlightedCategory, onCategoryChange, categoryCounts, categoryPreviews }) => {
+  const categoryRefs = useRef({});
+
+  useEffect(() => {
+    if (!highlightedCategory) {
+      return;
+    }
+
+    const cardNode = categoryRefs.current[highlightedCategory];
+
+    if (!cardNode || typeof window === 'undefined') {
+      return;
+    }
+
+    const scrollToCard = () => {
+      cardNode.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'nearest' });
+
+      if (typeof cardNode.focus === 'function') {
+        cardNode.focus({ preventScroll: true });
+      }
+    };
+
+    const rafId = window.requestAnimationFrame(scrollToCard);
+
+    return () => {
+      window.cancelAnimationFrame(rafId);
+    };
+  }, [highlightedCategory]);
+
   return (
     <div className="category-filter">
       <div className="category-cards">
@@ -170,8 +220,16 @@ const CategoryFilter = ({ categories, activeCategory, onCategoryChange, category
             category={category}
             count={categoryCounts[category] ?? 0}
             isActive={activeCategory === category}
+            isHighlighted={highlightedCategory === category}
             onCategoryChange={onCategoryChange}
             previewImages={categoryPreviews[category]}
+            ref={(node) => {
+              if (node) {
+                categoryRefs.current[category] = node;
+              } else {
+                delete categoryRefs.current[category];
+              }
+            }}
           />
         ))}
       </div>

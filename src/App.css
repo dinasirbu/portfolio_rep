@@ -764,6 +764,17 @@
   .hero-visual {
     height: 350px;
   }
+
+  .showcase-overlay {
+    text-align: left;
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-end;
+  }
+
+  .showcase-label {
+    text-align: left;
+  }
   
   /* About Mobile */
   .about-section {
@@ -795,6 +806,13 @@
   .about-story-title,
   .about-services-title {
     font-size: 1.5rem;
+  }
+
+  .about-story-title {
+    text-align: left;
+  }
+
+  .about-services-title {
     text-align: center;
   }
   
@@ -829,6 +847,12 @@
   .service-overlay {
     padding: clamp(22px, 7vw, 34px);
   }
+
+  .service-overlay-content {
+    align-items: flex-start;
+    text-align: left;
+    gap: 6px;
+  }
   
   .service-title {
     font-size: 1.35rem;
@@ -836,6 +860,7 @@
   
   .service-description {
     font-size: 0.95rem;
+    line-height: 1.5;
   }
   
   .cta-content {
@@ -885,11 +910,16 @@
   .contact-info-title {
     font-size: 1.5rem;
     text-align: left;
+    margin-bottom: 8px;
   }
   
   .contact-info-text {
     font-size: 0.95rem;
     text-align: left;
+  }
+
+  .contact-info {
+    gap: 20px;
   }
   
   .contact-details {
@@ -959,6 +989,11 @@
   .footer-contact-title {
     text-align: center;
     font-size: 1.1rem;
+  }
+
+  .footer-brand-title,
+  .footer-links-title {
+    text-align: center;
   }
   
   .footer-brand-text {
@@ -1294,7 +1329,7 @@
   .footer-services-title,
   .footer-contact-title {
     font-size: 1rem;
-    margin-bottom: 16px;
+    margin-bottom: 8px;
   }
   
   .footer-social-link {
@@ -1788,6 +1823,12 @@ html {
   opacity: 0.85;
 }
 
+/* Specific positioning tweaks for individual service backgrounds */
+.service-item--social {
+  /* Keep social adjustment */
+  background-position: left 29% center;
+}
+
 .service-overlay {
   position: relative;
   z-index: 1;
@@ -1803,15 +1844,15 @@ html {
 }
 
 .service-title {
-  font-size: 1.5rem;
+  font-size: 1.2rem;
   font-weight: 700;
   color: #f8fafc;
   margin: 0;
 }
 
 .service-description {
-  font-size: 1rem;
-  line-height: 1.65;
+  font-size: 0.75rem;
+  line-height: 1.35;
   color: rgba(248, 250, 252, 0.85);
   margin: 0;
 }
@@ -1952,7 +1993,7 @@ html {
 .contact-info {
   display: flex;
   flex-direction: column;
-  gap: 32px;
+  gap: 24px;
 }
 
 .contact-info-title {
@@ -2216,7 +2257,7 @@ html {
   font-size: 1.125rem;
   font-weight: 700;
   color: white;
-  margin: 0 0 20px 0;
+  margin: 0 0 16px 0;
 }
 
 .footer-links-list,
@@ -2497,3 +2538,5 @@ html {
     text-align: center;
   }
 }
+
+/* (Removed logo override to revert to default cover & center positioning) */

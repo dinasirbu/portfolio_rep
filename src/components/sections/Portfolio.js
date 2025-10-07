@@ -1,20 +1,20 @@
-import React from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { useInView } from "react-intersection-observer";
-import { usePortfolio } from "../../hooks/usePortfolio";
-import { PORTFOLIO_CONTENT } from "../../config/siteConfig";
-import PortfolioCard from "../ui/PortfolioCard";
-import CategoryFilter from "../ui/CategoryFilter";
-import CaseStudyModal from "../ui/CaseStudyModal";
-import ImageViewer from "../ui/ImageViewer";
-import "./Portfolio.css";
+import React, { useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { useInView } from 'react-intersection-observer';
+import { usePortfolio } from '../../hooks/usePortfolio';
+import { PORTFOLIO_CONTENT } from '../../config/siteConfig';
+import PortfolioCard from '../ui/PortfolioCard';
+import CategoryFilter from '../ui/CategoryFilter';
+import CaseStudyModal from '../ui/CaseStudyModal';
+import ImageViewer from '../ui/ImageViewer';
+import './Portfolio.css';
 
 /**
  * Portfolio Section Component
- * 
+ *
  * TO EDIT CONTENT: Go to src/config/siteConfig.js and edit PORTFOLIO_CONTENT
  * TO ADD PROJECTS: Go to src/constants/portfolioData.js
- * 
+ *
  * Features:
  * - Category filtering
  * - Project galleries
@@ -24,10 +24,11 @@ import "./Portfolio.css";
  */
 const Portfolio = () => {
   const [ref, inView] = useInView({ threshold: 0.2, triggerOnce: true });
-  
+
   const {
     activeCategory,
     showCategoryCards,
+    highlightedCategory,
     selectedWork,
     selectedImageIndex,
     categoryCounts,
@@ -44,14 +45,41 @@ const Portfolio = () => {
     handlePrevImage,
   } = usePortfolio();
 
+  useEffect(() => {
+    if (showCategoryCards) {
+      return;
+    }
+
+    if (typeof window === 'undefined' || typeof document === 'undefined') {
+      return;
+    }
+
+    const scrollToBreadcrumb = () => {
+      const breadcrumb = document.querySelector(
+        '#portfolio .category-breadcrumb'
+      );
+      const target = breadcrumb || document.getElementById('portfolio');
+
+      if (target && typeof target.scrollIntoView === 'function') {
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    };
+
+    const rafId = window.requestAnimationFrame(scrollToBreadcrumb);
+
+    return () => {
+      window.cancelAnimationFrame(rafId);
+    };
+  }, [showCategoryCards]);
+
   const fadeInUp = {
     initial: { opacity: 0, y: 60 },
-    animate: { opacity: 1, y: 0 }
+    animate: { opacity: 1, y: 0 },
   };
 
   const transition = {
     duration: 0.6,
-    ease: [0.16, 1, 0.3, 1]
+    ease: [0.16, 1, 0.3, 1],
   };
 
   return (
@@ -62,7 +90,7 @@ const Portfolio = () => {
           className="portfolio-header"
           variants={fadeInUp}
           initial="initial"
-          animate={inView ? "animate" : "initial"}
+          animate={inView ? 'animate' : 'initial'}
           transition={transition}
         >
           <h2 className="portfolio-title">{PORTFOLIO_CONTENT.sectionTitle}</h2>
@@ -77,15 +105,16 @@ const Portfolio = () => {
           <motion.div
             variants={fadeInUp}
             initial="initial"
-            animate={inView ? "animate" : "initial"}
+            animate={inView ? 'animate' : 'initial'}
             transition={transition}
           >
             <CategoryFilter
               categories={categories}
-              activeCategory={activeCategory}
+              activeCategory={showCategoryCards ? null : activeCategory}
               onCategoryChange={handleCategoryChange}
               categoryCounts={categoryCounts}
               categoryPreviews={categoryPreviews}
+              highlightedCategory={highlightedCategory}
             />
           </motion.div>
         ) : (
@@ -127,15 +156,19 @@ const Portfolio = () => {
               </button>
               <span className="breadcrumb-separator">/</span>
               <span className="breadcrumb-current">
-                {activeCategory === "All" ? "All Projects" : activeCategory}
+                {activeCategory === 'All' ? 'All Projects' : activeCategory}
               </span>
               <span className="breadcrumb-count">
-                ({filteredWorks.length}{" "}
-                {filteredWorks.length === 1 ? "project" : "projects"})
+                ({filteredWorks.length}{' '}
+                {filteredWorks.length === 1 ? 'project' : 'projects'})
               </span>
             </motion.div>
 
-            <div className={`portfolio-grid ${filteredWorks.length === 1 ? 'single-card' : ''}`}>
+            <div
+              className={`portfolio-grid ${
+                filteredWorks.length === 1 ? 'single-card' : ''
+              }`}
+            >
               <AnimatePresence mode="wait">
                 {filteredWorks.map((work, i) => (
                   <motion.div
@@ -164,9 +197,9 @@ const Portfolio = () => {
                 animate="animate"
                 transition={transition}
                 style={{
-                  textAlign: "center",
-                  padding: "40px 0",
-                  color: "#6b7280",
+                  textAlign: 'center',
+                  padding: '40px 0',
+                  color: '#6b7280',
                 }}
               >
                 <p>No projects found in this category.</p>

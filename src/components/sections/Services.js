@@ -2,13 +2,14 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
 import { SERVICES } from '../../constants/content';
+import { navigateToPortfolioCategory } from '../../utils/navigation';
 import WigglyLine from '../shared/WigglyLine';
 import { fadeInUp, scaleIn, defaultTransition } from '../../utils/animations';
 
 const Services = () => {
   const [ref, inView] = useInView({
     threshold: 0.3,
-    triggerOnce: true
+    triggerOnce: true,
   });
 
   return (
@@ -18,7 +19,7 @@ const Services = () => {
           className="section-header"
           variants={fadeInUp}
           initial="initial"
-          animate={inView ? "animate" : "initial"}
+          animate={inView ? 'animate' : 'initial'}
           transition={defaultTransition}
         >
           <h2 className="section-title">Services</h2>
@@ -30,9 +31,18 @@ const Services = () => {
             <motion.div
               key={service.id}
               className="service-card"
+              role="button"
+              tabIndex={0}
+              onClick={() => navigateToPortfolioCategory(service.id)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  navigateToPortfolioCategory(service.id);
+                }
+              }}
               variants={scaleIn}
               initial="initial"
-              animate={inView ? "animate" : "initial"}
+              animate={inView ? 'animate' : 'initial'}
               transition={{ ...defaultTransition, delay: index * 0.1 }}
               whileHover={{ y: -10, scale: 1.02 }}
             >

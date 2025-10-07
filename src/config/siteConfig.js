@@ -108,7 +108,7 @@ export const ABOUT_CONTENT = {
     items: [
       {
         id: 'branding',
-        image: '/portfolio_rep/branding/renee-presentation/renee-10.jpg',
+        image: '/portfolio_rep/branding/granier-presentation/granier-17.jpg',
         title: 'Brand Identity',
         description:
           'Creating cohesive visual identities that embody brand values and resonate with target audiences',
@@ -124,7 +124,7 @@ export const ABOUT_CONTENT = {
       {
         id: 'logo',
         image:
-          '/portfolio_rep/logo/concept-store-presentation/concept-store-03.jpg',
+          '/portfolio_rep/logo/concept-store-presentation/concept-store-07.jpg',
         title: 'Logo Design',
         description:
           'Crafting memorable logos that capture brand essence and work across all applications',

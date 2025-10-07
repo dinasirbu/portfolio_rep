@@ -2,6 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
 import { ABOUT_CONTENT } from '../../config/siteConfig';
+import { navigateToPortfolioCategory } from '../../utils/navigation';
 
 /**
  * About Section Component
@@ -21,6 +22,9 @@ const About = () => {
     initial: { opacity: 0, y: 60 },
     animate: { opacity: 1, y: 0 },
   };
+
+  const handleServiceClick = (serviceId) =>
+    navigateToPortfolioCategory(serviceId);
 
   const { sectionTitle, sectionSubtitle, story, skills, services, cta } =
     ABOUT_CONTENT;
@@ -89,8 +93,17 @@ const About = () => {
               {services.items.map((service, index) => (
                 <motion.div
                   key={service.id}
-                  className="service-item"
+                  className={`service-item service-item--${service.id}`}
                   style={{ backgroundImage: `url(${service.image})` }}
+                  role="button"
+                  tabIndex={0}
+                  onClick={() => handleServiceClick(service.id)}
+                  onKeyDown={(event) => {
+                    if (event.key === 'Enter' || event.key === ' ') {
+                      event.preventDefault();
+                      handleServiceClick(service.id);
+                    }
+                  }}
                   initial={{ opacity: 0, x: 20 }}
                   animate={inView ? { opacity: 1, x: 0 } : {}}
                   transition={{ duration: 0.4, delay: 0.5 + index * 0.1 }}
