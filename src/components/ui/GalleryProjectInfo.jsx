@@ -10,11 +10,14 @@ const GalleryProjectInfo = ({
   onToggleInfo,
   showInfoPanel,
   isMobile,
+  isLandscape = false,
 }) => {
   if (!work?.caseStudy) return null;
 
   const { summary, client, project, year, role, objectives, tags } =
     work.caseStudy;
+
+  const shouldUseDownChevron = isMobile || isLandscape;
 
   return (
     <motion.div
@@ -56,12 +59,12 @@ const GalleryProjectInfo = ({
               transition: "all 0.2s ease",
               color: "#64748b",
               flexShrink: 0,
-              transform: isMobile ? 'rotate(0deg)' : 'none'
+              transform: shouldUseDownChevron ? 'rotate(0deg)' : 'none'
             }}
             aria-label="Hide project information panel"
             title="Hide info panel"
           >
-            {isMobile ? <ChevronDown size={20} /> : <ChevronRight size={20} />}
+            {shouldUseDownChevron ? <ChevronDown size={20} /> : <ChevronRight size={20} />}
           </motion.button>
         </div>
         <div className="project-meta">

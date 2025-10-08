@@ -38,26 +38,38 @@ const ImageViewer = ({ images, currentIndex, onClose, onNext, onPrev }) => {
 
   const isOpen = currentIndex !== null && images && images.length > 0;
 
+  const resolveIsMobile = useCallback(() => {
+    if (typeof window === "undefined") return false;
+
+    const coarsePointer = window.matchMedia?.("(pointer: coarse)")?.matches ?? false;
+    const width = window.innerWidth;
+
+    // Treat touch devices as mobile regardless of orientation, or narrow viewports on desktop
+    return coarsePointer || width <= 820;
+  }, []);
+
   useEffect(() => {
     // Only run effects if viewer should be open
     if (!isOpen) return;
 
     const checkMobile = () => {
-      setIsMobile(window.innerWidth <= 768);
+      setIsMobile(resolveIsMobile());
     };
 
     checkMobile();
     window.addEventListener("resize", checkMobile);
+    window.screen?.orientation?.addEventListener?.("change", checkMobile);
 
     // Lock body scroll when viewer is open
     lockScroll();
 
     return () => {
       window.removeEventListener("resize", checkMobile);
+      window.screen?.orientation?.removeEventListener?.("change", checkMobile);
       // Unlock scroll when viewer closes
       unlockScroll();
     };
-  }, [isOpen]);
+  }, [isOpen, resolveIsMobile]);
 
   const flushTransform = useCallback(() => {
     if (pendingTransformRef.current) {

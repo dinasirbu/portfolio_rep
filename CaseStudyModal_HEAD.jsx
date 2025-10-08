@@ -122,6 +122,12 @@ const CaseStudyModal = ({ work, onClose, onImageClick, isImageViewerOpen }) => {
         position: "relative",
       };
 
+  const galleryViewClassNames = [
+    "gallery-grid",
+    isMobile ? "gallery-grid--mobile" : "gallery-grid--desktop",
+    !isMobile || viewMode === "grid" ? "gallery-grid--grid" : "gallery-grid--list",
+  ].join(" ");
+
   return (
     <div
       className="custom-modal-overlay"
@@ -200,6 +206,7 @@ const CaseStudyModal = ({ work, onClose, onImageClick, isImageViewerOpen }) => {
 
           {/* Gallery header */}
           <div
+            className="gallery-section-header"
             style={{
               marginBottom: isMobile ? "16px" : "24px",
               textAlign: "center",
@@ -208,6 +215,7 @@ const CaseStudyModal = ({ work, onClose, onImageClick, isImageViewerOpen }) => {
           >
             <h2
               id="project-title"
+              className="gallery-section-title"
               style={{
                 fontSize: isMobile ? "1.3rem" : "1.8rem",
                 fontWeight: 700,
@@ -220,75 +228,35 @@ const CaseStudyModal = ({ work, onClose, onImageClick, isImageViewerOpen }) => {
 
             {/* View Mode Toggle - Mobile Only - Compact Version */}
             {isMobile ? (
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  gap: "8px",
-                  margin: "-50px 0",
-                }}
-              >
-                <span style={{ fontSize: "0.85rem", color: "#718096" }}>
+              <div className="view-mode-toggle view-mode-toggle--mobile">
+                <span className="view-mode-toggle__count">
                   {work.caseStudy?.gallery?.length || 0} images
                 </span>
-                <div
-                  style={{
-                    display: "flex",
-                    gap: "4px",
-                    background: "#f1f5f9",
-                    padding: "3px",
-                    borderRadius: "6px",
-                  }}
-                >
+                <div className="view-mode-toggle__buttons">
                   <button
                     onClick={() => setViewMode("list")}
-                    style={{
-                      padding: "6px 12px",
-                      background:
-                        viewMode === "list" ? "#667eea" : "transparent",
-                      color: viewMode === "list" ? "white" : "#64748b",
-                      border: "none",
-                      borderRadius: "4px",
-                      fontSize: "0.75rem",
-                      fontWeight: 600,
-                      cursor: "pointer",
-                      transition: "all 0.2s ease",
-                      display: "flex",
-                      alignItems: "center",
-                      gap: "4px",
-                    }}
+                    type="button"
+                    className="view-mode-toggle__button"
+                    data-active={viewMode === "list"}
                     title="List view"
                   >
-                    <List size={14} />
+                    <List size={14} aria-hidden="true" />
                     <span>List</span>
                   </button>
                   <button
                     onClick={() => setViewMode("grid")}
-                    style={{
-                      padding: "6px 12px",
-                      background:
-                        viewMode === "grid" ? "#667eea" : "transparent",
-                      color: viewMode === "grid" ? "white" : "#64748b",
-                      border: "none",
-                      borderRadius: "4px",
-                      fontSize: "0.75rem",
-                      fontWeight: 600,
-                      cursor: "pointer",
-                      transition: "all 0.2s ease",
-                      display: "flex",
-                      alignItems: "center",
-                      gap: "4px",
-                    }}
+                    type="button"
+                    className="view-mode-toggle__button"
+                    data-active={viewMode === "grid"}
                     title="Grid view"
                   >
-                    <Grid2X2 size={14} />
+                    <Grid2X2 size={14} aria-hidden="true" />
                     <span>Grid</span>
                   </button>
                 </div>
               </div>
             ) : (
-              <p style={{ fontSize: "1rem", color: "#718096", margin: 0 }}>
+              <p className="gallery-section-count" style={{ fontSize: "1rem", color: "#718096", margin: 0 }}>
                 {work.caseStudy?.gallery?.length || 0} images
               </p>
             )}
@@ -351,33 +319,7 @@ const CaseStudyModal = ({ work, onClose, onImageClick, isImageViewerOpen }) => {
 
           {/* Gallery Grid/List */}
           {cs?.gallery && cs.gallery.length > 0 ? (
-            <div
-              style={{
-                display: isMobile && viewMode === "list" ? "flex" : "grid",
-                flexDirection:
-                  isMobile && viewMode === "list" ? "column" : undefined,
-                gridTemplateColumns:
-                  isMobile && viewMode === "grid"
-                    ? "repeat(2, 1fr)"
-                    : !isMobile
-                    ? "repeat(auto-fit, minmax(280px, 1fr))"
-                    : undefined,
-                gap: isMobile
-                  ? viewMode === "list"
-                    ? "16px"
-                    : "12px"
-                  : "20px",
-                padding: isMobile ? "16px" : "24px",
-                background: "#fafbfc",
-                border: "1px solid #e2e8f0",
-                borderRadius: isMobile ? "8px" : "12px",
-                flex: 1,
-                overflowY: "auto",
-                margin: 0,
-                minHeight: isMobile ? "200px" : "400px",
-                WebkitOverflowScrolling: "touch",
-              }}
-            >
+            <div className={galleryViewClassNames}>
               {cs.gallery.map((img, i) => (
                 <motion.img
                   key={i}
@@ -390,22 +332,8 @@ const CaseStudyModal = ({ work, onClose, onImageClick, isImageViewerOpen }) => {
                   transition={{ delay: i * 0.05, duration: 0.4 }}
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
-                  style={{
-                    width: "100%",
-                    height: isMobile
-                      ? viewMode === "list"
-                        ? "auto"
-                        : "150px"
-                      : "200px",
-                    aspectRatio:
-                      isMobile && viewMode === "list" ? "auto" : undefined,
-                    objectFit:
-                      isMobile && viewMode === "list" ? "contain" : "cover",
-                    borderRadius: isMobile ? "6px" : "8px",
-                    cursor: "pointer",
-                    boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)",
-                    WebkitTapHighlightColor: "transparent",
-                  }}
+                  className="gallery-grid__image"
+                  data-view={isMobile ? viewMode : "grid"}
                 />
               ))}
             </div>

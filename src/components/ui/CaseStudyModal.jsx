@@ -22,7 +22,7 @@
  * - Mobile (<768px): Full-screen stacked layout with bottom sheet for info
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useCallback, useLayoutEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Info, X, List, Grid2X2 } from "lucide-react";
 import GalleryProjectInfo from "./GalleryProjectInfo";
@@ -33,23 +33,85 @@ const CaseStudyModal = ({ work, onClose, onImageClick, isImageViewerOpen }) => {
   const [showInfoPanel, setShowInfoPanel] = useState(false); // Default to closed
   const [hasSeenHint, setHasSeenHint] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const [isLandscape, setIsLandscape] = useState(false);
   const [viewMode, setViewMode] = useState("list"); // 'list' or 'grid'
   const [panelWidth, setPanelWidth] = useState(30); // Percentage of modal width for desktop
   const [dragStartWidth, setDragStartWidth] = useState(30); // Track starting width when drag begins
-  const mobilePanelHeight = "calc(100vh - 80px)"; // Full-height bottom sheet allowance
+  const mobileInfoMaxHeight = isLandscape ? "100vh" : "calc(100vh - 96px)";
+  const [showViewControls, setShowViewControls] = useState(true);
+  const [transitionDirection, setTransitionDirection] = useState("forward");
+  const [isNearGalleryEnd, setIsNearGalleryEnd] = useState(false);
+
+  const galleryScrollRef = useRef(null);
+  const galleryGridRef = useRef(null);
+  const swipeStateRef = useRef(null);
+  const suppressNextTapRef = useRef(false);
+  const swipeResetTimeoutRef = useRef(null);
+  const showViewControlsRef = useRef(true);
+  const lastControlsToggleRef = useRef(0);
+  const headerRef = useRef(null);
+  const headerHeightRef = useRef(0);
+  const [headerHeight, setHeaderHeight] = useState(0);
+  const headerOffsetRef = useRef(0);
+  const [headerOffset, setHeaderOffset] = useState(0);
+  const lastScrollPositionsRef = useRef(new WeakMap());
+
+  const setShowViewControlsSafely = useCallback((nextValue) => {
+    if (showViewControlsRef.current === nextValue) return;
+    showViewControlsRef.current = nextValue;
+    setShowViewControls(nextValue);
+  }, []);
+
+  const triggerHapticFeedback = useCallback(() => {
+    if (typeof window === "undefined") return;
+    const navigatorRef = window.navigator;
+    if (navigatorRef?.userActivation && !navigatorRef.userActivation.hasBeenActive) {
+      return;
+    }
+    if (navigatorRef?.vibrate) {
+      navigatorRef.vibrate(15);
+    }
+    try {
+      const anyNavigator = navigatorRef;
+      if (anyNavigator?.webkit?.messageHandlers?.notificationFeedbackGenerator) {
+        anyNavigator.webkit.messageHandlers.notificationFeedbackGenerator.postMessage("impact");
+      }
+    } catch (error) {
+      // Ignore unsupported bridges
+    }
+  }, []);
+
+  const changeViewMode = useCallback(
+    (mode, directionHint = null) => {
+      if (mode === viewMode) return;
+      const direction = directionHint || (mode === "grid" ? "forward" : "backward");
+      setTransitionDirection(direction);
+      setViewMode(mode);
+      triggerHapticFeedback();
+    },
+    [triggerHapticFeedback, viewMode]
+  );
 
   useEffect(() => {
-    // Check if mobile
+    if (typeof window === "undefined") return undefined;
+
     const checkMobile = () => {
-      setIsMobile(window.innerWidth <= 768);
+      const coarsePointer = window.matchMedia?.("(pointer: coarse)")?.matches ?? false;
+      const width = window.innerWidth;
+      const height = window.innerHeight;
+      setIsMobile(coarsePointer || width <= 820);
+      setIsLandscape(coarsePointer && width > height);
     };
 
     checkMobile();
     window.addEventListener("resize", checkMobile);
+    window.screen?.orientation?.addEventListener?.("change", checkMobile);
 
-    return () => window.removeEventListener("resize", checkMobile);
+    return () => {
+      window.removeEventListener("resize", checkMobile);
+      window.screen?.orientation?.removeEventListener?.("change", checkMobile);
+    };
   }, []);
-
   useEffect(() => {
     // Only run effects if work exists
     if (!work) return;
@@ -57,8 +119,15 @@ const CaseStudyModal = ({ work, onClose, onImageClick, isImageViewerOpen }) => {
     // Reset info panel visibility when work changes
     setShowInfoPanel(false);
     setHasSeenHint(false);
+    setViewMode("list");
     setPanelWidth(30); // Reset panel width
     setDragStartWidth(30); // Reset drag start width
+    setTransitionDirection("forward");
+    setIsNearGalleryEnd(false);
+    headerOffsetRef.current = 0;
+    setHeaderOffset(0);
+    setShowViewControlsSafely(true);
+  lastControlsToggleRef.current = typeof performance !== "undefined" ? performance.now() : Date.now();
 
     // Show hint after a brief delay
     const hintTimer = setTimeout(() => {
@@ -73,7 +142,7 @@ const CaseStudyModal = ({ work, onClose, onImageClick, isImageViewerOpen }) => {
       // Unlock scroll when modal closes
       unlockScroll();
     };
-  }, [work]);
+  }, [work, setShowViewControlsSafely]);
 
   // ESC key handler to close modal (only when image viewer is not open)
   useEffect(() => {
@@ -93,6 +162,167 @@ const CaseStudyModal = ({ work, onClose, onImageClick, isImageViewerOpen }) => {
       document.removeEventListener('keydown', handleEscKey);
     };
   }, [work, onClose, isImageViewerOpen]);
+
+  useLayoutEffect(() => {
+    if (typeof window === "undefined") return undefined;
+
+    if (!isMobile) {
+      headerHeightRef.current = 0;
+      setHeaderHeight(0);
+      headerOffsetRef.current = 0;
+      setHeaderOffset(0);
+      return undefined;
+    }
+
+    const node = headerRef.current;
+    if (!node) return undefined;
+
+    const measure = () => {
+      const rect = node.getBoundingClientRect();
+      const nextHeight = rect?.height ?? 0;
+      if (Math.abs(nextHeight - headerHeightRef.current) > 0.5) {
+        headerHeightRef.current = nextHeight;
+        setHeaderHeight(nextHeight);
+        if (headerOffsetRef.current > nextHeight) {
+          headerOffsetRef.current = nextHeight;
+          setHeaderOffset(nextHeight);
+        }
+      }
+    };
+
+    measure();
+
+    let resizeObserver;
+    if (typeof ResizeObserver !== "undefined") {
+      resizeObserver = new ResizeObserver(() => measure());
+      resizeObserver.observe(node);
+    } else {
+      window.addEventListener("resize", measure);
+      window.addEventListener("orientationchange", measure);
+    }
+
+    return () => {
+      if (resizeObserver) {
+        resizeObserver.disconnect();
+      } else {
+        window.removeEventListener("resize", measure);
+        window.removeEventListener("orientationchange", measure);
+      }
+    };
+  }, [isMobile, work, viewMode]);
+
+  useEffect(() => {
+    const getNow = () => (typeof performance !== "undefined" ? performance.now() : Date.now());
+
+    if (!isMobile) {
+      headerOffsetRef.current = 0;
+      setHeaderOffset(0);
+      headerHeightRef.current = 0;
+      setHeaderHeight(0);
+      setShowViewControlsSafely(true);
+      lastControlsToggleRef.current = getNow();
+      setIsNearGalleryEnd(false);
+      lastScrollPositionsRef.current = new WeakMap();
+      return undefined;
+    }
+
+    const scrollContainer = galleryScrollRef.current;
+
+    if (!scrollContainer) return undefined;
+
+    const targets = [scrollContainer];
+    lastScrollPositionsRef.current = new WeakMap();
+    const positionsMap = lastScrollPositionsRef.current;
+    lastControlsToggleRef.current = getNow();
+
+    const updateNearBottom = () => {
+      const node = scrollContainer;
+      const distanceFromBottom = node.scrollHeight - node.clientHeight - node.scrollTop;
+      if (!Number.isNaN(distanceFromBottom)) {
+        setIsNearGalleryEnd(distanceFromBottom < 240);
+      }
+    };
+
+    const applyHeaderOffset = (nextOffset) => {
+      const height = headerHeightRef.current || headerHeight;
+      if (height <= 0) return;
+
+      const clamped = Math.max(0, Math.min(height, nextOffset));
+      const previous = headerOffsetRef.current;
+      headerOffsetRef.current = clamped;
+
+      if (
+        Math.abs(clamped - previous) > 0.12 ||
+        clamped === 0 ||
+        clamped === height
+      ) {
+        setHeaderOffset(clamped);
+      }
+
+      const hideThreshold = height * 0.9;
+      const showThreshold = height * 0.35;
+      const timestamp = getNow();
+
+      if (showViewControlsRef.current && clamped >= hideThreshold) {
+        if (timestamp - lastControlsToggleRef.current > 100) {
+          lastControlsToggleRef.current = timestamp;
+          setShowViewControlsSafely(false);
+        }
+      } else if (!showViewControlsRef.current && clamped <= showThreshold) {
+        if (timestamp - lastControlsToggleRef.current > 100) {
+          lastControlsToggleRef.current = timestamp;
+          setShowViewControlsSafely(true);
+        }
+      }
+    };
+
+    targets.forEach((node) => {
+      positionsMap.set(node, node.scrollTop);
+    });
+
+    const handleScroll = (event) => {
+      const target = event.target;
+      const current = target.scrollTop;
+      const lastPosition = positionsMap.get(target) ?? current;
+      const delta = current - lastPosition;
+      positionsMap.set(target, current);
+
+      if (target === scrollContainer && Number.isFinite(delta) && delta !== 0) {
+        applyHeaderOffset(headerOffsetRef.current + delta);
+      }
+
+      updateNearBottom();
+    };
+
+    targets.forEach((node) => node.addEventListener("scroll", handleScroll, { passive: true }));
+
+    return () => {
+      targets.forEach((node) => {
+        node.removeEventListener("scroll", handleScroll);
+        positionsMap.delete(node);
+      });
+    };
+  }, [isMobile, headerHeight, setShowViewControlsSafely, work]);
+
+  useEffect(() => {
+    if (isMobile) {
+      const now = typeof performance !== "undefined" ? performance.now() : Date.now();
+      lastControlsToggleRef.current = now;
+      headerOffsetRef.current = 0;
+      setHeaderOffset(0);
+      setShowViewControlsSafely(true);
+    }
+  }, [viewMode, isMobile, setShowViewControlsSafely]);
+
+  useEffect(() => {
+    showViewControlsRef.current = showViewControls;
+  }, [showViewControls]);
+
+  useEffect(() => () => {
+    if (swipeResetTimeoutRef.current) {
+      clearTimeout(swipeResetTimeoutRef.current);
+    }
+  }, []);
 
   // Early return AFTER hooks (React rules)
   if (!work) return null;
@@ -120,6 +350,150 @@ const CaseStudyModal = ({ work, onClose, onImageClick, isImageViewerOpen }) => {
         flexDirection: "row",
         position: "relative",
       };
+
+  const totalImages = cs?.gallery?.length || 0;
+  const imageCountLabel = `${totalImages} image${totalImages === 1 ? "" : "s"}`;
+  const isCompactGallery = totalImages > 0 && totalImages <= 4;
+  const isGridView = !isMobile || viewMode === "grid";
+  const showFloatingInfoButton = !showInfoPanel || isMobile;
+  const animationDirection = transitionDirection === "backward" ? "backward" : "forward";
+  const galleryViewKey = `${isGridView ? "grid" : "list"}-${isMobile ? "mobile" : "desktop"}`;
+  const mobileFabBottom = isNearGalleryEnd
+    ? "calc(env(safe-area-inset-bottom, 0px) + 96px)"
+    : "calc(env(safe-area-inset-bottom, 0px) + 54px)";
+
+  const galleryViewClassNames = [
+    "gallery-grid",
+    isMobile ? "gallery-grid--mobile" : "gallery-grid--desktop",
+    isGridView ? "gallery-grid--grid" : "gallery-grid--list",
+    isMobile && isLandscape && isGridView ? "gallery-grid--landscape" : "",
+    isMobile && isGridView && isCompactGallery ? "gallery-grid--compact" : "",
+    isMobile && showFloatingInfoButton ? "gallery-grid--has-fab" : "",
+    isMobile && showFloatingInfoButton && isNearGalleryEnd ? "gallery-grid--fab-expanded" : "",
+  ]
+    .filter(Boolean)
+    .join(" ");
+
+  const headerClassNames = [
+    "gallery-section-header",
+    isMobile ? "gallery-section-header--mobile" : "",
+  ]
+    .filter(Boolean)
+    .join(" ");
+
+  const viewSwitchClassNames = [
+    "gallery-view-switch",
+    showViewControls ? "" : "gallery-view-switch--hidden",
+  ]
+    .filter(Boolean)
+    .join(" ");
+
+  const headerVisibilityFraction = headerHeight > 0 ? Math.min(1, headerOffset / headerHeight) : 0;
+  const headerOpacity = isMobile ? Math.max(0, 1 - headerVisibilityFraction) : 1;
+  const headerTransform = isMobile ? `translate3d(0, -${headerOffset.toFixed(2)}px, 0)` : undefined;
+  const headerPointerEvents = isMobile ? (headerOpacity < 0.05 ? "none" : "auto") : undefined;
+  const headerMarginBottom = isMobile
+    ? `${Math.max(0, 12 * headerOpacity).toFixed(1)}px`
+    : "16px";
+
+  const galleryGridVariants = {
+    initial: (direction) => ({
+      opacity: 0,
+      x: direction === "backward" ? -36 : 36,
+      scale: 0.98,
+    }),
+    animate: {
+      opacity: 1,
+      x: 0,
+      scale: 1,
+      transition: {
+        duration: 0.35,
+        ease: [0.16, 1, 0.3, 1],
+      },
+    },
+    exit: (direction) => ({
+      opacity: 0,
+      x: direction === "backward" ? 36 : -36,
+      scale: 0.98,
+      transition: {
+        duration: 0.25,
+        ease: [0.16, 1, 0.3, 1],
+      },
+    }),
+  };
+
+  const handleGalleryTouchStart = (event) => {
+    if (!isMobile || event.touches.length !== 1) return;
+
+    const touch = event.touches[0];
+    swipeStateRef.current = {
+      startX: touch.clientX,
+      startY: touch.clientY,
+      lastX: touch.clientX,
+      lastY: touch.clientY,
+      isVertical: false,
+    };
+  };
+
+  const handleGalleryTouchMove = (event) => {
+    if (!isMobile || !swipeStateRef.current) return;
+
+    const touch = event.touches[0];
+    const state = swipeStateRef.current;
+    const deltaX = touch.clientX - state.startX;
+    const deltaY = touch.clientY - state.startY;
+
+    if (!state.isVertical && Math.abs(deltaY) > Math.abs(deltaX) && Math.abs(deltaY) > 10) {
+      state.isVertical = true;
+      return;
+    }
+
+    state.lastX = touch.clientX;
+    state.lastY = touch.clientY;
+  };
+
+  const handleGalleryTouchEnd = (event) => {
+    if (!isMobile || !swipeStateRef.current) {
+      swipeStateRef.current = null;
+      return;
+    }
+
+    const state = swipeStateRef.current;
+
+    if (state.isVertical) {
+      swipeStateRef.current = null;
+      return;
+    }
+
+    const endX = state.lastX ?? state.startX;
+    const deltaX = endX - state.startX;
+
+    if (Math.abs(deltaX) >= 50) {
+      if (deltaX < 0 && viewMode !== "grid") {
+        changeViewMode("grid", "forward");
+      } else if (deltaX > 0 && viewMode !== "list") {
+        changeViewMode("list", "backward");
+      }
+
+      if (swipeResetTimeoutRef.current) {
+        clearTimeout(swipeResetTimeoutRef.current);
+      }
+
+      suppressNextTapRef.current = true;
+      swipeResetTimeoutRef.current = window.setTimeout(() => {
+        suppressNextTapRef.current = false;
+        swipeResetTimeoutRef.current = null;
+      }, 350);
+      event.preventDefault();
+      event.stopPropagation();
+    }
+
+    swipeStateRef.current = null;
+  };
+
+  const handleGalleryTouchCancel = () => {
+    swipeStateRef.current = null;
+  };
 
   return (
     <div
@@ -149,10 +523,10 @@ const CaseStudyModal = ({ work, onClose, onImageClick, isImageViewerOpen }) => {
         {/* Gallery Section - Main Focus */}
         <motion.div
           className="gallery-section"
+          ref={galleryScrollRef}
           style={{
             width: isMobile ? "100%" : showInfoPanel ? `${100 - panelWidth}%` : "100%",
-            padding: isMobile ? "16px" : "32px",
-            paddingTop: isMobile ? "60px" : "32px",
+            padding: isMobile ? "0 14px 24px" : "32px",
             overflowY: "auto",
             display: "flex",
             flexDirection: "column",
@@ -199,19 +573,25 @@ const CaseStudyModal = ({ work, onClose, onImageClick, isImageViewerOpen }) => {
 
           {/* Gallery header */}
           <div
+            ref={headerRef}
+            className={headerClassNames}
             style={{
-              marginBottom: isMobile ? "16px" : "24px",
-              textAlign: "center",
-              position: "relative",
+              marginBottom: headerMarginBottom,
+              textAlign: "left",
+              transform: headerTransform,
+              opacity: headerOpacity,
+              pointerEvents: headerPointerEvents,
+              willChange: isMobile ? "transform, opacity" : undefined,
             }}
           >
             <h2
               id="project-title"
+              className="gallery-section-title"
               style={{
                 fontSize: isMobile ? "1.3rem" : "1.8rem",
                 fontWeight: 700,
                 color: "#1a202c",
-                marginBottom: isMobile ? "10px" : "8px",
+                marginBottom: isMobile ? "6px" : "0",
               }}
             >
               {work.title}
@@ -220,77 +600,41 @@ const CaseStudyModal = ({ work, onClose, onImageClick, isImageViewerOpen }) => {
             {/* View Mode Toggle - Mobile Only - Compact Version */}
             {isMobile ? (
               <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  gap: "8px",
-                  margin: "-50px 0",
-                }}
+                className={viewSwitchClassNames}
+                data-active-mode={viewMode}
+                aria-hidden={!showViewControls}
               >
-                <span style={{ fontSize: "0.85rem", color: "#718096" }}>
-                  {work.caseStudy?.gallery?.length || 0} images
-                </span>
-                <div
-                  style={{
-                    display: "flex",
-                    gap: "4px",
-                    background: "#f1f5f9",
-                    padding: "3px",
-                    borderRadius: "6px",
-                  }}
+                <span className="gallery-view-switch__rail" aria-hidden="true" />
+                <button
+                  onClick={() => changeViewMode("list", "backward")}
+                  type="button"
+                  className="gallery-view-switch__button"
+                  data-active={viewMode === "list"}
+                  aria-pressed={viewMode === "list"}
+                  disabled={!showViewControls}
+                  title="Show images in a vertical list"
                 >
-                  <button
-                    onClick={() => setViewMode("list")}
-                    style={{
-                      padding: "6px 12px",
-                      background:
-                        viewMode === "list" ? "#667eea" : "transparent",
-                      color: viewMode === "list" ? "white" : "#64748b",
-                      border: "none",
-                      borderRadius: "4px",
-                      fontSize: "0.75rem",
-                      fontWeight: 600,
-                      cursor: "pointer",
-                      transition: "all 0.2s ease",
-                      display: "flex",
-                      alignItems: "center",
-                      gap: "4px",
-                    }}
-                    title="List view"
-                  >
-                    <List size={14} />
-                    <span>List</span>
-                  </button>
-                  <button
-                    onClick={() => setViewMode("grid")}
-                    style={{
-                      padding: "6px 12px",
-                      background:
-                        viewMode === "grid" ? "#667eea" : "transparent",
-                      color: viewMode === "grid" ? "white" : "#64748b",
-                      border: "none",
-                      borderRadius: "4px",
-                      fontSize: "0.75rem",
-                      fontWeight: 600,
-                      cursor: "pointer",
-                      transition: "all 0.2s ease",
-                      display: "flex",
-                      alignItems: "center",
-                      gap: "4px",
-                    }}
-                    title="Grid view"
-                  >
-                    <Grid2X2 size={14} />
-                    <span>Grid</span>
-                  </button>
-                </div>
+                  <span className="gallery-view-switch__icon">
+                    <List size={16} aria-hidden="true" />
+                  </span>
+                  <span className="gallery-view-switch__label">List</span>
+                </button>
+                <button
+                  onClick={() => changeViewMode("grid", "forward")}
+                  type="button"
+                  className="gallery-view-switch__button"
+                  data-active={viewMode === "grid"}
+                  aria-pressed={viewMode === "grid"}
+                  disabled={!showViewControls}
+                  title="Show images in a grid"
+                >
+                  <span className="gallery-view-switch__icon">
+                    <Grid2X2 size={16} aria-hidden="true" />
+                  </span>
+                  <span className="gallery-view-switch__label">Grid</span>
+                </button>
               </div>
-            ) : (
-              <p style={{ fontSize: "1rem", color: "#718096", margin: 0 }}>
-                {work.caseStudy?.gallery?.length || 0} images
-              </p>
-            )}
+            ) : null}
           </div>
 
           {/* Floating Info Badge - Only shown when panel is closed */}
@@ -319,11 +663,13 @@ const CaseStudyModal = ({ work, onClose, onImageClick, isImageViewerOpen }) => {
                   ease: [0.16, 1, 0.3, 1],
                 }}
                 style={{
-                  position: "fixed",
+                  position: isMobile ? "fixed" : "fixed",
                   bottom: isMobile
                     ? showInfoPanel
-                      ? "80px"
-                      : "20px"
+                      ? isLandscape
+                        ? "24px"
+                        : "80px"
+                      : mobileFabBottom
                     : "32px",
                   right: isMobile ? "20px" : "32px",
                   left: isMobile ? "20px" : "auto",
@@ -372,64 +718,50 @@ const CaseStudyModal = ({ work, onClose, onImageClick, isImageViewerOpen }) => {
 
           {/* Gallery Grid/List */}
           {cs?.gallery && cs.gallery.length > 0 ? (
-            <div
-              style={{
-                display: isMobile && viewMode === "list" ? "flex" : "grid",
-                flexDirection:
-                  isMobile && viewMode === "list" ? "column" : undefined,
-                gridTemplateColumns:
-                  isMobile && viewMode === "grid"
-                    ? "repeat(2, 1fr)"
-                    : !isMobile
-                    ? "repeat(auto-fit, minmax(280px, 1fr))"
-                    : undefined,
-                gap: isMobile
-                  ? viewMode === "list"
-                    ? "16px"
-                    : "12px"
-                  : "20px",
-                padding: isMobile ? "16px" : "24px",
-                background: "#fafbfc",
-                border: "1px solid #e2e8f0",
-                borderRadius: isMobile ? "8px" : "12px",
-                flex: 1,
-                overflowY: "auto",
-                margin: 0,
-                minHeight: isMobile ? "200px" : "400px",
-                WebkitOverflowScrolling: "touch",
-              }}
-            >
-              {cs.gallery.map((img, i) => (
-                <motion.img
-                  key={i}
-                  src={img.src}
-                  alt={img.alt || `${work.title} ${i + 1}`}
-                  loading="lazy"
-                  onClick={() => onImageClick(i)}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: i * 0.05, duration: 0.4 }}
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  style={{
-                    width: "100%",
-                    height: isMobile
-                      ? viewMode === "list"
-                        ? "auto"
-                        : "150px"
-                      : "200px",
-                    aspectRatio:
-                      isMobile && viewMode === "list" ? "auto" : undefined,
-                    objectFit:
-                      isMobile && viewMode === "list" ? "contain" : "cover",
-                    borderRadius: isMobile ? "6px" : "8px",
-                    cursor: "pointer",
-                    boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)",
-                    WebkitTapHighlightColor: "transparent",
-                  }}
-                />
-              ))}
-            </div>
+            <AnimatePresence mode="wait" custom={animationDirection}>
+              <motion.div
+                key={galleryViewKey}
+                className={galleryViewClassNames}
+                ref={galleryGridRef}
+                onTouchStart={handleGalleryTouchStart}
+                onTouchMove={handleGalleryTouchMove}
+                onTouchEnd={handleGalleryTouchEnd}
+                onTouchCancel={handleGalleryTouchCancel}
+                variants={galleryGridVariants}
+                initial="initial"
+                animate="animate"
+                exit="exit"
+                custom={animationDirection}
+              >
+                {cs.gallery.map((img, i) => (
+                  <motion.img
+                    key={i}
+                    src={img.src}
+                    alt={img.alt || `${work.title} ${i + 1}`}
+                    loading="lazy"
+                    onClick={() => {
+                      if (isMobile && suppressNextTapRef.current) {
+                        suppressNextTapRef.current = false;
+                        return;
+                      }
+                      onImageClick(i);
+                    }}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: i * 0.05, duration: 0.4 }}
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    className="gallery-grid__image"
+                    data-view={isMobile ? viewMode : "grid"}
+                  />
+                ))}
+                {totalImages > 0 && (
+                  <span className="gallery-grid__count-chip" aria-label={`Gallery contains ${imageCountLabel}`}>
+                    {imageCountLabel}
+                  </span>
+                )}
+              </motion.div>
+            </AnimatePresence>
           ) : (
             <div
               style={{
@@ -467,22 +799,23 @@ const CaseStudyModal = ({ work, onClose, onImageClick, isImageViewerOpen }) => {
               }}
               style={{
                 width: isMobile ? "100%" : `${panelWidth}%`,
-                height: isMobile ? mobilePanelHeight : "auto",
-                minHeight: isMobile ? "60vh" : "auto",
-                maxHeight: isMobile ? "100vh" : "auto",
+                height: isMobile ? "auto" : "auto",
+                minHeight: isMobile ? "auto" : "auto",
+                maxHeight: isMobile ? mobileInfoMaxHeight : "auto",
                 background: "white",
                 borderLeft: isMobile ? "none" : "1px solid #e2e8f0",
-                borderTop: isMobile ? "1px solid #e2e8f0" : "none",
+                borderTop: isMobile && !isLandscape ? "1px solid #e2e8f0" : "none",
                 display: "flex",
                 flexDirection: "column",
                 flexShrink: 0,
                 position: isMobile ? "fixed" : "relative",
-                bottom: isMobile ? 0 : "auto",
+                bottom: isMobile && !isLandscape ? 0 : "auto",
+                top: isMobile && isLandscape ? 0 : "auto",
                 left: isMobile ? 0 : "auto",
                 right: isMobile ? 0 : "auto",
-                borderTopLeftRadius: isMobile ? "20px" : 0,
-                borderTopRightRadius: isMobile ? "20px" : 0,
-                boxShadow: isMobile
+                borderTopLeftRadius: isMobile && !isLandscape ? "20px" : 0,
+                borderTopRightRadius: isMobile && !isLandscape ? "20px" : 0,
+                boxShadow: isMobile && !isLandscape
                   ? "0 -4px 20px rgba(0, 0, 0, 0.15)"
                   : "none",
                 zIndex: 200,
@@ -555,6 +888,7 @@ const CaseStudyModal = ({ work, onClose, onImageClick, isImageViewerOpen }) => {
                   flex: 1,
                   position: "relative",
                   WebkitOverflowScrolling: "touch",
+                  touchAction: "auto",
                 }}
               >
                 <GalleryProjectInfo
@@ -563,6 +897,7 @@ const CaseStudyModal = ({ work, onClose, onImageClick, isImageViewerOpen }) => {
                   onToggleInfo={() => setShowInfoPanel(false)}
                   showInfoPanel={showInfoPanel}
                   isMobile={isMobile}
+                  isLandscape={isLandscape}
                 />
               </div>
             </motion.div>
