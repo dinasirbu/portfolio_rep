@@ -1519,6 +1519,8 @@
 
 .gallery-section-header--mobile {
   width: 100%;
+  align-items: center;
+  text-align: center;
 }
 
 .gallery-section-title {
@@ -1534,6 +1536,8 @@
   position: sticky;
   top: -4px;
   display: flex;
+  flex-wrap: wrap;
+  align-items: center;
   justify-content: center;
   gap: 8px;
   padding: 6px 4px 2px;
@@ -1546,6 +1550,19 @@
   max-width: 100%;
   margin: 0 auto;
   z-index: 45;
+}
+
+.gallery-view-switch__count {
+  flex-basis: 100%;
+  text-align: center;
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #475569;
+  margin-top: 2px;
+  opacity: 0.9;
+  transition: opacity 0.25s ease;
 }
 
 .gallery-view-switch__rail { display:none; }
@@ -1685,21 +1702,6 @@
   transform: scale(1.02);
 }
 
-.gallery-grid__count-chip {
-  position: absolute;
-  top: 16px;
-  right: 16px;
-  background: rgba(15, 23, 42, 0.85);
-  color: #f8fafc;
-  font-size: 0.75rem;
-  font-weight: 600;
-  letter-spacing: 0.02em;
-  padding: 6px 12px;
-  border-radius: 999px;
-  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.2);
-  pointer-events: none;
-}
-
 /* Mobile Touch Optimizations */
 * {
   -webkit-tap-highlight-color: transparent;
@@ -1716,7 +1718,7 @@
 /* Responsive Design */
 @media (max-width: 1200px) {
   /* Adjust modal layout for tablets */
-  .custom-modal {
+  .custom-modal--desktop {
     width: 98vw !important;
     height: 95vh !important;
   }
@@ -1724,24 +1726,24 @@
 
 @media (max-width: 1024px) {
   /* Stack layout on tablets */
-  .custom-modal {
+  .custom-modal--desktop {
     flex-direction: column !important;
   }
   
-  .custom-modal > div:first-child {
+  .custom-modal--desktop > div:first-child {
     width: 100% !important;
     height: 60%;
     overflow-y: auto;
   }
   
-  .custom-modal > div:last-child {
+  .custom-modal--desktop > div:last-child {
     width: 100% !important;
     height: 40%;
     border-left: none !important;
     border-top: 1px solid #e2e8f0 !important;
   }
   
-  .floating-info-badge {
+  .custom-modal--desktop .floating-info-badge {
     bottom: 20px !important;
     left: 20px !important;
     padding: 10px 16px !important;
@@ -1829,52 +1831,45 @@
   }
   
   /* Modal Mobile Styles */
-  .custom-modal-overlay {
+  .custom-modal-overlay--mobile {
     padding: 0 !important;
     align-items: flex-start !important;
   }
   
-  .custom-modal {
+  .custom-modal--mobile {
     width: 100vw !important;
     height: 100vh !important;
     max-height: 100vh !important;
     border-radius: 0 !important;
   }
   
-  .gallery-section {
+  .custom-modal--mobile .gallery-section {
     padding: 0 12px 20px !important;
     /* padding-top: 60px !important; */
   }
   
-  .gallery-section-header {
+  .custom-modal--mobile .gallery-section-header {
     margin-bottom: 16px !important;
   }
   
-  .gallery-section-title {
+  .custom-modal--mobile .gallery-section-title {
     font-size: 1.5rem !important;
   }
 
   .gallery-view-switch { top:-6px; padding:4px 0 0; gap:6px; }
   
-  .gallery-grid {
+  .custom-modal--mobile .gallery-grid {
     padding: 16px !important;
     gap: 12px !important;
     grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)) !important;
   }
 
-  .gallery-grid__count-chip {
-    top: 12px;
-    right: 12px;
-    font-size: 0.7rem;
-    padding: 5px 10px;
-  }
-  
   /* Gallery Project Info Mobile */
-  .gallery-project-info {
+  .custom-modal--mobile .gallery-project-info {
     padding-bottom: 60px;
   }
 
-  .gallery-project-info .project-title {
+  .custom-modal--mobile .gallery-project-info .project-title {
     font-size: 1.5rem;
     margin-bottom: 12px;
   }
@@ -2043,95 +2038,95 @@
   }
   
   /* Modal Small Mobile */
-  .gallery-section {
+  .custom-modal--mobile .gallery-section {
     padding: 0 8px 16px !important;
     /* padding-top: x !important; */
   }
   
-  .gallery-section-title {
+  .custom-modal--mobile .gallery-section-title {
     font-size: 1.3rem !important;
     margin-bottom: 6px !important;
   }
   
-  .gallery-section-count {
+  .custom-modal--mobile .gallery-section-count {
     font-size: 0.9rem !important;
   }
   
-  .gallery-grid {
+  .custom-modal--mobile .gallery-grid {
     padding: 12px !important;
     gap: 10px !important;
     min-height: 150px !important;
   }
 
-  .gallery-grid--grid {
+  .custom-modal--mobile .gallery-grid--grid {
     display: grid !important;
     grid-template-columns: repeat(2, 1fr) !important;
   }
 
-  .gallery-grid--list {
+  .custom-modal--mobile .gallery-grid--list {
     display: flex !important;
     flex-direction: column;
     gap: 16px;
     min-height: auto !important;
   }
   
-  .gallery-grid__image {
+  .custom-modal--mobile .gallery-grid__image {
     height: 120px !important;
   }
 
-  .gallery-grid__image[data-view="list"] {
+  .custom-modal--mobile .gallery-grid__image[data-view="list"] {
     height: auto !important;
     max-height: none !important;
     object-fit: contain !important;
   }
   
   /* Gallery Info Small Mobile */
-  .gallery-project-info {
+  .custom-modal--mobile .gallery-project-info {
     padding-bottom: 50px;
   }
   
-  .gallery-project-info .project-title {
+  .custom-modal--mobile .gallery-project-info .project-title {
     font-size: 1.35rem;
     line-height: 1.3;
   }
   
-  .gallery-project-info .project-meta {
+  .custom-modal--mobile .gallery-project-info .project-meta {
     font-size: 0.85rem;
     gap: 10px;
   }
   
-  .gallery-project-info .section-title {
+  .custom-modal--mobile .gallery-project-info .section-title {
     font-size: 0.9rem;
     padding-bottom: 6px;
     margin-bottom: 10px;
   }
   
-  .gallery-project-info .summary,
-  .gallery-project-info .role-text {
+  .custom-modal--mobile .gallery-project-info .summary,
+  .custom-modal--mobile .gallery-project-info .role-text {
     font-size: 0.85rem;
     line-height: 1.6;
   }
   
-  .gallery-project-info .objectives-list {
+  .custom-modal--mobile .gallery-project-info .objectives-list {
     margin-top: -4px;
   }
   
-  .gallery-project-info .objectives-list li {
+  .custom-modal--mobile .gallery-project-info .objectives-list li {
     font-size: 0.8rem;
     margin-bottom: 6px;
     padding-left: 16px;
   }
   
-  .gallery-project-info .skill-tag {
+  .custom-modal--mobile .gallery-project-info .skill-tag {
     font-size: 0.7rem;
     padding: 4px 8px;
   }
   
-  .gallery-project-info .gallery-info-section {
+  .custom-modal--mobile .gallery-project-info .gallery-info-section {
     margin-bottom: 24px;
   }
   
-  .gallery-project-info .close-btn {
+  .custom-modal--mobile .gallery-project-info .close-btn {
     font-size: 0.9rem;
     padding: 10px 20px;
   }

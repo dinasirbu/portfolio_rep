@@ -97,10 +97,19 @@ const CaseStudyModal = ({ work, onClose, onImageClick, isImageViewerOpen }) => {
 
     const checkMobile = () => {
       const coarsePointer = window.matchMedia?.("(pointer: coarse)")?.matches ?? false;
+      const prefersHover = window.matchMedia?.("(hover: hover)")?.matches ?? false;
       const width = window.innerWidth;
       const height = window.innerHeight;
-      setIsMobile(coarsePointer || width <= 820);
-      setIsLandscape(coarsePointer && width > height);
+      const shortestSide = Math.min(width, height);
+
+      const baseMobileWidth = width <= 768;
+      const touchOnlyDevice = coarsePointer && !prefersHover;
+      const touchAdaptiveLayout = touchOnlyDevice && (width <= 1024 || shortestSide <= 820);
+
+      const shouldUseMobileLayout = baseMobileWidth || touchAdaptiveLayout;
+
+      setIsMobile(shouldUseMobileLayout);
+      setIsLandscape(shouldUseMobileLayout && width > height);
     };
 
     checkMobile();
@@ -226,14 +235,11 @@ const CaseStudyModal = ({ work, onClose, onImageClick, isImageViewerOpen }) => {
       return undefined;
     }
 
-    const scrollContainer = galleryScrollRef.current;
+  const scrollContainer = galleryScrollRef.current;
 
-    if (!scrollContainer) return undefined;
+  if (!scrollContainer) return undefined;
 
-    const targets = [scrollContainer];
-    lastScrollPositionsRef.current = new WeakMap();
-    const positionsMap = lastScrollPositionsRef.current;
-    lastControlsToggleRef.current = getNow();
+  lastControlsToggleRef.current = getNow();
 
     const updateNearBottom = () => {
       const node = scrollContainer;
@@ -243,64 +249,40 @@ const CaseStudyModal = ({ work, onClose, onImageClick, isImageViewerOpen }) => {
       }
     };
 
-    const applyHeaderOffset = (nextOffset) => {
+    const updateHeaderState = (scrollTopValue) => {
       const height = headerHeightRef.current || headerHeight;
       if (height <= 0) return;
 
-      const clamped = Math.max(0, Math.min(height, nextOffset));
-      const previous = headerOffsetRef.current;
-      headerOffsetRef.current = clamped;
+      const shouldHideHeader = scrollTopValue > 1;
+      const nextOffset = shouldHideHeader ? height : 0;
 
-      if (
-        Math.abs(clamped - previous) > 0.12 ||
-        clamped === 0 ||
-        clamped === height
-      ) {
-        setHeaderOffset(clamped);
-      }
+      if (headerOffsetRef.current !== nextOffset) {
+        headerOffsetRef.current = nextOffset;
+        setHeaderOffset(nextOffset);
 
-      const hideThreshold = height * 0.9;
-      const showThreshold = height * 0.35;
-      const timestamp = getNow();
+        const timestamp = getNow();
+        const shouldShowControls = nextOffset === 0;
 
-      if (showViewControlsRef.current && clamped >= hideThreshold) {
-        if (timestamp - lastControlsToggleRef.current > 100) {
+        if (showViewControlsRef.current !== shouldShowControls && timestamp - lastControlsToggleRef.current > 80) {
           lastControlsToggleRef.current = timestamp;
-          setShowViewControlsSafely(false);
-        }
-      } else if (!showViewControlsRef.current && clamped <= showThreshold) {
-        if (timestamp - lastControlsToggleRef.current > 100) {
-          lastControlsToggleRef.current = timestamp;
-          setShowViewControlsSafely(true);
+          setShowViewControlsSafely(shouldShowControls);
         }
       }
     };
 
-    targets.forEach((node) => {
-      positionsMap.set(node, node.scrollTop);
-    });
-
-    const handleScroll = (event) => {
-      const target = event.target;
-      const current = target.scrollTop;
-      const lastPosition = positionsMap.get(target) ?? current;
-      const delta = current - lastPosition;
-      positionsMap.set(target, current);
-
-      if (target === scrollContainer && Number.isFinite(delta) && delta !== 0) {
-        applyHeaderOffset(headerOffsetRef.current + delta);
-      }
-
+    const handleScroll = () => {
+      const current = scrollContainer.scrollTop;
+      updateHeaderState(current);
       updateNearBottom();
     };
 
-    targets.forEach((node) => node.addEventListener("scroll", handleScroll, { passive: true }));
+    updateHeaderState(scrollContainer.scrollTop);
+    updateNearBottom();
+
+    scrollContainer.addEventListener("scroll", handleScroll, { passive: true });
 
     return () => {
-      targets.forEach((node) => {
-        node.removeEventListener("scroll", handleScroll);
-        positionsMap.delete(node);
-      });
+      scrollContainer.removeEventListener("scroll", handleScroll);
     };
   }, [isMobile, headerHeight, setShowViewControlsSafely, work]);
 
@@ -495,9 +477,23 @@ const CaseStudyModal = ({ work, onClose, onImageClick, isImageViewerOpen }) => {
     swipeStateRef.current = null;
   };
 
+  const overlayClassName = [
+    "custom-modal-overlay",
+    isMobile ? "custom-modal-overlay--mobile" : "custom-modal-overlay--desktop",
+  ]
+    .filter(Boolean)
+    .join(" ");
+
+  const modalClassName = [
+    "custom-modal",
+    isMobile ? "custom-modal--mobile" : "custom-modal--desktop",
+  ]
+    .filter(Boolean)
+    .join(" ");
+
   return (
     <div
-      className="custom-modal-overlay"
+      className={overlayClassName}
       style={{
         position: "fixed",
         top: 0,
@@ -516,7 +512,7 @@ const CaseStudyModal = ({ work, onClose, onImageClick, isImageViewerOpen }) => {
       aria-labelledby="project-title"
     >
       <div
-        className="custom-modal"
+  className={modalClassName}
         style={modalStyle}
         onClick={(e) => e.stopPropagation()}
       >
@@ -577,7 +573,7 @@ const CaseStudyModal = ({ work, onClose, onImageClick, isImageViewerOpen }) => {
             className={headerClassNames}
             style={{
               marginBottom: headerMarginBottom,
-              textAlign: "left",
+              textAlign: isMobile ? "center" : "left",
               transform: headerTransform,
               opacity: headerOpacity,
               pointerEvents: headerPointerEvents,
@@ -592,6 +588,7 @@ const CaseStudyModal = ({ work, onClose, onImageClick, isImageViewerOpen }) => {
                 fontWeight: 700,
                 color: "#1a202c",
                 marginBottom: isMobile ? "6px" : "0",
+                textAlign: isMobile ? "center" : "left",
               }}
             >
               {work.title}
@@ -633,6 +630,16 @@ const CaseStudyModal = ({ work, onClose, onImageClick, isImageViewerOpen }) => {
                   </span>
                   <span className="gallery-view-switch__label">Grid</span>
                 </button>
+                {totalImages > 0 ? (
+                  <span
+                    className="gallery-view-switch__count"
+                    role="status"
+                    aria-live="polite"
+                    aria-label={`Gallery contains ${imageCountLabel}`}
+                  >
+                    {imageCountLabel}
+                  </span>
+                ) : null}
               </div>
             ) : null}
           </div>
@@ -755,11 +762,6 @@ const CaseStudyModal = ({ work, onClose, onImageClick, isImageViewerOpen }) => {
                     data-view={isMobile ? viewMode : "grid"}
                   />
                 ))}
-                {totalImages > 0 && (
-                  <span className="gallery-grid__count-chip" aria-label={`Gallery contains ${imageCountLabel}`}>
-                    {imageCountLabel}
-                  </span>
-                )}
               </motion.div>
             </AnimatePresence>
           ) : (
