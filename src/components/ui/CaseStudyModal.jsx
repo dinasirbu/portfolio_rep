@@ -34,13 +34,16 @@ const CaseStudyModal = ({ work, onClose, onImageClick, isImageViewerOpen }) => {
   const [hasSeenHint, setHasSeenHint] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [isLandscape, setIsLandscape] = useState(false);
+  const [isTablet, setIsTablet] = useState(false); // new: differentiate tablet sizing
   const [viewMode, setViewMode] = useState("list"); // 'list' or 'grid'
   const [panelWidth, setPanelWidth] = useState(30); // Percentage of modal width for desktop
   const [dragStartWidth, setDragStartWidth] = useState(30); // Track starting width when drag begins
   const mobileInfoMaxHeight = isLandscape ? "100vh" : "calc(100vh - 96px)";
   const [showViewControls, setShowViewControls] = useState(true);
   const [transitionDirection, setTransitionDirection] = useState("forward");
+  // isNearGalleryEnd retained (no longer used to move FAB) for potential future UX tweaks
   const [isNearGalleryEnd, setIsNearGalleryEnd] = useState(false);
+  // Spacer variables will be computed later (after showFloatingInfoButton is defined) to avoid ReferenceError.
 
   const galleryScrollRef = useRef(null);
   const galleryGridRef = useRef(null);
@@ -55,6 +58,9 @@ const CaseStudyModal = ({ work, onClose, onImageClick, isImageViewerOpen }) => {
   const headerOffsetRef = useRef(0);
   const [headerOffset, setHeaderOffset] = useState(0);
   const lastScrollPositionsRef = useRef(new WeakMap());
+  // New refs for preserving scroll & header state during view mode transitions
+  const prevScrollTopRef = useRef(0);
+  const pendingScrollRestoreRef = useRef(false);
 
   const setShowViewControlsSafely = useCallback((nextValue) => {
     if (showViewControlsRef.current === nextValue) return;
@@ -84,12 +90,17 @@ const CaseStudyModal = ({ work, onClose, onImageClick, isImageViewerOpen }) => {
   const changeViewMode = useCallback(
     (mode, directionHint = null) => {
       if (mode === viewMode) return;
+      // Capture current scroll position BEFORE changing mode (mobile only)
+      if (isMobile && galleryScrollRef.current) {
+        prevScrollTopRef.current = galleryScrollRef.current.scrollTop;
+        pendingScrollRestoreRef.current = true;
+      }
       const direction = directionHint || (mode === "grid" ? "forward" : "backward");
       setTransitionDirection(direction);
       setViewMode(mode);
       triggerHapticFeedback();
     },
-    [triggerHapticFeedback, viewMode]
+    [triggerHapticFeedback, viewMode, isMobile]
   );
 
   useEffect(() => {
@@ -102,11 +113,13 @@ const CaseStudyModal = ({ work, onClose, onImageClick, isImageViewerOpen }) => {
       const height = window.innerHeight;
       const shortestSide = Math.min(width, height);
 
-      const baseMobileWidth = width <= 768;
+  const baseMobileWidth = width <= 768;
+  const tabletWidth = width > 768 && width <= 1024;
       const touchOnlyDevice = coarsePointer && !prefersHover;
       const touchAdaptiveLayout = touchOnlyDevice && (width <= 1024 || shortestSide <= 820);
 
-      const shouldUseMobileLayout = baseMobileWidth || touchAdaptiveLayout;
+  const shouldUseMobileLayout = baseMobileWidth || touchAdaptiveLayout;
+  setIsTablet(tabletWidth && !baseMobileWidth);
 
       setIsMobile(shouldUseMobileLayout);
       setIsLandscape(shouldUseMobileLayout && width > height);
@@ -132,7 +145,7 @@ const CaseStudyModal = ({ work, onClose, onImageClick, isImageViewerOpen }) => {
     setPanelWidth(30); // Reset panel width
     setDragStartWidth(30); // Reset drag start width
     setTransitionDirection("forward");
-    setIsNearGalleryEnd(false);
+  setIsNearGalleryEnd(false); // FAB position now constant
     headerOffsetRef.current = 0;
     setHeaderOffset(0);
     setShowViewControlsSafely(true);
@@ -230,7 +243,7 @@ const CaseStudyModal = ({ work, onClose, onImageClick, isImageViewerOpen }) => {
       setHeaderHeight(0);
       setShowViewControlsSafely(true);
       lastControlsToggleRef.current = getNow();
-      setIsNearGalleryEnd(false);
+  setIsNearGalleryEnd(false); // inactive logic
       lastScrollPositionsRef.current = new WeakMap();
       return undefined;
     }
@@ -241,13 +254,8 @@ const CaseStudyModal = ({ work, onClose, onImageClick, isImageViewerOpen }) => {
 
   lastControlsToggleRef.current = getNow();
 
-    const updateNearBottom = () => {
-      const node = scrollContainer;
-      const distanceFromBottom = node.scrollHeight - node.clientHeight - node.scrollTop;
-      if (!Number.isNaN(distanceFromBottom)) {
-        setIsNearGalleryEnd(distanceFromBottom < 240);
-      }
-    };
+    // Near-bottom detection removed (FAB no longer shifts upward)
+    const updateNearBottom = () => {};
 
     const updateHeaderState = (scrollTopValue) => {
       const height = headerHeightRef.current || headerHeight;
@@ -273,11 +281,11 @@ const CaseStudyModal = ({ work, onClose, onImageClick, isImageViewerOpen }) => {
     const handleScroll = () => {
       const current = scrollContainer.scrollTop;
       updateHeaderState(current);
-      updateNearBottom();
+  // updateNearBottom(); // disabled
     };
 
     updateHeaderState(scrollContainer.scrollTop);
-    updateNearBottom();
+  // updateNearBottom(); // disabled
 
     scrollContainer.addEventListener("scroll", handleScroll, { passive: true });
 
@@ -286,15 +294,36 @@ const CaseStudyModal = ({ work, onClose, onImageClick, isImageViewerOpen }) => {
     };
   }, [isMobile, headerHeight, setShowViewControlsSafely, work]);
 
-  useEffect(() => {
-    if (isMobile) {
-      const now = typeof performance !== "undefined" ? performance.now() : Date.now();
-      lastControlsToggleRef.current = now;
-      headerOffsetRef.current = 0;
-      setHeaderOffset(0);
-      setShowViewControlsSafely(true);
+  // Layout effect: restore scroll & header state smoothly after viewMode changes
+  useLayoutEffect(() => {
+    if (!isMobile || !pendingScrollRestoreRef.current) return;
+    const scroller = galleryScrollRef.current;
+    if (!scroller) {
+      pendingScrollRestoreRef.current = false;
+      return;
     }
-  }, [viewMode, isMobile, setShowViewControlsSafely]);
+    // Clamp previous scrollTop to new bounds (in case layout shrank)
+    const maxScroll = Math.max(0, scroller.scrollHeight - scroller.clientHeight);
+    const targetScroll = Math.min(prevScrollTopRef.current, maxScroll);
+    scroller.scrollTop = targetScroll;
+
+    // Recompute header offset based on restored scroll position without forced reset
+    const height = headerHeightRef.current || headerHeight;
+    if (height > 0) {
+      const shouldHideHeader = scroller.scrollTop > 1;
+      const nextOffset = shouldHideHeader ? height : 0;
+      headerOffsetRef.current = nextOffset;
+      setHeaderOffset(nextOffset);
+      // Maintain view controls visibility logic
+      const timestamp = typeof performance !== "undefined" ? performance.now() : Date.now();
+      lastControlsToggleRef.current = timestamp;
+      const shouldShowControls = nextOffset === 0;
+      if (showViewControlsRef.current !== shouldShowControls) {
+        setShowViewControlsSafely(shouldShowControls);
+      }
+    }
+    pendingScrollRestoreRef.current = false;
+  }, [viewMode, isMobile, headerHeight, setShowViewControlsSafely]);
 
   useEffect(() => {
     showViewControlsRef.current = showViewControls;
@@ -338,11 +367,21 @@ const CaseStudyModal = ({ work, onClose, onImageClick, isImageViewerOpen }) => {
   const isCompactGallery = totalImages > 0 && totalImages <= 4;
   const isGridView = !isMobile || viewMode === "grid";
   const showFloatingInfoButton = !showInfoPanel || isMobile;
+  // Compute spacer height now that showFloatingInfoButton is available
+  const fabApproxHeight = 64; // visual height including shadow
+  const fabMarginBelow = 24; // breathing room below last image
+  // Spacer now reduced by 40% (multiplied by 0.6). Also shown in desktop grid view for consistent bottom clearance.
+  const rawSpacer = fabApproxHeight + fabMarginBelow; // original full spacer
+  const adjustedSpacer = Math.round(rawSpacer * 0.6); // 40% reduction
+  // Show spacer whenever grid view is active (mobile or desktop) OR when mobile FAB is visible in list view.
+  // Spacer only for mobile: show in grid view OR when FAB visible in list view. Never on desktop.
+  const galleryBottomSpacerHeight = isMobile && (isGridView || showFloatingInfoButton)
+    ? adjustedSpacer
+    : 0;
   const animationDirection = transitionDirection === "backward" ? "backward" : "forward";
   const galleryViewKey = `${isGridView ? "grid" : "list"}-${isMobile ? "mobile" : "desktop"}`;
-  const mobileFabBottom = isNearGalleryEnd
-    ? "calc(env(safe-area-inset-bottom, 0px) + 96px)"
-    : "calc(env(safe-area-inset-bottom, 0px) + 54px)";
+  // Constant FAB bottom offset (closer to screen edge)
+  const mobileFabBottom = "calc(env(safe-area-inset-bottom, 0px) + 28px)";
 
   const galleryViewClassNames = [
     "gallery-grid",
@@ -350,8 +389,8 @@ const CaseStudyModal = ({ work, onClose, onImageClick, isImageViewerOpen }) => {
     isGridView ? "gallery-grid--grid" : "gallery-grid--list",
     isMobile && isLandscape && isGridView ? "gallery-grid--landscape" : "",
     isMobile && isGridView && isCompactGallery ? "gallery-grid--compact" : "",
-    isMobile && showFloatingInfoButton ? "gallery-grid--has-fab" : "",
-    isMobile && showFloatingInfoButton && isNearGalleryEnd ? "gallery-grid--fab-expanded" : "",
+  isMobile && showFloatingInfoButton ? "gallery-grid--has-fab" : "",
+  // Removed dynamic expansion class (FAB no longer jumps)
   ]
     .filter(Boolean)
     .join(" ");
@@ -670,12 +709,11 @@ const CaseStudyModal = ({ work, onClose, onImageClick, isImageViewerOpen }) => {
                   ease: [0.16, 1, 0.3, 1],
                 }}
                 style={{
-                  position: isMobile ? "fixed" : "fixed",
+                  position: "fixed",
+                  // Raise FAB slightly when info panel is open on mobile portrait so 'Hide Info' stays visible above panel edge
                   bottom: isMobile
-                    ? showInfoPanel
-                      ? isLandscape
-                        ? "24px"
-                        : "80px"
+                    ? showInfoPanel && !isLandscape
+                      ? "calc(env(safe-area-inset-bottom, 0px) + 56px)"
                       : mobileFabBottom
                     : "32px",
                   right: isMobile ? "20px" : "32px",
@@ -683,24 +721,33 @@ const CaseStudyModal = ({ work, onClose, onImageClick, isImageViewerOpen }) => {
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  gap: "8px",
-                  padding: isMobile ? "14px 20px" : "12px 20px",
-                  background:
-                    "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+                  gap: (isMobile && isLandscape) || isTablet ? "6px" : "8px",
+                  padding: isMobile
+                    ? isLandscape
+                      ? "10px 14px" // mobile landscape
+                      : "14px 20px"
+                    : isTablet
+                      ? "10px 16px" // tablet tighter than desktop
+                      : "12px 20px",
+                  maxWidth: (isMobile && isLandscape) || isTablet ? "220px" : "none",
+                  background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
                   color: "white",
                   border: "none",
-                  borderRadius: "50px",
-                  fontSize: isMobile ? "0.9rem" : "0.95rem",
+                  borderRadius: "46px",
+                  fontSize: isMobile
+                    ? (isLandscape ? "0.8rem" : "0.9rem")
+                    : isTablet
+                      ? "0.85rem"
+                      : "0.95rem",
                   fontWeight: 600,
                   cursor: "pointer",
                   boxShadow: hasSeenHint
                     ? "0 4px 20px rgba(102, 126, 234, 0.4)"
                     : "0 4px 20px rgba(102, 126, 234, 0.6), 0 0 0 0 rgba(102, 126, 234, 0.7)",
                   zIndex: showInfoPanel && isMobile ? 350 : 100,
-                  animation: hasSeenHint
-                    ? "none"
-                    : "pulse-glow 2s ease-in-out 3",
+                  animation: hasSeenHint ? "none" : "pulse-glow 2s ease-in-out 3",
                   backdropFilter: "blur(10px)",
+                  transition: "padding 0.25s ease, gap 0.25s ease, max-width 0.25s ease, font-size 0.25s ease",
                 }}
                 aria-label={
                   showInfoPanel && isMobile
@@ -763,6 +810,14 @@ const CaseStudyModal = ({ work, onClose, onImageClick, isImageViewerOpen }) => {
                   />
                 ))}
               </motion.div>
+              {/* Bottom spacer moved outside grid container for reliable presence in mobile grid mode */}
+              {galleryBottomSpacerHeight > 0 && (
+                <div
+                  className="gallery-bottom-spacer"
+                  style={{ height: galleryBottomSpacerHeight }}
+                  aria-hidden="true"
+                />
+              )}
             </AnimatePresence>
           ) : (
             <div

@@ -1,15 +1,15 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { NAV_ITEMS, PERSONAL_INFO } from "../../config/siteConfig";
+import { NAV_ITEMS, PERSONAL_INFO } from '../../config/siteConfig';
 import { useHeader } from '../../hooks/useHeader';
 import WigglyLine from '../shared/WigglyLine';
 
 /**
  * Header Component
- * 
+ *
  * TO EDIT NAVIGATION: Go to src/config/siteConfig.js and edit NAV_ITEMS
  * TO EDIT LOGO TEXT: Go to src/config/siteConfig.js and edit PERSONAL_INFO.name
- * 
+ *
  * Features:
  * - Fixed header with scroll detection
  * - Desktop navigation menu
@@ -22,7 +22,7 @@ const DesktopNav = ({ onItemClick }) => {
     e.preventDefault();
     const targetId = href.replace('#', '');
     const targetElement = document.getElementById(targetId);
-    
+
     if (targetElement) {
       const headerHeight = 80; // Approximate header height
       const elementPosition = targetElement.getBoundingClientRect().top;
@@ -31,10 +31,10 @@ const DesktopNav = ({ onItemClick }) => {
 
       window.scrollTo({
         top: offsetPosition,
-        behavior: "smooth",
+        behavior: 'smooth',
       });
     }
-    
+
     onItemClick();
   };
 
@@ -59,7 +59,7 @@ const MobileNav = ({ isOpen, onItemClick }) => {
     e.preventDefault();
     const targetId = href.replace('#', '');
     const targetElement = document.getElementById(targetId);
-    
+
     if (targetElement) {
       // Close menu first
       onItemClick();
@@ -73,13 +73,13 @@ const MobileNav = ({ isOpen, onItemClick }) => {
 
         window.scrollTo({
           top: offsetPosition,
-          behavior: "smooth",
+          behavior: 'smooth',
         });
       }, 100);
 
       return;
     }
-    
+
     onItemClick();
   };
 
@@ -89,7 +89,7 @@ const MobileNav = ({ isOpen, onItemClick }) => {
       initial={{ opacity: 0, height: 0 }}
       animate={{
         opacity: isOpen ? 1 : 0,
-        height: isOpen ? 'auto' : 0
+        height: isOpen ? 'auto' : 0,
       }}
       transition={{ duration: 0.3 }}
     >
@@ -108,11 +108,12 @@ const MobileNav = ({ isOpen, onItemClick }) => {
 };
 
 const Header = () => {
-  const { isScrolled, isMobileMenuOpen, toggleMobileMenu, closeMobileMenu } = useHeader();
+  const { isScrolled, isMobileMenuOpen, toggleMobileMenu, closeMobileMenu } =
+    useHeader();
 
   return (
     <motion.header
-      className={`header ${isScrolled ? "scrolled" : ""}`}
+      className={`header ${isScrolled ? 'scrolled' : ''}`}
       initial={{ y: -100 }}
       animate={{ y: 0 }}
       transition={{ duration: 0.8 }}
@@ -123,7 +124,7 @@ const Header = () => {
             className="logo"
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.9 }}
-            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
           >
             <span className="logo-text">{PERSONAL_INFO.logo}</span>
             <WigglyLine className="logo-line" />
@@ -132,7 +133,7 @@ const Header = () => {
           <DesktopNav onItemClick={closeMobileMenu} />
 
           <button
-            className={`mobile-menu-btn ${isMobileMenuOpen ? "active" : ""}`}
+            className={`mobile-menu-btn ${isMobileMenuOpen ? 'active' : ''}`}
             onClick={toggleMobileMenu}
             aria-label="Toggle mobile menu"
           >

@@ -1627,7 +1627,8 @@
   border: 1px solid #e2e8f0;
   border-radius: 12px;
   margin: 0;
-  flex: 1;
+  /* Removed generic flex:1 to avoid forcing the grid to stretch and clip content in certain mobile scenarios.
+     Desktop behavior reintroduced via .gallery-grid--desktop below. */
   overflow-y: auto;
   min-height: 400px;
   -webkit-overflow-scrolling: touch;
@@ -1641,6 +1642,7 @@
 }
 
 .gallery-grid--desktop {
+  flex: 1;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
 }
 
@@ -1658,6 +1660,10 @@
   gap: 16px;
   min-height: 200px;
   overflow: visible;
+  /* On mobile we want the grid to size to its content so the outer scroll container (gallery-section) can measure full height.
+     The base .gallery-grid sets flex:1 which can constrain height and cause some images to appear clipped within the viewport.
+     Override flex here to allow natural content height and ensure all images are part of the scrollable area. */
+  flex: 0 0 auto;
 }
 
 .gallery-grid--compact.gallery-grid--grid {
@@ -1670,11 +1676,21 @@
 }
 
 .gallery-grid--has-fab {
-  padding-bottom: clamp(180px, 32vh, 240px);
+  /* Increased bottom padding to ensure final image fully scrolls above Project Info FAB.
+     Uses CSS variable for easier future tuning. Adjust --fab-clearance-min if FAB size changes. */
+  --fab-clearance-min: 185px; /* previously ~150px */
+  --fab-clearance-vh: 26vh;   /* previously 24vh */
+  --fab-clearance-max: 250px; /* previously 210px */
+  padding-bottom: clamp(var(--fab-clearance-min), var(--fab-clearance-vh), var(--fab-clearance-max));
 }
 
-.gallery-grid--fab-expanded {
-  padding-bottom: clamp(240px, 42vh, 320px);
+/* .gallery-grid--fab-expanded removed (FAB no longer shifts); retained comment for future reference */
+
+/* Dedicated spacer element renders after last image to guarantee scroll clearance
+   preventing FAB overlay. Height tuned via component logic. */
+.gallery-bottom-spacer {
+  width: 100%;
+  flex: 0 0 auto;
 }
 
 .gallery-grid__image {

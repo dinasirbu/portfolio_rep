@@ -25,6 +25,6 @@ export const useHeader = () => {
     isScrolled,
     isMobileMenuOpen,
     toggleMobileMenu,
-    closeMobileMenu
+    closeMobileMenu,
   };
 };
