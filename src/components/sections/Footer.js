@@ -1,6 +1,10 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { FOOTER_CONTENT } from '../../config/siteConfig';
+import {
+  navigateToPortfolioCategory,
+  SERVICE_CATEGORY_MAP,
+} from '../../utils/navigation';
 
 /**
  * Footer Component
@@ -64,11 +68,32 @@ const Footer = () => {
           >
             <h4 className="footer-services-title">Services</h4>
             <ul className="footer-services-list">
-              {FOOTER_CONTENT.services.map((service, index) => (
-                <li key={index}>
-                  <span className="footer-service">{service}</span>
-                </li>
-              ))}
+              {FOOTER_CONTENT.services.map((svc, index) => {
+                // Support both object form {id,label} and legacy string
+                const serviceObj =
+                  typeof svc === 'string' ? { id: null, label: svc } : svc;
+                const { id: serviceId, label } = serviceObj;
+                const isMapped = serviceId && SERVICE_CATEGORY_MAP[serviceId];
+                return (
+                  <li key={serviceId || index}>
+                    <a
+                      href="#portfolio"
+                      className="footer-link footer-service"
+                      onClick={(e) => {
+                        if (isMapped) {
+                          e.preventDefault();
+                          navigateToPortfolioCategory(serviceId);
+                        }
+                      }}
+                      {...(isMapped
+                        ? { 'aria-label': `View ${label} projects` }
+                        : {})}
+                    >
+                      {label}
+                    </a>
+                  </li>
+                );
+              })}
             </ul>
           </motion.div>
 

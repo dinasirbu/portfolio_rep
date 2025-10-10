@@ -219,7 +219,7 @@ export const CONTACT_CONTENT = {
 export const FOOTER_CONTENT = {
   brandTitle: 'Creative',
   brandDescription:
-    'Passionate graphic designer creating compelling visual identities and packaging designs.',
+    'Passionate graphic designer creating compelling visual identities.',
 
   quickLinks: [
     { label: 'Home', href: '#home' },
@@ -228,11 +228,13 @@ export const FOOTER_CONTENT = {
     { label: 'Contact', href: '#contact' },
   ],
 
+  // Services list now explicitly maps to portfolio categories via id
+  // id values must correspond to keys in SERVICE_CATEGORY_MAP (navigation.js)
   services: [
-    'Brand Identity',
-    'Packaging Design',
-    'Logo Design',
-    'Social Media',
+    { id: 'branding', label: 'Brand Identity' },
+    { id: 'packaging', label: 'Packaging Design' },
+    { id: 'logo', label: 'Logo Design' },
+    { id: 'social', label: 'Social Media' },
   ],
 };
 

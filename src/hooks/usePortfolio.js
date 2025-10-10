@@ -1,5 +1,6 @@
 import { useState, useMemo, useCallback, useEffect } from 'react';
 import { WORKS, CATEGORIES } from '../constants/portfolioData';
+import { getVisibleGalleryForWork } from '../utils/gallery';
 
 export const usePortfolio = () => {
   const [activeCategory, setActiveCategory] = useState('All');
@@ -23,7 +24,19 @@ export const usePortfolio = () => {
           setSelectedWork(state.selectedWork);
         }
         if (state.selectedImageIndex !== undefined) {
-          setSelectedImageIndex(state.selectedImageIndex);
+          const galleryForState = getVisibleGalleryForWork(state.selectedWork);
+          if (
+            state.selectedImageIndex === null ||
+            galleryForState.length === 0
+          ) {
+            setSelectedImageIndex(null);
+          } else {
+            const safeIndex = Math.min(
+              Math.max(state.selectedImageIndex, 0),
+              galleryForState.length - 1
+            );
+            setSelectedImageIndex(safeIndex);
+          }
         }
       } else {
         // Default state when no history state
@@ -49,7 +62,15 @@ export const usePortfolio = () => {
         setShowCategoryCards(false);
         setActiveCategory(work.category);
         if (imageIndex !== null) {
-          setSelectedImageIndex(parseInt(imageIndex));
+          const parsedIndex = parseInt(imageIndex, 10);
+          const gallery = getVisibleGalleryForWork(work);
+          if (!Number.isNaN(parsedIndex) && gallery.length > 0) {
+            const safeIndex = Math.min(
+              Math.max(parsedIndex, 0),
+              gallery.length - 1
+            );
+            setSelectedImageIndex(safeIndex);
+          }
         }
       }
     } else if (category !== 'All') {
@@ -73,6 +94,18 @@ export const usePortfolio = () => {
       };
 
       const updatedState = { ...currentState, ...newState };
+
+      const visibleGallery = getVisibleGalleryForWork(
+        updatedState.selectedWork
+      );
+      if (updatedState.selectedImageIndex === null || !visibleGallery.length) {
+        updatedState.selectedImageIndex = null;
+      } else {
+        updatedState.selectedImageIndex = Math.min(
+          Math.max(updatedState.selectedImageIndex, 0),
+          visibleGallery.length - 1
+        );
+      }
 
       // Update URL
       const url = new URL(window.location);
@@ -279,8 +312,14 @@ export const usePortfolio = () => {
 
   const handleImageClick = useCallback(
     (index) => {
-      setSelectedImageIndex(index);
-      updateHistory({ selectedImageIndex: index });
+      const gallery = getVisibleGalleryForWork(selectedWork);
+      if (!gallery.length) {
+        return;
+      }
+
+      const safeIndex = Math.min(Math.max(index, 0), gallery.length - 1);
+      setSelectedImageIndex(safeIndex);
+      updateHistory({ selectedImageIndex: safeIndex });
     },
     [updateHistory]
   );
@@ -291,23 +330,27 @@ export const usePortfolio = () => {
   }, [updateHistory]);
 
   const handleNextImage = useCallback(() => {
-    if (selectedWork?.caseStudy?.gallery) {
-      const gallery = selectedWork.caseStudy.gallery;
-      const newIndex =
-        selectedImageIndex < gallery.length - 1 ? selectedImageIndex + 1 : 0;
-      setSelectedImageIndex(newIndex);
-      updateHistory({ selectedImageIndex: newIndex });
+    const gallery = getVisibleGalleryForWork(selectedWork);
+    if (!gallery.length || selectedImageIndex === null) {
+      return;
     }
+
+    const newIndex =
+      selectedImageIndex < gallery.length - 1 ? selectedImageIndex + 1 : 0;
+    setSelectedImageIndex(newIndex);
+    updateHistory({ selectedImageIndex: newIndex });
   }, [selectedWork, selectedImageIndex, updateHistory]);
 
   const handlePrevImage = useCallback(() => {
-    if (selectedWork?.caseStudy?.gallery) {
-      const gallery = selectedWork.caseStudy.gallery;
-      const newIndex =
-        selectedImageIndex > 0 ? selectedImageIndex - 1 : gallery.length - 1;
-      setSelectedImageIndex(newIndex);
-      updateHistory({ selectedImageIndex: newIndex });
+    const gallery = getVisibleGalleryForWork(selectedWork);
+    if (!gallery.length || selectedImageIndex === null) {
+      return;
     }
+
+    const newIndex =
+      selectedImageIndex > 0 ? selectedImageIndex - 1 : gallery.length - 1;
+    setSelectedImageIndex(newIndex);
+    updateHistory({ selectedImageIndex: newIndex });
   }, [selectedWork, selectedImageIndex, updateHistory]);
 
   return {

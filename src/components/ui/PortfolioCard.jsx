@@ -1,4 +1,5 @@
 import React, { memo } from 'react';
+import { getVisibleGalleryForWork } from '../../utils/gallery';
 import { motion } from 'framer-motion';
 import { Card, CardContent } from './card';
 import { Badge } from './badge';
@@ -26,6 +27,8 @@ const PortfolioCard = ({ work, onOpen, index }) => {
   };
 
   const collageVariant = getCollageVariant(work.category);
+
+  const visibleGallery = getVisibleGalleryForWork(work);
 
   return (
     <motion.div
@@ -77,7 +80,7 @@ const PortfolioCard = ({ work, onOpen, index }) => {
             onClick={handleViewGallery}
             className="view-gallery-btn"
           >
-            View Gallery ({work.caseStudy?.gallery?.length || 0} images)
+            View Gallery ({visibleGallery.length} image{visibleGallery.length === 1 ? '' : 's'})
           </Button>
         </CardContent>
       </Card>

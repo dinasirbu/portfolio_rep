@@ -27,22 +27,49 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Info, X, List, Grid2X2 } from "lucide-react";
 import GalleryProjectInfo from "./GalleryProjectInfo";
 import { lockScroll, unlockScroll } from "../../utils/scrollLock";
+import { getVisibleGallery } from "../../utils/gallery";
+
+const computeLayoutFlags = () => {
+  if (typeof window === "undefined") {
+    return {
+      isMobile: false,
+      isTablet: false,
+      isLandscape: false,
+    };
+  }
+
+  const width = window.innerWidth;
+  const height = window.innerHeight;
+  const shortestSide = Math.min(width, height);
+  const coarsePointer = window.matchMedia?.("(pointer: coarse)")?.matches ?? false;
+  const prefersHover = window.matchMedia?.("(hover: hover)")?.matches ?? false;
+  const touchOnlyDevice = coarsePointer && !prefersHover;
+  const baseMobileWidth = width <= 768;
+  const tabletWidth = width > 768 && width <= 1024;
+  const touchAdaptiveLayout = touchOnlyDevice && (width <= 1024 || shortestSide <= 820);
+  const shouldUseMobileLayout = baseMobileWidth || touchAdaptiveLayout;
+
+  return {
+    isMobile: shouldUseMobileLayout,
+    isTablet: tabletWidth && !baseMobileWidth,
+    isLandscape: shouldUseMobileLayout && width > height,
+  };
+};
 
 const CaseStudyModal = ({ work, onClose, onImageClick, isImageViewerOpen }) => {
   const cs = work?.caseStudy;
+  const initialLayoutFlags = computeLayoutFlags();
   const [showInfoPanel, setShowInfoPanel] = useState(false); // Default to closed
   const [hasSeenHint, setHasSeenHint] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
-  const [isLandscape, setIsLandscape] = useState(false);
-  const [isTablet, setIsTablet] = useState(false); // new: differentiate tablet sizing
+  const [isMobile, setIsMobile] = useState(initialLayoutFlags.isMobile);
+  const [isLandscape, setIsLandscape] = useState(initialLayoutFlags.isLandscape);
+  const [isTablet, setIsTablet] = useState(initialLayoutFlags.isTablet); // new: differentiate tablet sizing
   const [viewMode, setViewMode] = useState("list"); // 'list' or 'grid'
   const [panelWidth, setPanelWidth] = useState(30); // Percentage of modal width for desktop
   const [dragStartWidth, setDragStartWidth] = useState(30); // Track starting width when drag begins
   const mobileInfoMaxHeight = isLandscape ? "100vh" : "calc(100vh - 96px)";
   const [showViewControls, setShowViewControls] = useState(true);
   const [transitionDirection, setTransitionDirection] = useState("forward");
-  // isNearGalleryEnd retained (no longer used to move FAB) for potential future UX tweaks
-  const [isNearGalleryEnd, setIsNearGalleryEnd] = useState(false);
   // Spacer variables will be computed later (after showFloatingInfoButton is defined) to avoid ReferenceError.
 
   const galleryScrollRef = useRef(null);
@@ -107,22 +134,10 @@ const CaseStudyModal = ({ work, onClose, onImageClick, isImageViewerOpen }) => {
     if (typeof window === "undefined") return undefined;
 
     const checkMobile = () => {
-      const coarsePointer = window.matchMedia?.("(pointer: coarse)")?.matches ?? false;
-      const prefersHover = window.matchMedia?.("(hover: hover)")?.matches ?? false;
-      const width = window.innerWidth;
-      const height = window.innerHeight;
-      const shortestSide = Math.min(width, height);
-
-  const baseMobileWidth = width <= 768;
-  const tabletWidth = width > 768 && width <= 1024;
-      const touchOnlyDevice = coarsePointer && !prefersHover;
-      const touchAdaptiveLayout = touchOnlyDevice && (width <= 1024 || shortestSide <= 820);
-
-  const shouldUseMobileLayout = baseMobileWidth || touchAdaptiveLayout;
-  setIsTablet(tabletWidth && !baseMobileWidth);
-
-      setIsMobile(shouldUseMobileLayout);
-      setIsLandscape(shouldUseMobileLayout && width > height);
+      const { isMobile: mobile, isTablet: tablet, isLandscape: landscape } = computeLayoutFlags();
+      setIsMobile(mobile);
+      setIsTablet(tablet);
+      setIsLandscape(landscape);
     };
 
     checkMobile();
@@ -145,7 +160,6 @@ const CaseStudyModal = ({ work, onClose, onImageClick, isImageViewerOpen }) => {
     setPanelWidth(30); // Reset panel width
     setDragStartWidth(30); // Reset drag start width
     setTransitionDirection("forward");
-  setIsNearGalleryEnd(false); // FAB position now constant
     headerOffsetRef.current = 0;
     setHeaderOffset(0);
     setShowViewControlsSafely(true);
@@ -243,7 +257,6 @@ const CaseStudyModal = ({ work, onClose, onImageClick, isImageViewerOpen }) => {
       setHeaderHeight(0);
       setShowViewControlsSafely(true);
       lastControlsToggleRef.current = getNow();
-  setIsNearGalleryEnd(false); // inactive logic
       lastScrollPositionsRef.current = new WeakMap();
       return undefined;
     }
@@ -255,8 +268,6 @@ const CaseStudyModal = ({ work, onClose, onImageClick, isImageViewerOpen }) => {
   lastControlsToggleRef.current = getNow();
 
     // Near-bottom detection removed (FAB no longer shifts upward)
-    const updateNearBottom = () => {};
-
     const updateHeaderState = (scrollTopValue) => {
       const height = headerHeightRef.current || headerHeight;
       if (height <= 0) return;
@@ -285,7 +296,6 @@ const CaseStudyModal = ({ work, onClose, onImageClick, isImageViewerOpen }) => {
     };
 
     updateHeaderState(scrollContainer.scrollTop);
-  // updateNearBottom(); // disabled
 
     scrollContainer.addEventListener("scroll", handleScroll, { passive: true });
 
@@ -362,7 +372,8 @@ const CaseStudyModal = ({ work, onClose, onImageClick, isImageViewerOpen }) => {
         position: "relative",
       };
 
-  const totalImages = cs?.gallery?.length || 0;
+  const visibleGallery = getVisibleGallery(cs?.gallery || []);
+  const totalImages = visibleGallery.length;
   const imageCountLabel = `${totalImages} image${totalImages === 1 ? "" : "s"}`;
   const isCompactGallery = totalImages > 0 && totalImages <= 4;
   const isGridView = !isMobile || viewMode === "grid";
@@ -713,7 +724,7 @@ const CaseStudyModal = ({ work, onClose, onImageClick, isImageViewerOpen }) => {
                   // Raise FAB slightly when info panel is open on mobile portrait so 'Hide Info' stays visible above panel edge
                   bottom: isMobile
                     ? showInfoPanel && !isLandscape
-                      ? "calc(env(safe-area-inset-bottom, 0px) + 56px)"
+                      ? "calc(env(safe-area-inset-bottom, 0px) + 36px)"
                       : mobileFabBottom
                     : "32px",
                   right: isMobile ? "20px" : "32px",
@@ -771,7 +782,7 @@ const CaseStudyModal = ({ work, onClose, onImageClick, isImageViewerOpen }) => {
           </AnimatePresence>
 
           {/* Gallery Grid/List */}
-          {cs?.gallery && cs.gallery.length > 0 ? (
+          {visibleGallery.length > 0 ? (
             <AnimatePresence mode="wait" custom={animationDirection}>
               <motion.div
                 key={galleryViewKey}
@@ -787,7 +798,7 @@ const CaseStudyModal = ({ work, onClose, onImageClick, isImageViewerOpen }) => {
                 exit="exit"
                 custom={animationDirection}
               >
-                {cs.gallery.map((img, i) => (
+                {visibleGallery.map((img, i) => (
                   <motion.img
                     key={i}
                     src={img.src}
@@ -939,6 +950,7 @@ const CaseStudyModal = ({ work, onClose, onImageClick, isImageViewerOpen }) => {
 
               {/* Scrollable container for info - NOT draggable */}
               <div
+                className="gallery-info-scroll"
                 style={{
                   padding: isMobile ? "20px 20px 20px" : "32px",
                   overflowY: "auto",

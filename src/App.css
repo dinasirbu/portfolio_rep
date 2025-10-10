@@ -1442,6 +1442,7 @@ html {
 
 .hero-section {
   min-height: 100vh;
+  min-height: 100dvh;
   display: flex;
   align-items: flex-start;
   position: relative;
@@ -1555,13 +1556,25 @@ html {
 
 .hero-btn-primary {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+  color: #fff;
+  position: relative;
+  border: none; /* Remove transparent border that can show fringe */
+  box-shadow:
+    0 2px 4px rgba(102, 126, 234, 0.35),
+    0 6px 14px -4px rgba(102, 126, 234, 0.45);
+  isolation: isolate;
+}
+
+.hero-btn-primary:focus-visible {
+  outline: 3px solid rgba(255, 255, 255, 0.6);
+  outline-offset: 2px;
 }
 
 .hero-btn-primary:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+  box-shadow:
+    0 4px 10px rgba(102, 126, 234, 0.45),
+    0 10px 24px -6px rgba(102, 126, 234, 0.55);
 }
 
 .hero-btn-secondary {
@@ -2349,7 +2362,7 @@ html {
 @media (max-width: 1024px) {
   .hero-container {
     grid-template-columns: 1fr;
-    gap: 40px;
+    gap: 32px;
   }
   
   .hero-title {
@@ -2395,7 +2408,19 @@ html {
 
 @media (max-width: 768px) {
   .hero-section {
-    padding: 100px 0 60px;
+    padding: 90px 0 56px;
+  }
+  
+  .hero-container {
+    gap: 28px;
+  }
+  
+  .hero-content {
+    gap: 20px;
+  }
+  
+  .hero-badge {
+    margin-top: 12px;
   }
   
   .hero-title {
@@ -2406,10 +2431,13 @@ html {
   
   .hero-description {
     font-size: 1rem;
+    max-width: 100%;
   }
   
   .hero-stats {
     gap: 20px;
+    padding-top: 24px;
+    margin-top: 12px;
   }
   
   .stat-number {
@@ -2417,7 +2445,7 @@ html {
   }
   
   .hero-visual {
-    height: 350px;
+    height: 300px;
   }
   
   
@@ -2456,6 +2484,22 @@ html {
 }
 
 @media (max-width: 480px) {
+  .hero-section {
+    padding: 76px 0 44px;
+  }
+  
+  .hero-container {
+    gap: 24px;
+  }
+  
+  .hero-content {
+    gap: 18px;
+  }
+  
+  .hero-badge {
+    margin-top: 10px;
+  }
+  
   .hero-title {
     font-size: 2rem;
     text-align: left;
@@ -2466,11 +2510,21 @@ html {
     flex-direction: column;
     width: 100%;
     align-items: flex-start;
+    row-gap: 12px;
   }
   
   .hero-btn {
     width: 100%;
     justify-content: center;
+  }
+  
+  .hero-stats {
+    padding-top: 20px;
+    margin-top: 10px;
+  }
+  
+  .hero-visual {
+    height: 260px;
   }
   
   .hero-stats {

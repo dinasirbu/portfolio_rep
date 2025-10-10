@@ -7,6 +7,7 @@ import PortfolioCard from '../ui/PortfolioCard';
 import CategoryFilter from '../ui/CategoryFilter';
 import CaseStudyModal from '../ui/CaseStudyModal';
 import ImageViewer from '../ui/ImageViewer';
+import { getVisibleGalleryForWork } from '../../utils/gallery';
 import './Portfolio.css';
 
 /**
@@ -44,6 +45,8 @@ const Portfolio = () => {
     handleNextImage,
     handlePrevImage,
   } = usePortfolio();
+
+  const visibleGallery = getVisibleGalleryForWork(selectedWork);
 
   useEffect(() => {
     if (showCategoryCards) {
@@ -172,6 +175,7 @@ const Portfolio = () => {
               <AnimatePresence mode="wait">
                 {filteredWorks.map((work, i) => (
                   <motion.div
+                    className="portfolio-grid-item"
                     key={work.id}
                     variants={fadeInUp}
                     initial="initial"
@@ -218,7 +222,7 @@ const Portfolio = () => {
         />
 
         <ImageViewer
-          images={selectedWork?.caseStudy?.gallery || []}
+          images={visibleGallery}
           currentIndex={selectedImageIndex}
           onClose={handleImageViewerClose}
           onNext={handleNextImage}

@@ -1,12 +1,12 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { HERO_CONTENT, PERSONAL_INFO } from "../../config/siteConfig";
+import { HERO_CONTENT, PERSONAL_INFO } from '../../config/siteConfig';
 
 /**
  * Hero Section Component
- * 
+ *
  * TO EDIT CONTENT: Go to src/config/siteConfig.js and edit HERO_CONTENT
- * 
+ *
  * Features:
  * - Animated entrance
  * - Call-to-action buttons
@@ -16,7 +16,7 @@ import { HERO_CONTENT, PERSONAL_INFO } from "../../config/siteConfig";
 const Hero = () => {
   const { badge, title, titleHighlight, description, buttons, stats } =
     HERO_CONTENT;
-  
+
   return (
     <section id="home" className="hero-section">
       <div className="hero-container">
@@ -32,7 +32,7 @@ const Hero = () => {
             <span className="hero-title-highlight">{titleHighlight}</span>
           </h1>
 
-          <p className="hero-description">{description}</p>
+          {/* <p className="hero-description">{description}</p> */}
 
           <motion.div
             className="hero-actions"
